@@ -1,0 +1,42 @@
+---
+title: Zodiac & Chainlink CRE
+---
+
+<p className="zc-eyebrow">Onchain Settlement</p>
+
+# Automation & Oracles with Chainlink CRE
+
+Chainlink CRE transmits sources of truth, and runs operations for Zipcode. 
+
+The [Bittensor Credit Oracle](/bank-of-bittensor/credit-oracle) fetches and zk-verifies account & underwriting data, and those findings are transmitted to by Chainlink CRE.
+
+1) Who is this borrower? 
+2) Does this borrower qualify for access to this Credit Line? 
+3) What bank account do they hold to receive funds, and repay? 
+4) How much are they qualified to borrow, given the value of their lien?
+
+This information needs to pass through CRE to unlock Euler Vaults, set Oracle Rates, and fulfill / repay credit lines.
+
+Chainlink CRE enables autonomous actions within a narrow scope of behavor, and those actions are validated by an immutable Forwarder, written in Go.
+
+### Gnosis Safe Zodiac Modules & Roles v2
+
+Gnosis Safe allows for arbitrary calls to be made within Safes, which means that if you are a treasury, you can make any custom call you like onchain through Safe. 
+
+Vaults can make use of this infrastructure through Zodiac Modules & Roles v2. 
+
+* Zodiac Modules are signers on a Safe which are given permission to take specifically constrained onchain actions. 
+* Roles v2 designate parties that are allowed to trigger those actions. 
+
+In Zipcode, CRE workflows are assigned roles, so they can execute actions constrained onchain actions on behalf of the Vault. 
+
+### The CRE family
+
+Zipcode operates with a family of CRE workflows, each owning exactly one sensitive operation:
+
+* **[Credit Oracle](/bank-of-bittensor/credit-oracle)** — Verification through the `ZipcodeController`, and Lien Oracle operations through the `ZipcodeOracleRegistry`.
+* **Warehouse Operations** — Allocations and withdrawals of Lines of Credit. Limited to four pre-scoped operations, with no custody.
+* **Duration Risk Coordinator** — Handling Default Risk through `DefaultCoordinator`, and processing the protocol's exit queue through the CoW orderbook.
+* **Yield Strategist** — a Protocol Owned Liquidity Strategy for a zipUSD/ZIPCODE LP pool on Hydrex. Boosts yield for the szipUSD vault, and decreases emissions sell pressure. 
+
+[CRE workflows are still under Audit.]

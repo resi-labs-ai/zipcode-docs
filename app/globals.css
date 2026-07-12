@@ -1,0 +1,297 @@
+/* ============================================================
+   Zipcode docs skin — carries the landing's institutional-finance
+   identity into the Nextra theme. Light only.
+
+   Nextra 4 ships its utilities in a Tailwind `@layer`; the rules below
+   are UNLAYERED, so they win over the theme without specificity fights.
+   Devices mirror app/landing.css: Platypi caps display, Geist body,
+   Geist Mono labels, single mint accent, paper ground, hairline rules,
+   sharp 3px corners.
+   ============================================================ */
+
+:root {
+  --paper: #f2f2ef;
+  --panel: #ffffff;
+  --ink: #0a0b0a;
+  --muted: #55605a;
+  --faint: #8a938d;
+  --hair: #0a0b0a;
+  --hair-soft: #d9dcd6;
+  --mint: #12a94f;
+  --mint-bright: #1ed361;
+  --mint-wash: #e7f7ec;
+  --zc-accent: #12a94f;
+
+  --serif: var(--font-platypi), Georgia, 'Times New Roman', serif;
+  --sans: var(--font-geist-sans), -apple-system, system-ui, sans-serif;
+  --mono: var(--font-geist-mono), ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Nextra background channels — used by the translucent navbar blur too */
+  --nextra-bg: 242 242 239;
+}
+
+/* Dark mode intentionally removed — this is a light-only, paper-white site. */
+
+/* ---- ground + body font ---- */
+html,
+body {
+  background: var(--paper);
+}
+body {
+  font-family: var(--sans);
+  color: var(--ink);
+}
+code,
+pre,
+kbd {
+  font-family: var(--mono);
+}
+
+/* ============================================================
+   Content — inside .zc-docs (the wrapped children)
+   ============================================================ */
+
+.zc-docs {
+  color: var(--ink);
+}
+
+/* Page title — editorial display, uppercase Platypi like the landing */
+.zc-docs h1 {
+  font-family: var(--serif);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  color: var(--ink);
+  font-size: clamp(30px, 4.4vw, 46px);
+  margin-top: 8px;
+}
+
+/* Section heads — serif, uppercase but quieter */
+.zc-docs h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  font-size: 1.45rem;
+  margin-top: 2.4em;
+  padding-top: 1.1em;
+  border-top: 1px solid var(--hair-soft);
+}
+
+/* Sub-heads — serif, sentence case for readability */
+.zc-docs h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  font-size: 1.18rem;
+  margin-top: 1.8em;
+}
+
+.zc-docs h4 {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.zc-docs p,
+.zc-docs li {
+  color: #2b322e;
+  line-height: 1.68;
+}
+
+/* Links — mint, hairline underline on hover */
+.zc-docs a {
+  color: var(--mint);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.12s ease;
+}
+.zc-docs a:hover {
+  border-bottom-color: var(--mint);
+}
+
+/* Inline code — mono, mint wash, sharp */
+.zc-docs :not(pre) > code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  background: var(--mint-wash);
+  color: #0d7c3a;
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: none;
+}
+
+/* Code blocks — sharp panel, hairline border */
+.zc-docs pre,
+.zc-docs .nextra-code pre {
+  border-radius: 3px !important;
+  border: 1px solid var(--hair) !important;
+  background: var(--panel) !important;
+  box-shadow: 4px 4px 0 rgba(10, 11, 10, 0.04);
+}
+
+/* Horizontal rule → thin ink rule */
+.zc-docs hr {
+  border: none;
+  border-top: 1px solid var(--hair);
+  margin: 2.4em 0;
+}
+
+/* Blockquote → mint left rule */
+.zc-docs blockquote {
+  border-left: 2px solid var(--mint) !important;
+  color: var(--muted);
+  padding-left: 1em;
+}
+
+/* Mono-caps eyebrow (used at the top of every doc page) */
+.zc-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.zc-eyebrow::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--mint);
+  display: inline-block;
+}
+
+/* ---- MDX built-ins (Callout / Cards) → landing panels ---- */
+.zc-docs .nextra-callout {
+  border-radius: 3px !important;
+  border: 1px solid var(--hair-soft) !important;
+}
+.zc-docs .nextra-cards {
+  gap: 0 !important;
+  border: 1px solid var(--hair);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.zc-docs .nextra-card {
+  border-radius: 0 !important;
+  border: none !important;
+  border-right: 1px solid var(--hair-soft) !important;
+  background: var(--panel) !important;
+  transition: background 0.12s ease;
+}
+.zc-docs .nextra-card:hover {
+  background: var(--mint-wash) !important;
+}
+
+/* ============================================================
+   Chrome — navbar / sidebar / toc / breadcrumb / search
+   ============================================================ */
+
+/* Navbar — hairline ink underline like the landing nav */
+.nextra-navbar-blur {
+  border-bottom: 1px solid var(--hair) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* Hairline borders everywhere Nextra draws one */
+.nextra-border {
+  border-color: var(--hair-soft) !important;
+}
+
+/* Sidebar footer — same paper ground as the rest, demarcated by a hairline
+   only (not a white fill block). */
+.nextra-sidebar-footer {
+  background: transparent !important;
+  border-top: 1px solid var(--hair-soft) !important;
+}
+/* Collapse-sidebar toggle — a small hairline border accent, not a filled box */
+.nextra-sidebar-footer button,
+button[title='Collapse sidebar'] {
+  background: transparent !important;
+  border: 1px solid var(--hair-soft) !important;
+  border-radius: 3px !important;
+  color: var(--muted) !important;
+}
+.nextra-sidebar-footer button:hover,
+button[title='Collapse sidebar']:hover {
+  color: var(--ink) !important;
+  border-color: var(--hair) !important;
+}
+
+/* Sidebar — group labels as mono-caps eyebrows; mint active state */
+.nextra-sidebar {
+  font-family: var(--sans);
+}
+.nextra-sidebar h3,
+.nextra-sidebar .nextra-menu-heading,
+.nextra-sidebar [class*='heading'] {
+  font-family: var(--mono);
+  font-size: 10.5px !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint) !important;
+}
+.nextra-sidebar a {
+  border-radius: 3px !important;
+}
+/* Sidebar links are neutral ink — no green tint from the mint primary. */
+.nextra-sidebar a,
+.nextra-sidebar button {
+  color: var(--muted) !important;
+}
+.nextra-sidebar a:hover,
+.nextra-sidebar button:hover {
+  color: var(--ink) !important;
+}
+/* Active item: ink text + a single thin mint tick — the only mint in the nav. */
+.nextra-sidebar a[aria-current='true'],
+.nextra-sidebar a[data-active='true'] {
+  background: rgba(10, 11, 10, 0.05) !important;
+  color: var(--ink) !important;
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--mint);
+}
+
+/* Breadcrumb — mono-caps, muted */
+.nextra-breadcrumb {
+  font-family: var(--mono) !important;
+  font-size: 10.5px !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint) !important;
+}
+
+/* TOC — "On This Page" title mono-caps; mint active */
+.nextra-toc {
+  font-family: var(--sans);
+}
+.nextra-toc p:first-child,
+.nextra-toc .nextra-toc-title {
+  font-family: var(--mono) !important;
+  font-size: 10.5px !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint) !important;
+}
+.nextra-toc a {
+  color: var(--muted) !important;
+}
+.nextra-toc a:hover,
+.nextra-toc a[aria-current='true'] {
+  color: var(--ink) !important;
+}
+
+/* Search box — sharp, hairline */
+.nextra-search input {
+  border-radius: 3px !important;
+  border: 1px solid var(--hair-soft) !important;
+  font-family: var(--mono);
+  font-size: 12px;
+}

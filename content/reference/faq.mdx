@@ -1,0 +1,62 @@
+---
+title: FAQ
+---
+
+<p className="zc-eyebrow">Reference</p>
+
+# FAQ
+
+### What is Zipcode?
+
+* A credit rail that funds warehouse-style, business lines of credit to HELOC originators.
+* USDC supply is sourced from on-chain capital.
+* Every loan collateralized by an SPV which holds a lien, and a repurchase agreement.
+
+### What do I actually hold when I deposit?
+
+A yield-bearing vault share called szipUSD, which is subject to duration risk, illiquidity, and default exposure.
+
+### Where does the yield come from?
+
+1) ~7.5% lending interest that credit lines pay into the [warehouse](/backing/warehouse).
+2) Bittensor emissions that the [junior engine](/backing/cre) compounds into the vault's NAV.
+
+### How do I exit?
+
+* The vault buys you out through the [CoW limit orderbook](/supply/cow-exit), and burns your share according to your place in the exit queue, and how much USDC is not utilized by credit lines.
+* An outside buyer can also make a bid during illiquid periods.
+
+There is deliberately no windowed redemption: while your USDC is deployed in a live credit line, your position earns yield until the loan resolves, at which point those in the Exit Queue have priority over new lines of credit being issued.
+
+### Can I lose money?
+
+Yes. Either by withdrawing during an illiquid market and inflicting a haircut on yourself, or in a case where a lien or a series of liens go in to default, and the secondary market withdraws its bid from the market. 
+
+Zipcode underwriting is determined by what secondary markets are currently offering when the line of credit opens -- However, the repurchase agreement is made between the HELOC originator and the protocol, not the secondary market. This means that in a market downturn, the secondary markets can withdraw their bid, and the HELOC originator could opt to not fulfill their repurchase agreement. 
+
+At which point, the protocol would hold custody of a 2nd Lien HELOC in an illiquid market. 
+
+If many of these happened at the same time, then all silos that were imapcted would become illiquid until those issues were resolved.
+
+### Is zipUSD a stablecoin?
+
+It is a utility credit dollar, which is designed to remain close to $1 USDC, because default risk is contained to szipUSD Vault Freezes.
+
+### Who can borrow?
+
+KYB'd HELOC originators with existing secondary-market relationships — and only against a lien that clears [all six underwriting proofs](/bank-of-bittensor/credit-oracle). The protocol is permissioned end-to-end; there is no open borrowing.
+
+### What happens when a loan runs late?
+
+Duration Risk, and compensatory yield.
+The repurchase agreement pushes the lien to protocol custody, and must be sold to secondary markets.
+
+### Has it been audited?
+
+An engagement with Octane Security is underway; see [Audits](/reference/audits).
+
+### Why Bittensor? Why Chainlink?
+
+* Bittensor enables zkProof Validation as a decentralized job — [funded by network emissions rather than a tax on lenders](/bank-of-bittensor).
+* Bittensor enables a competition of curators model, wherein multiple silos / curators can compete for emissions by producing higher yield warehouses, which compete in profitability and default risk. 
+* Chainlink CRE provides Cross Chain Bridging, Automation Infrastructure for Operations, and Credit Oracle transmission which communicates between Bittensor and EVM.

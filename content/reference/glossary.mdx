@@ -1,0 +1,53 @@
+---
+title: Glossary
+---
+
+<p className="zc-eyebrow">Reference</p>
+
+# Glossary
+
+**zipUSD** — the senior claim: a non-yield-bearing, par-$1 synthetic credit-dollar (an Euler `ESynth`), backed by over-collateralized USDC in the CreditWarehouse. The exit hatch and the composable leg.
+
+**szipUSD** — the junior claim: the yield-bearing, first-loss vault share. Earns the headline yield as NAV-per-share appreciation and absorbs every loss before the senior is touched.
+
+**Silo** — one complete credit pool (venue adapter, warehouse Safe, senior pool, junior tranche, loss and freeze machinery). Many silos federate under the one senior zipUSD, each capped at 28 concurrent lines.
+
+**CreditWarehouse** — the Gnosis Safe custodying the EulerEarn shares that back all zipUSD, permission-firewalled by a Zodiac Roles scope to exactly four operations.
+
+**Venue** — the lending platform where the credit lines live (Euler today), reached only through the venue-neutral `IZipcodeVenue` interface, so a new platform is another adapter, not a rewrite.
+
+**Credit line** — an isolated, per-lien lending market: its own collateral vault, borrow vault, frozen price source, and borrower account. One line's default can never reach another.
+
+**Lien token** — the 1/1 fixed-supply `LienCollateralToken` that is a line's on-chain identity and collateral marker. The economic collateral is the underlying perfected lien, held in SPV custody off-chain.
+
+**Equity mark** — the line's collateral value: the Proof-notarized appraised home value minus senior debt, cached per-lien in `ZipcodeOracleRegistry`. A verified appraisal, not a market price.
+
+**Proof** — the notarization layer sealing that the SPV's lien documents are genuine (signer identity and document integrity — not content truth, which comes from the authoritative feeds).
+
+**The six gates** — `lienPerfected`, `insured`, `identityOk`, `creditOk`, `incomeOk`, `titleClean`: the fail-closed booleans that must all verify before any origination or draw.
+
+**CRE** — Chainlink's Compute Runtime Environment: the off-chain workflow layer that turns verified facts into DON-signed reports the chain will accept. One producer per sensitive operation.
+
+**Forwarder** — the immutable Chainlink Keystone contract that delivers DON-signed reports on-chain; every receiver deploys inert until governance wires and pins it.
+
+**Keeper / operator** — the single immutable, no-custody identity that drives the junior yield-engine modules with plain transactions; deliberately distinct from governance and from the report path.
+
+**ExitGate** — the szipUSD vault's custody-and-issuance gate: the sole minter and burner of the share, and sole custodian of the DAO's Loot.
+
+**NAV** — the junior vault's net asset value per share, computed on-chain by `SzipNavOracle` and read bracketed: entry at the higher of spot and TWAP, exit at the lower.
+
+**Coverage floor** — the `DurationFreezeModule` invariant: committed junior equity must stay at or above the outstanding senior debt, gating the real outflows while credit is deployed.
+
+**Buy-and-burn bid** — the vault's single resting CoW limit order: buy szipUSD below NAV, retire it with no asset payout. The only exit primitive, at every scale up to full wind-down.
+
+**Recovery waterfall** — the ordered external legs that plug a default before the junior bears a residual: secondary lien sale, insurance payout, the slashed xALPHA bond, then the junior.
+
+**Provision** — the conservative impairment mark `DefaultCoordinator` writes into junior NAV on default, healed upward as recoveries land and trued at resolution.
+
+**xALPHA / szALPHA** — the liquid-staked form of the subnet's alpha emissions, bridged to Base: the junior yield subsidy, the per-line first-loss bond, and a last-resort backstop.
+
+**Originator** — a KYB'd HELOC lender with established secondary-market relationships; the only kind of borrower the protocol serves.
+
+**Repo / revolving** — the two line structures: a fresh line per loan (the default), or an insurance-underwritten line opened once and cycled borrow → repay → redraw.
+
+**Timelock** — the OpenZeppelin `TimelockController` (~2-day delay) that owns every re-pointable contract and governs every economic parameter.

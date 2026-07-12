@@ -1,0 +1,44 @@
+---
+title: zipUSD
+---
+
+<p className="zc-eyebrow">Supply</p>
+
+# zipUSD
+
+**zipUSD** is a non-yield-bearing, synthetic credit-dollar, built on top of Euler as an `ESynth` (`IZipUSD`). It is the **senior** claim: a par-$1 utility dollar that stays whole while the junior [szipUSD](/supply/szipusd) absorbs first loss.
+
+zipUSD exists to let Zipcode interact with the rest of DeFi:
+
+* Farming zipUSD LP.
+* Lending zipUSD on Euler money markets.
+
+zipUSD is a utility token, which most users will stake to receive szipUSD, which is where yeild accrues. 
+
+## Deposit
+
+`ZipDepositModule` accepts USDC via `deposit()`, mints zipUSD 1:1 to the depositor. The USDC then flows to the EulerEarn [Credit Warehouse](/backing/warehouse) Safe.
+
+The deposit UI uses a `zap()` function, which deposits that zipUSD directly into the szipUSD Vault, so the supplier ends up holding only the transferable, yield-bearingk, szipUSD share.
+
+## What backs zipUSD
+
+zipUSD is backed by USDC distributed through the Credit Warehouse. These Lines of credit earn ~7.5% APR on each [credit line](/backing/warehouse), which accrues to the warehouse, in the form of more USDC deposit shares.
+
+The `SeniorNavAggregator` sums that senior backing across every [silo](/backing/credit-silos) into one solvency number — backing ÷ zipUSD float. This provides an oracle for determining whether the senior dollar is whole.
+
+Each loan is backed by a repurchase agreement, which holds the lien within an SPV, and transfers custody of that lien to Zipcode in case of default.
+
+When defaults hit a Silo, zipUSD stays $1 backed, because the losses are localized to the Junior Tranche Safe.
+
+szipUSD Depositors are proportionatly illiquid, and remain in a yield-bearing duration freeze until the lien can be sold to cover the default.
+
+## Par redemption
+
+The senior exit primitive `ZipRedemptionQueue` is the only entity who can exit zipUSD at strict $1 par.
+
+USDC is pulled from the EulerEarn Vault, through the Warehouse Safe, and then routed to a CoW Limit Orderbook.
+
+The Junior Tranche Safe buys out exitors, and burns their szipUSD shares as lines of credit are repaid, and liquidity is avaialble. The [CoW limit orderbook](/supply/cow-exit), also enables outside parties to set bids to facilitate exit during illiquid periods.
+
+The Exit Queue is prioritized before new lines of Credit are opened, which means that a Silo can be shut down due to USDC withdrawal, provided there are no defaulted lines of credit.

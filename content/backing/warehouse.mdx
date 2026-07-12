@@ -1,0 +1,54 @@
+---
+title: Euler Credit Warehouse
+---
+
+<p className="zc-eyebrow">Onchain Settlement</p>
+
+# Euler v2 Credit Warehouse
+
+Zipcode's first venue for onchain settlement is Euler. 
+
+* The Credit Warehouse is built on top of an EulerEarn USDC Vault.
+* Each Line of Credit is its own isolated vault.
+* Interest rates and Oracles are set per vault.
+* Capital is protected by gated access via hooks.
+* Cross-Vault strategies are available through EVC Batching.
+* zipUSD was even built as an Euler Synth. 
+
+Euler provides a great foundation for Zipcode, and will serve as our launch venue.
+
+## EulerEarn & Gnosis Zodiac Roles for Allocation.
+
+EulerEarn enables allocation of funds to specific lines of credit [EVK Vaults].
+
+The warehouse itself is a Gnosis Safe, which holds EulerEarn Shares, and uses Zodiac Roles to set `WarehouseAdminModule` as the sole Operator.
+
+The WarehouseAdminModule can only take these actions:
+
+* **SUPPLY** — USDC can be deposited into the EulerEarn Vault.
+* **APPROVE** — USDC can be approved to be pulled into the Warehouse Safe.
+* **REDEEM** — EulerEarn shares can be redeemed to bring USDC back into the Warehouse Safe.
+* **REPAY** — USDC can be set to the redemption queue, which is governed by the Junior Tranche Safe.
+
+The Safe is a share-accumulator: the only naked USDC it ever holds is redemption proceeds in transit.
+
+## Isolated Credit Lines
+
+Each credit line has its own isolated cluster: 
+
+* An EVK Lien Collateral vault.
+* An EVK USDC borrow vault.
+* **`EulerRouter`** — A dedicated per line oracle router, which is immediately frozen so that the Lien price feed cannot be repointed.
+* **`CREGatingHook`** — restricts access to borrows until the Bittensor zkProof Credit Oracle approves that borrower. Repay stays permissionless.
+* **`LienCollateralToken`** — is a 1/1 identity-and-collateral token, whose entire purpose is to fill the collateral slot for that Line of Credit.
+* **`LineAccount`** — the per-line borrower-of-record, created deterministically from the lien identity and inert after birth.
+
+Euler's structure lends itself toward this "Single-Use Credit Vault" structure, while EulerEarn maintains allocation amgonst the currently active lines of credit.
+
+## Interest Rate Curves & Fees
+
+Every line installs a real, flat **~7.5% APR** interest model (per-second compounding makes the effective APY ~7.79%) — anchored above the bank warehouse cost of SOFR + 2.25–3.25% and kept below the consumer HELOC rate.
+
+Each draw additionally levies a **0.50% origination fee** (Timelock-settable), paid on each line of credit.
+
+Interest accrues into the Warehouse Safe, where it serves as default protection, or is channeled back into programmatic buybacks.

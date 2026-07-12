@@ -1,0 +1,27 @@
+---
+title: Roles & Permissions
+---
+
+<p className="zc-eyebrow">Reference</p>
+
+# Roles & Permissions
+
+Every privileged action is gated to the `TimelockController`, a Timelock-pinned Chainlink CRE Forwarder, or a scoped Zodiac module.
+
+Every re-pointable contract carries one owner: a `TimelockController` with a ~2-day delay.
+
+* **`team`** — the deploying multisig that hands ownership to the Timelock.
+* **`adminSafe`** — the single destination for protocol take (recovery slash, origination fee).
+* **`warehouseSafe`** — the senior backing: a share-accumulator custodying the EulerEarn shares behind zipUSD, asserted distinct from every junior Safe.
+* **`redemptionBox`** — the one address the warehouse may send freed USDC to: the par-redemption queue.
+* **`erebor`** — the only address a credit-line draw may send borrowed USDC to.
+* **`creOperator`** — the keeper driving the engine modules' operator-gated calls.
+* **`workflowAuthor`** — the CRE workflow identity the receivers trust.
+
+### Zodiac Roles Modifier v2
+
+The warehouse Safe holds the money, and in front of it sits a **Zodiac Roles Modifier v2**. `WarehouseAdminModule` pushes a CRE report into one of [four operations](/backing/warehouse) — SUPPLY, APPROVE, REDEEM, REPAY — with every receiver, spender, and destination pinned by the scope.
+
+Even a fully compromised CRE workflow can only move funds along warehouse policy. The one liveness invariant — the adapter and the modifier must agree on the Safe — fails *closed* if broken: nothing leaks, redemption funding simply jams until the paired, order-sensitive re-point is completed.
+
+[We will escalate from a Timelock to an immutable codebase, when we have concluded testing.]

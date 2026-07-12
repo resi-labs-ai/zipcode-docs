@@ -1,0 +1,41 @@
+---
+title: CoW Limit Orderbook
+---
+
+<p className="zc-eyebrow">Supply</p>
+
+# CoW Limit Orderbook
+
+The CoW Limit Orderbook is the only exit path for Zipcode depositors, because the yield source requires that we be able to digest both Duration Risk and Illiquidity. 
+
+* An productive lending market, means an illiquid Credit Warehouse. When USDC is put to work, earning money for the protocol, it's not available for withdrawal.
+* A default is a risk to lenders, as well as the zipUSD peg. Therefore, duration risk is assumed from the moment that the line of credit is opened, until the loan is paid off. 
+* Depositor needs take priority over new lines of credit. This means that any depositor who is in the Exit Queue has their order filled before any further lines of credit are made available to HELOC Originators. 
+
+But what happens when it doesn't work? 
+
+* When depositors need liquidity, and cannot wait for the repurchase agreement to be fulfilled.
+* When there is a default, and the protocol must take custody of the lien and sell to secondary markets. 
+
+More people may want to exit, than the szipUSD Vault has USDC to redeem.
+
+The CoW Limit Orderbook enables both the protocol, and external parties to set resting bids to buy out positions, allowing impatient capital, the opportunity to accept a haircut and get liquid.
+
+## The Protocol's Bid:
+
+`SzipBuyBurnModule` is a treasury function, run by a Zodiac Module, which places a resting order to buy out szipUSD holders, and burn their shares from the Vault through `ExitGate.burnFor`.
+
+USDC which is not in use by: 
+
+* Active Credit Lines
+* A USDC margin balance needed to maintain a boosted yield strategy for the szipUSD Vault.
+
+Can be withdrawn by the Zodiac Module in charge of fulfilling the Exit Queue, and used to fulfill CoW Limit Orders.
+
+If the size of the withdrawl is greater than the USDC liquidity available by a protocol bid, outside buyers can use CoW to make an offer.
+
+## Liquidity Flush
+
+As lines of credit are repaid, USDC enters the system, and [a CRE workflow](/backing/cre) re-sizes the bid against the free reservoir, processes the Exit Queue, and updates NAV.
+
+Functionally, this looks like rolling yield terms, where depositors decide if they want to continue to provide lines of credit, or if they'd like to exit before credit lines enter their next cycle.

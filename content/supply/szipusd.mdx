@@ -1,0 +1,49 @@
+---
+title: szipUSD
+---
+
+<p className="zc-eyebrow">Supply</p>
+
+# szipUSD
+
+**szipUSD** is a yield-bearing vault, built on top of Moloch v3 and Gnosis Safe Zodiac modules. The transferable share token is `SzipUSD`.
+
+* Moloch v3 (Baal) is a Gnosis Safe Zodiac module with a built-in pro-rata, multi-token equity accounting system, based on NAV.
+* The `ExitGate` is the sole custodian of the DAO's Loot, and collaborates with the Exit Queue to facilitate exits for users, and to burn their underlying shares. This way `szipUSD.totalSupply()` always reflects the total distributed share value of the Junior Tranche Vault. Depositors hold freely transferable szipUSD tokens, and can buy or sell these tokens through the [CoW limit orderbook](/supply/cow-exit).
+* The Moloch DAO has no governance shares, and the native `ragequit()` burning of equity is intermediated through a [CRE managed Exit Queue](/solvency/winddown).
+
+Moloch v3, Gnosis Safe Zodiac Modules & Chainlink CRE were chosen for the Junior Tranche Vault because this infrastructure can handle automated onchain strategies, preserve protocol solvency, and protect depositors.
+
+## Deposit
+
+USDC deposits are automatically routed into the szipUSD vault, and shares are minted to the depositor's address. The share entry price is determined by a `SzipNavOracle`, rounded down in the vault's favor.
+
+This means that arbitrageurs can track the NAV / Yield ratio to determine optimal periods for deposits, or set distressed bids through the [CoW Limit Orderbook](/supply/cow-exit) to buy out illiquid parties.
+
+## szipUSD Yield
+
+szipUSD yield is priced in NAV-per-share.
+
+* $1mm is deposited for a 3-month term earning 20% APY.
+* That depositor holds $1.05mm of equity at the end of the quarter.
+* As credit lines close out, and that depositor wants to exit, their shares are bought out by the NAV Yield + USDC.
+
+On launch, this yield will be liquidity mining incentives from the Bittensor Subnet.
+
+Due to the vault's structure, [onchain yield strategies](/backing/cre) are also available to Silos. 
+
+## szipUSD Duration Risk
+
+szipUSD depositors are paid to protect the zipUSD peg by bearing duration risk.
+
+The `DurationFreezeModule` means that if USDC is in use by a Line of Credit, there must be an equal amount of Junior equity committed within the szipUSD Vault.
+
+Insolvency risk is reduced, as credit lines are only enabled under the following conditions:
+
+* HELOC originators must pass KYB and credit checks.
+* HELOC originators must have an existing relationship with a secondary market fund.
+* HELOC originators must sign a repurchase agreement within 90 days.
+* The lien must meet the underwriting conditions of the secondary market.
+* The lien must be held within an SPV, and its existence notarized via Proof.
+
+Recourse on repurchase agreements, and moving lien inventory to secondary markets is an offchain process -- and szipUSD depositors are paid to hold that duration.

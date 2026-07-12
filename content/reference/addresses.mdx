@@ -1,0 +1,26 @@
+---
+title: Contracts & Addresses
+---
+
+<p className="zc-eyebrow">Reference</p>
+
+# Contracts & Addresses
+
+**Live production addresses: TBD.** The protocol has not yet been deployed to mainnet; the address book of the live deployment is produced by the mainnet broadcast itself. What exists today is a provably complete contract inventory and a build-green deploy pipeline.
+
+### The coverage manifest
+
+`docs/wires/COVERAGE.md` maps **every** Solidity file under `contracts/` to its documentation — 40 product contracts, 11 scripts, and 31 hand-written interface shims — with a recheck command so the completeness claim stays provable rather than asserted. Every product contract additionally carries a plain-English summary, a code-truth wiring map, and a per-contract security X-Ray (see [Audits](/reference/audits)).
+
+### External addresses the protocol binds to
+
+`BaseAddresses.sol` is the manifest of every external Base-mainnet (chain 8453) contract Zipcode integrates against, each checksummed and verification-flagged: USDC; the Euler stack (EVC, vault factory, EulerEarn factory, oracle-router factory); CoW Protocol (settlement, vault relayer, order signer); the Hydrex / Algebra / ICHI stack; the Chainlink Keystone Forwarder; and the Gnosis Safe, Baal, and Zodiac Roles infrastructure. These are the *dependencies* — not Zipcode's own deployments.
+
+### The deploy family
+
+* **`DeployZipcode.s.sol`** — the single deploy-and-wire orchestrator: deploys the core, asserts the cross-contract seams, seals the CRE identities, and hands ownership to the Timelock as its final act.
+* **`DeployLocal.s.sol` / `DeployMainnet.s.sol`** — the fork-local and live-network wrappers around it; mainnet additionally provisions the senior pool and seeds the LP mark.
+* **`SiloDeployer.s.sol`** — composes the sub-deployers below into one complete, admission-ready [silo](/backing/credit-silos).
+* **`CreditWarehouseDeployer.sol` / `JuniorTrancheDeployer.s.sol`** — the per-silo senior (Safe summon + Roles scoping + market setup) and junior legs.
+
+This page will carry the deployed address table once the mainnet broadcast lands.

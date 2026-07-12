@@ -1,0 +1,18 @@
+---
+title: Credit Silos
+---
+
+<p className="zc-eyebrow">Onchain Settlement</p>
+
+# Credit Silos
+
+How the protocol grows past one pool.
+
+A **silo** is one complete credit pool: a venue adapter, a warehouse Safe, an EulerEarn allocator, and a junior tranche. Silos run in parallel with each other under one mutualized zipUSD credit dollar, though each silo has its own loss and freeze machinery.
+
+* **`SiloRegistry` is the catalog and the admission gate.** This process is governed by Timelock, and is the EVM counterpart toward onboarding a new Miner Curator on Bittensor.
+* **On Euler Silos cap at 28 concurrent credit lines.** EulerEarn can only track 30 markets, and two are reserved within each silo for operations. Closing a line reclaims both of its queue slots, so a pool can churn lines indefinitely without bricking at the cap. A Credit Warehouse can scale by adding more Silos, or list new product lines with their own isolated default risk. 
+* **`SeniorNavAggregator` determines solvency** — how much USDC actually backs all outstanding zipUSD, summed across every silo. The read is determined by the Warehouse Safe's own pool shares.
+* **Losses & Freezes stay local.** Each Silo's Junior Tranche Safe acts as a socialized risk container for the Credit Lines active in that Silo. If your Silo is productive, your Junior Tranche Safe is proportionately illiquid, and earning yield for the [duration risk](/supply/cow-exit).
+
+Silos were a responsive design, to deal with the limitations of EulerEarn slots. However, they do a good job of localizing risk, which ought to enable experimentation in types of credit lines, provided secondary market liquidity can be found for those vaults.
