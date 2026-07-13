@@ -10,36 +10,104 @@
    ============================================================ */
 
 :root {
-  --paper: #f2f2ef;
-  --panel: #ffffff;
-  --ink: #0a0b0a;
-  --muted: #55605a;
-  --faint: #8a938d;
-  --hair: #0a0b0a;
-  --hair-soft: #d9dcd6;
-  --mint: #12a94f;
-  --mint-bright: #1ed361;
-  --mint-wash: #e7f7ec;
-  --zc-accent: #12a94f;
+  /* Neutrals + mint ramp are the portal brand sheet verbatim
+     (zip-code-portal/src/app/(frontend)/globals.css) so the docs and the
+     product read as one system. */
+  --paper: #ecebe6;       /* softened warm-neutral paper — calmer than the flat bright #f4f4f4 */
+  --paper-lift: #f1f0ec;  /* faintly lighter paper, for the ambient page wash */
+  --panel: #fcfcfb;       /* card + header surface — a hair off pure white so it reads as paper, not glare */
+  --ink: #0b0b0a;         /* primary text / headlines (near-black, softer than pure #000) */
+  --muted: #4c4c4c;       /* D1 — secondary text */
+  --faint: #8a938d;       /* faint captions (derived, lighter than D1) */
+  --hair: #0b0b0a;        /* full-strength ink rule */
+  --hair-soft: #dedcd5;   /* hairline border — warm-neutral to sit on the paper */
+
+  /* Brand mint ramp (mint-100 → mint-600) */
+  --mint-wash: #d5f8df;   /* mint-100 / P1 — mint surface, inline-code bg */
+  --mint-300: #6ff7a1;    /* G2 — accent surface, button fill/hover */
+  --mint-bright: #1ed361; /* mint-500 / G1 — bright emphasis */
+  --mint: #1bbc57;        /* mint-600 — primary accent (fills, ticks, rules) */
+  --mint-ink: #0d8f41;    /* legibility-safe mint for text on light (links/code) */
+  --live: #1ed361;        /* "live" indicator — reads on the ink-filled active node (a near-black box in light) */
+  --zc-accent: #1bbc57;
 
   --serif: var(--font-platypi), Georgia, 'Times New Roman', serif;
   --sans: var(--font-geist-sans), -apple-system, system-ui, sans-serif;
   --mono: var(--font-geist-mono), ui-monospace, 'SF Mono', Menlo, monospace;
 
   /* Nextra background channels — used by the translucent navbar blur too */
-  --nextra-bg: 242 242 239;
+  --nextra-bg: 236 235 230;
+  /* Steer Nextra's own primary (focus rings, search highlight) to brand mint
+     so nothing falls back to the theme's default blue. #1bbc57 ≈ hsl(142 75% 42%). */
+  --nextra-primary-hue: 142deg;
+  --nextra-primary-saturation: 75%;
+  --nextra-primary-lightness: 42%;
+
+  /* Theme-dependent effects (overridden in dark) */
+  --body: #2b322e;                             /* long-form body copy (softer than ink) */
+  --active-wash: rgba(0, 0, 0, 0.05);          /* sidebar active-row fill */
+  --shadow-sharp: 4px 4px 0 rgba(0, 0, 0, 0.04); /* institutional offset drop */
 }
 
-/* Dark mode intentionally removed — this is a light-only, paper-white site. */
+/* === Dark theme — "institutional terminal" ===
+   Portal dark palette (zip-code-portal globals.css). Near-black cool depth
+   ladder, soft off-white ink, mint kept as a *glowing* accent. Selectors cover
+   both next-themes' class attribute (html.dark) and the portal's data-theme. */
+html.dark,
+.dark,
+[data-theme='dark'] {
+  --paper: #0a0c0b;       /* background */
+  --paper-lift: #0a0c0b;  /* = paper in dark: the ambient page wash is a
+                             light-mode device (calms the bright ground); on
+                             near-black it only muddies the top, so flatten it. */
+  --panel: #14191a;       /* card surface */
+  --ink: #eef2ef;         /* soft off-white text */
+  --muted: #9fa8a3;       /* secondary text */
+  --faint: #8b948e;       /* faint captions — lifted for legibility on near-black */
+  --hair: #434b45;        /* strong rule — visible on near-black */
+  --hair-soft: #363d39;   /* subtle border — lifted so dividers/box outlines read */
+
+  /* Mint ramp re-tuned for dark: bright accents that glow, deep-emerald surfaces
+     that keep light text legible. */
+  --mint-wash: #10301f;   /* deep-emerald surface / inline-code bg */
+  --mint-300: #15a04e;    /* chip / pill surface — light label reads */
+  --mint-bright: #8dfab8; /* brightest — hovers */
+  --mint: #6ff7a1;        /* primary accent — fills, ticks, rules, dots */
+  --mint-ink: #6ff7a1;    /* link + code TEXT — bright, legible on dark */
+  --live: #0b7a38;        /* dark mint — the active node's box is near-WHITE in dark, so LIVE must be dark to read */
+  --zc-accent: #6ff7a1;
+
+  --nextra-bg: 10 12 11;
+
+  --body: #cdd4cf;
+  --active-wash: rgba(255, 255, 255, 0.06);
+  --shadow-sharp: 4px 4px 0 rgba(0, 0, 0, 0.35);
+}
 
 /* ---- ground + body font ---- */
 html,
 body {
   background: var(--paper);
 }
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+/* A soft top-anchored wash lifts the flat paper into a subtle plane so the
+   ground never reads as one glaring sheet. Fixed so it doesn't scroll. */
 body {
   font-family: var(--sans);
   color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background:
+    radial-gradient(120% 80% at 50% -10%, var(--paper-lift) 0%, transparent 60%),
+    var(--paper);
+  background-attachment: fixed;
 }
 code,
 pre,
@@ -58,7 +126,7 @@ kbd {
 /* Page title — editorial display, uppercase Platypi like the landing */
 .zc-docs h1 {
   font-family: var(--serif);
-  font-weight: 300;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: -0.02em;
   line-height: 1.02;
@@ -100,13 +168,13 @@ kbd {
 
 .zc-docs p,
 .zc-docs li {
-  color: #2b322e;
+  color: var(--body);
   line-height: 1.68;
 }
 
 /* Links — mint, hairline underline on hover */
 .zc-docs a {
-  color: var(--mint);
+  color: var(--mint-ink);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color 0.12s ease;
@@ -120,7 +188,7 @@ kbd {
   font-family: var(--mono);
   font-size: 0.86em;
   background: var(--mint-wash);
-  color: #0d7c3a;
+  color: var(--mint-ink);
   padding: 1px 6px;
   border-radius: 3px;
   border: none;
@@ -132,7 +200,7 @@ kbd {
   border-radius: 3px !important;
   border: 1px solid var(--hair) !important;
   background: var(--panel) !important;
-  box-shadow: 4px 4px 0 rgba(10, 11, 10, 0.04);
+  box-shadow: var(--shadow-sharp);
 }
 
 /* Horizontal rule → thin ink rule */
@@ -194,15 +262,55 @@ kbd {
    Chrome — navbar / sidebar / toc / breadcrumb / search
    ============================================================ */
 
-/* Navbar — hairline ink underline like the landing nav */
+/* Navbar — white header bar (panel), hairline ink underline like the landing */
 .nextra-navbar-blur {
+  background: var(--panel) !important;
   border-bottom: 1px solid var(--hair) !important;
   backdrop-filter: blur(10px);
 }
 
-/* Hairline borders everywhere Nextra draws one */
+/* Theme toggle — mint sun/moon icon button. Global (not scoped) so the same
+   affordance works in the landing nav and the docs navbar. */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--mint);
+  transition: color 0.15s ease;
+}
+.theme-toggle:hover {
+  color: var(--mint-bright);
+}
+.theme-toggle svg {
+  display: block;
+}
+
+/* Docs navbar GitHub (project link) icon → mint, matching the theme toggle so
+   the navbar icons read as a set (the icon is currentColor-driven). */
+.nextra-navbar a[href*='github'] {
+  color: var(--mint) !important;
+}
+.nextra-navbar a[href*='github']:hover {
+  color: var(--mint-bright) !important;
+}
+
+/* Structural dividers (pagination rule, etc.) — ink hairline like the landing,
+   not the near-invisible soft tone Nextra ships. */
 .nextra-border {
-  border-color: var(--hair-soft) !important;
+  border-color: var(--hair) !important;
+}
+
+/* Vertical rails framing the content column: sidebar│content│toc. These have
+   no divider by default, so the columns bleed together on the paper ground. */
+.nextra-sidebar {
+  border-right: 1px solid var(--hair) !important;
+}
+.nextra-toc {
+  border-left: 1px solid var(--hair) !important;
 }
 
 /* Sidebar footer — same paper ground as the rest, demarcated by a hairline
@@ -253,7 +361,7 @@ button[title='Collapse sidebar']:hover {
 /* Active item: ink text + a single thin mint tick — the only mint in the nav. */
 .nextra-sidebar a[aria-current='true'],
 .nextra-sidebar a[data-active='true'] {
-  background: rgba(10, 11, 10, 0.05) !important;
+  background: var(--active-wash) !important;
   color: var(--ink) !important;
   font-weight: 600;
   box-shadow: inset 2px 0 0 var(--mint);

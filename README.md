@@ -92,9 +92,9 @@ per-page source map is in **`outline.md`** (the most important file here after t
 
 1. Pick the next stub page(s) from `outline.md`.
 2. Fan out subagents to draft: `general-purpose` agent per page, told to (a) READ the
-   cited source files fully, (b) read the 3jane analog in `3jane/` for STRUCTURE/VOICE ONLY,
-   (c) hold the naming convention, (d) return MDX-ready markdown + a `## SOURCES` block
-   mapping claims→files, (e) flag anything ungrounded with `«CHECK: …»`, (f) create no files.
+   cited source files fully, (b) hold the naming convention, (c) return MDX-ready markdown
+   + a `## SOURCES` block mapping claims→files, (d) flag anything ungrounded with `«CHECK: …»`,
+   (e) create no files.
 3. **VERIFY the draft yourself** — read the actual source lines behind the load-bearing
    claims before trusting them. (Do not skip this. Trust was lost once by asserting
    unverified structural claims.)
@@ -110,10 +110,6 @@ Search roots the grounding is restricted to: **`docs/`**, **`build/pending-docs/
 **`contracts/src/`**, **`cre/`**. Authority order: `contracts/src/**.sol` (code = truth) →
 `docs/wires/*` (code-derived maps) → `docs/*` (ELI20) → `cre/*` (off-chain workflows) →
 `build/pending-docs/*` → `build/claude-zipcode.md` = **SPEC(intent)** (design intent, cite as such).
-
-**`3jane/`** (in this dir) — 33 `.md` pages of the 3jane docs, saved as the structure-of-ideas
-template. Mimic 3jane's *shape* (thesis → liability side → asset side → loss waterfall →
-reference); the *content* is always Zipcode's own. Never copy 3jane content.
 
 ## Known gaps (do not fabricate around these)
 
