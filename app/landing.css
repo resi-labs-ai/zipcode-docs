@@ -5,27 +5,35 @@
    Real fonts: Platypi (display), Geist Sans (body), Geist Mono (labels).
    ============================================================ */
 .zc-landing {
-  --paper: #f2f2ef;
-  --panel: #ffffff;
-  --ink: #0a0b0a;
-  --muted: #55605a;
+  /* Brand tokens — kept in lockstep with app/globals.css and the portal. */
+  --paper: #ecebe6;
+  --paper-lift: #f1f0ec;
+  --panel: #fcfcfb;
+  --ink: #0b0b0a;
+  --muted: #4c4c4c;
   --faint: #8a938d;
-  --hair: #0a0b0a;
-  --hair-soft: #d9dcd6;
-  --mint: #12a94f;
+  --hair: #0b0b0a;
+  --hair-soft: #dedcd5;
+  --mint-wash: #d5f8df;
+  --mint-300: #6ff7a1;
   --mint-bright: #1ed361;
-  --mint-wash: #e7f7ec;
+  --mint: #1bbc57;
+  --mint-ink: #0d8f41;
+  --live: #1ed361;
   --radius: 3px;
   --serif: var(--font-platypi), Georgia, 'Times New Roman', serif;
   --sans: var(--font-geist-sans), -apple-system, system-ui, sans-serif;
   --mono: var(--font-geist-mono), ui-monospace, 'SF Mono', Menlo, monospace;
 
-  background: var(--paper);
+  background:
+    radial-gradient(120% 80% at 50% -8%, var(--paper-lift) 0%, transparent 58%),
+    var(--paper);
   color: var(--ink);
   font-family: var(--sans);
   line-height: 1.5;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .zc-landing * { box-sizing: border-box; }
 .zc-landing a { color: inherit; text-decoration: none; }
@@ -41,8 +49,8 @@
   content: ''; width: 8px; height: 8px; background: var(--mint); display: inline-block;
 }
 .zc-landing .display {
-  font-family: var(--serif); font-weight: 300; text-transform: uppercase;
-  letter-spacing: -0.015em; line-height: 0.98; text-wrap: balance;
+  font-family: var(--serif); font-weight: 400; text-transform: uppercase;
+  letter-spacing: -0.03em; line-height: 0.98; text-wrap: balance;
 }
 .zc-landing .pill {
   display: inline-flex; align-items: center; gap: 8px; border-radius: 999px;
@@ -50,14 +58,20 @@
   font-size: 11px; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase;
   transition: background-color .15s ease, color .15s ease;
 }
-.zc-landing .pill--primary { background: var(--mint); color: #fff; border-color: var(--mint); }
-.zc-landing .pill--primary:hover { background: #0d8f41; }
-.zc-landing .pill--ghost:hover { background: var(--ink); color: var(--paper); }
+/* Primary pill mirrors the portal's .btn-pill-primary: mint-300 fill, black
+   border + label (not white-on-solid-mint), hover lifts to mint-500. */
+.zc-landing .pill--primary { background: var(--mint-300); color: var(--ink); border-color: var(--ink); }
+.zc-landing .pill--primary:hover { background: var(--mint-bright); }
+.zc-landing .pill--ghost:hover { background: var(--mint-300); color: var(--ink); }
 
+/* Site header — full-width white bar matching the docs navbar (panel bg + ink hairline) */
+.zc-landing .site-header {
+  background: var(--panel);
+  border-bottom: 1px solid var(--hair);
+}
 /* top nav */
 .zc-landing nav.top {
   display: flex; align-items: center; gap: 32px; height: 68px;
-  border-bottom: 1px solid var(--hair);
 }
 .zc-landing .brand { font-weight: 700; font-size: 19px; letter-spacing: -0.03em; }
 .zc-landing .brand b { color: var(--mint); font-weight: 700; }
@@ -67,10 +81,24 @@
   text-transform: uppercase; color: var(--muted); padding: 4px 0; border-bottom: 1px solid transparent;
 }
 .zc-landing .nav-links a:hover { color: var(--ink); border-bottom-color: var(--mint); }
+/* Coming-soon nav item — same mono-caps, faded, non-clickable, with a mint SOON tag */
+.zc-landing .nav-links .soon {
+  display: inline-flex; align-items: center; gap: 7px; cursor: default;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--faint); padding: 4px 0;
+}
+.zc-landing .nav-links .soon i {
+  font-style: normal; font-size: 8px; line-height: 1; letter-spacing: 0.1em;
+  color: var(--mint); border: 1px solid var(--mint); border-radius: 999px;
+  padding: 2px 5px 1px;
+}
 .zc-landing .nav-right { margin-left: auto; display: flex; align-items: center; gap: 18px; }
 
-/* hero */
-.zc-landing .hero { position: relative; padding: 78px 0 70px; }
+/* hero — soft mint aura anchored on the schematic (echoes the portal hero glow) */
+.zc-landing .hero {
+  position: relative; padding: 78px 0 70px;
+  background: radial-gradient(46% 58% at 78% 36%, rgba(111, 247, 161, 0.16) 0%, transparent 68%);
+}
 .zc-landing .hero-grid { display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 56px; align-items: center; }
 .zc-landing .hero::before {
   content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
@@ -82,7 +110,8 @@
 }
 .zc-landing .hero-grid > * { position: relative; z-index: 1; }
 .zc-landing h1 { margin: 20px 0 0; font-size: clamp(40px, 6.4vw, 78px); }
-.zc-landing h1 .accent { color: var(--mint); }
+/* Italic-mint accent — the portal's signature display move (its "Oracle"). */
+.zc-landing h1 .accent { color: var(--mint); font-style: italic; }
 .zc-landing .lead { margin: 26px 0 0; max-width: 44ch; font-size: 18px; color: var(--muted); line-height: 1.55; }
 .zc-landing .lead b { color: var(--ink); font-weight: 600; }
 .zc-landing .cta { margin-top: 34px; display: flex; gap: 12px; flex-wrap: wrap; }
@@ -103,7 +132,7 @@
 /* section scaffolding */
 .zc-landing section.band { padding: 74px 0; border-top: 1px solid var(--hair); }
 .zc-landing .band-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 40px; flex-wrap: wrap; }
-.zc-landing .band-head h2 { font-family: var(--serif); font-weight: 300; text-transform: uppercase; letter-spacing: -0.01em; font-size: clamp(24px, 3vw, 34px); margin: 8px 0 0; }
+.zc-landing .band-head h2 { font-family: var(--serif); font-weight: 400; text-transform: uppercase; letter-spacing: -0.01em; font-size: clamp(24px, 3vw, 34px); margin: 8px 0 0; }
 .zc-landing .band-head p { margin: 0; color: var(--muted); max-width: 40ch; font-size: 15px; }
 
 /* the stack — sharp panels */
@@ -111,10 +140,10 @@
 .zc-landing .cell { padding: 30px 26px 34px; border-right: 1px solid var(--hair-soft); }
 .zc-landing .cell:last-child { border-right: none; }
 .zc-landing .cell .idx { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--mint); }
-.zc-landing .cell h3 { font-family: var(--serif); font-weight: 300; text-transform: uppercase; letter-spacing: -0.01em; font-size: 20px; margin: 14px 0 0; }
+.zc-landing .cell h3 { font-family: var(--serif); font-weight: 400; text-transform: uppercase; letter-spacing: -0.01em; font-size: 20px; margin: 14px 0 0; }
 .zc-landing .cell .rule { width: 34px; height: 2px; background: var(--mint); margin: 14px 0 16px; }
 .zc-landing .cell p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
-.zc-landing .cell code { font-family: var(--mono); font-size: 12.5px; background: var(--mint-wash); color: #0d7c3a; padding: 1px 6px; border-radius: 3px; }
+.zc-landing .cell code { font-family: var(--mono); font-size: 12.5px; background: var(--mint-wash); color: var(--mint-ink); padding: 1px 6px; border-radius: 3px; }
 
 /* roadmap rail */
 .zc-landing .rail { display: grid; grid-template-columns: repeat(4, 1fr); position: relative; }
@@ -127,7 +156,7 @@
 .zc-landing .node.live .tag { color: var(--mint); }
 
 /* closing CTA */
-.zc-landing .close h2 { font-family: var(--serif); font-weight: 300; text-transform: uppercase; letter-spacing: -0.015em; font-size: clamp(28px, 4.4vw, 52px); margin: 12px 0 0; line-height: 1; }
+.zc-landing .close h2 { font-family: var(--serif); font-weight: 400; text-transform: uppercase; letter-spacing: -0.015em; font-size: clamp(28px, 4.4vw, 52px); margin: 12px 0 0; line-height: 1; }
 .zc-landing .close .cta { margin-top: 30px; }
 
 .zc-landing footer.site { border-top: 1px solid var(--hair); padding: 30px 0 46px; }
@@ -145,3 +174,50 @@
   .zc-landing .rail { grid-template-columns: repeat(2, 1fr); gap: 34px 0; }
   .zc-landing .rail::before { display: none; }
 }
+
+/* theme toggle styling is global (app/globals.css .theme-toggle) so the same
+   icon button works in the landing nav and the docs navbar. */
+
+/* ============================================================
+   Dark theme — token values mirror app/globals.css + the portal.
+   next-themes sets html.dark; [data-theme='dark'] covers the portal convention.
+   ============================================================ */
+.dark .zc-landing,
+[data-theme='dark'] .zc-landing {
+  --paper: #0a0c0b;
+  --paper-lift: #0a0c0b; /* flat in dark — no top page wash (see globals.css) */
+  --panel: #14191a;
+  --ink: #eef2ef;
+  --muted: #9fa8a3;
+  --faint: #8b948e;
+  --hair: #434b45;
+  --hair-soft: #363d39;
+  --mint-wash: #10301f;
+  --mint-300: #15a04e;
+  --mint-bright: #8dfab8;
+  --mint: #6ff7a1;
+  --mint-ink: #6ff7a1;
+  --live: #0b7a38;
+}
+
+/* Loud CTA keeps the bright brand mint in dark (matches portal .btn-pill-primary). */
+.dark .zc-landing .pill--primary,
+[data-theme='dark'] .zc-landing .pill--primary { background: #6ff7a1; color: #06140c; }
+.dark .zc-landing .pill--primary:hover,
+[data-theme='dark'] .zc-landing .pill--primary:hover { background: #8dfab8; }
+
+/* Kill the hero mint aura in dark — on near-black it reads as a splotchy wash
+   rather than the subtle lift it gives on the light ground. */
+.dark .zc-landing .hero,
+[data-theme='dark'] .zc-landing .hero { background: none; }
+
+/* Hero dot-grid: swap the ink glyph for a light one so it reads on near-black. */
+.dark .zc-landing .hero::before,
+[data-theme='dark'] .zc-landing .hero::before {
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='54' height='54' viewBox='0 0 54 54'><g fill='none' stroke='%23eef2ef' stroke-opacity='0.10' stroke-width='1.3' stroke-linecap='round'><line x1='27' y1='22' x2='27' y2='32'/><line x1='22' y1='27' x2='32' y2='27'/></g></svg>");
+}
+
+/* Figure panel: the hard offset shadow vanishes on near-black — lift with a soft ambient drop. */
+.dark .zc-landing .figure,
+[data-theme='dark'] .zc-landing .figure { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); }
