@@ -93,6 +93,10 @@
   padding: 2px 5px 1px;
 }
 .zc-landing .nav-right { margin-left: auto; display: flex; align-items: center; gap: 18px; }
+/* GitHub (and any) nav icon — mint, matches the theme toggle */
+.zc-landing .nav-icon { display: inline-flex; align-items: center; color: var(--mint); transition: color .15s ease; }
+.zc-landing .nav-icon:hover { color: var(--mint-bright); }
+.zc-landing .nav-icon svg { display: block; }
 
 /* hero — soft mint aura anchored on the schematic (echoes the portal hero glow) */
 .zc-landing .hero {

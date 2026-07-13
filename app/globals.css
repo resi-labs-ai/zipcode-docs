@@ -289,6 +289,15 @@ kbd {
   display: block;
 }
 
+/* Docs navbar GitHub (project link) icon → mint, matching the theme toggle so
+   the navbar icons read as a set (the icon is currentColor-driven). */
+.nextra-navbar a[href*='github'] {
+  color: var(--mint) !important;
+}
+.nextra-navbar a[href*='github']:hover {
+  color: var(--mint-bright) !important;
+}
+
 /* Structural dividers (pagination rule, etc.) — ink hairline like the landing,
    not the near-invisible soft tone Nextra ships. */
 .nextra-border {
