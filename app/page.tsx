@@ -1,31 +1,40 @@
 import './landing.css'
+import { ThemeToggle } from './theme-toggle'
+import { Logo } from './logo'
 
 const DOCS = '/manifesto'
 
 export default function Landing() {
   return (
     <main className="zc-landing">
-      <div className="wrap">
-        <nav className="top">
-          <span className="brand">
-            zip<b>code</b>
-          </span>
+      <header className="site-header">
+        <div className="wrap">
+          <nav className="top">
+          <a href="/" aria-label="Zipcode home" className="brand">
+            <Logo twoTone style={{ height: 26, width: 'auto', display: 'block', color: 'var(--ink)' }} />
+          </a>
           <div className="nav-links">
             <a href="/supply/szipusd">Supply</a>
-            <a href="/backing/collateral">Warehouse</a>
-            <a href="/cre">CRE</a>
+            <span className="soon" aria-disabled="true">
+              Warehouse<i>Soon</i>
+            </span>
+            <span className="soon" aria-disabled="true">
+              CRE<i>Soon</i>
+            </span>
             <a href="/reference/risk">Risk</a>
           </div>
           <div className="nav-right">
-            <a href="https://github.com/resi-labs-ai/zipcode-euler" className="eyebrow" style={{ letterSpacing: '.12em' }}>
+            <ThemeToggle />
+            <a href="https://github.com/resi-labs-ai/zipcode-docs" className="eyebrow" style={{ letterSpacing: '.12em' }}>
               GitHub ↗
             </a>
             <a href={DOCS} className="pill pill--primary">
               Read the docs
             </a>
           </div>
-        </nav>
-      </div>
+          </nav>
+        </div>
+      </header>
 
       <header className="hero">
         <div className="wrap hero-grid">
@@ -45,7 +54,7 @@ export default function Landing() {
               <a href={DOCS} className="pill pill--primary">
                 Read the docs →
               </a>
-              <a href="/cre" className="pill pill--ghost">
+              <a href="#model" className="pill pill--ghost">
                 How it works
               </a>
             </div>
@@ -61,52 +70,55 @@ export default function Landing() {
               role="img"
               aria-label="Schematic: capital enters as szipUSD, routes through the Zipcode rail into gated credit lines across venues"
             >
+              {/* Colors reference the .zc-landing CSS tokens via inline `style`
+                  (SVG presentation attributes don't resolve var()), so the whole
+                  schematic re-themes in dark mode with the rest of the page. */}
               <defs>
                 <marker id="ar" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
-                  <path d="M0 0 L7 3.5 L0 7 z" fill="#0a0b0a" />
+                  <path d="M0 0 L7 3.5 L0 7 z" style={{ fill: 'var(--ink)' }} />
                 </marker>
               </defs>
-              <rect x="20" y="18" width="120" height="40" fill="#e7f7ec" stroke="#12a94f" />
-              <text x="80" y="37" textAnchor="middle" fontFamily="ui-monospace,Menlo,monospace" fontSize="12" fill="#0d7c3a">
+              <rect x="20" y="18" width="120" height="40" style={{ fill: 'var(--mint-wash)', stroke: 'var(--mint)' }} />
+              <text x="80" y="37" textAnchor="middle" fontFamily="ui-monospace,Menlo,monospace" fontSize="12" style={{ fill: 'var(--mint-ink)' }}>
                 szipUSD
               </text>
-              <text x="80" y="50" textAnchor="middle" fontFamily="ui-monospace,Menlo,monospace" fontSize="8.5" letterSpacing="0.1em" fill="#0d7c3a">
+              <text x="80" y="50" textAnchor="middle" fontFamily="ui-monospace,Menlo,monospace" fontSize="8.5" letterSpacing="0.1em" style={{ fill: 'var(--mint-ink)' }}>
                 SUPPLY
               </text>
-              <line x1="80" y1="58" x2="80" y2="96" stroke="#0a0b0a" strokeWidth="1.3" markerEnd="url(#ar)" />
-              <rect x="20" y="100" width="340" height="46" fill="#fff" stroke="#0a0b0a" />
-              <text x="34" y="121" fontFamily="ui-monospace,Menlo,monospace" fontSize="8.5" letterSpacing="0.14em" fill="#8a938d">
+              <line x1="80" y1="58" x2="80" y2="96" strokeWidth="1.3" markerEnd="url(#ar)" style={{ stroke: 'var(--ink)' }} />
+              <rect x="20" y="100" width="340" height="46" style={{ fill: 'var(--panel)', stroke: 'var(--ink)' }} />
+              <text x="34" y="121" fontFamily="ui-monospace,Menlo,monospace" fontSize="8.5" letterSpacing="0.14em" style={{ fill: 'var(--faint)' }}>
                 THE RAIL · CRE GATING HOOK
               </text>
-              <text x="34" y="137" fontFamily="Georgia,serif" fontSize="15" fill="#0a0b0a" letterSpacing="0.02em">
+              <text x="34" y="136" fontFamily="ui-monospace,Menlo,monospace" fontSize="13" style={{ fill: 'var(--ink)' }}>
                 One hook · one adapter · one venue
               </text>
               <g fontFamily="ui-monospace,Menlo,monospace" fontSize="9.5" textAnchor="middle">
-                <line x1="70" y1="146" x2="70" y2="186" stroke="#0a0b0a" strokeWidth="1.3" markerEnd="url(#ar)" />
-                <line x1="160" y1="146" x2="160" y2="186" stroke="#c7ccc6" strokeWidth="1.3" markerEnd="url(#ar)" />
-                <line x1="250" y1="146" x2="250" y2="186" stroke="#c7ccc6" strokeWidth="1.3" markerEnd="url(#ar)" />
-                <rect x="34" y="190" width="72" height="40" fill="#0a0b0a" />
-                <text x="70" y="208" fill="#fff">
+                <line x1="70" y1="146" x2="70" y2="186" strokeWidth="1.3" markerEnd="url(#ar)" style={{ stroke: 'var(--ink)' }} />
+                <line x1="160" y1="146" x2="160" y2="186" strokeWidth="1.3" markerEnd="url(#ar)" style={{ stroke: 'var(--hair-soft)' }} />
+                <line x1="250" y1="146" x2="250" y2="186" strokeWidth="1.3" markerEnd="url(#ar)" style={{ stroke: 'var(--hair-soft)' }} />
+                <rect x="34" y="190" width="72" height="40" style={{ fill: 'var(--ink)' }} />
+                <text x="70" y="208" style={{ fill: 'var(--panel)' }}>
                   EULER
                 </text>
-                <text x="70" y="221" fill="#1ed361" fontSize="8">
+                <text x="70" y="221" fontSize="8" style={{ fill: 'var(--live)' }}>
                   ● LIVE
                 </text>
-                <rect x="124" y="190" width="72" height="40" fill="#fff" stroke="#c7ccc6" />
-                <text x="160" y="208" fill="#55605a">
+                <rect x="124" y="190" width="72" height="40" style={{ fill: 'var(--panel)', stroke: 'var(--hair-soft)' }} />
+                <text x="160" y="208" style={{ fill: 'var(--muted)' }}>
                   MORPHO
                 </text>
-                <text x="160" y="221" fill="#8a938d" fontSize="8">
+                <text x="160" y="221" fontSize="8" style={{ fill: 'var(--faint)' }}>
                   NEXT
                 </text>
-                <rect x="214" y="190" width="72" height="40" fill="#fff" stroke="#c7ccc6" />
-                <text x="250" y="208" fill="#55605a">
+                <rect x="214" y="190" width="72" height="40" style={{ fill: 'var(--panel)', stroke: 'var(--hair-soft)' }} />
+                <text x="250" y="208" style={{ fill: 'var(--muted)' }}>
                   AAVE V4
                 </text>
-                <text x="250" y="221" fill="#8a938d" fontSize="8">
+                <text x="250" y="221" fontSize="8" style={{ fill: 'var(--faint)' }}>
                   PLANNED
                 </text>
-                <text x="330" y="214" fill="#8a938d" fontSize="16">
+                <text x="330" y="214" fontSize="16" style={{ fill: 'var(--faint)' }}>
                   ···
                 </text>
               </g>
@@ -115,7 +127,7 @@ export default function Landing() {
         </div>
       </header>
 
-      <section className="band">
+      <section className="band" id="model">
         <div className="wrap">
           <div className="band-head">
             <div>
@@ -213,9 +225,7 @@ export default function Landing() {
           className="wrap"
           style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}
         >
-          <span className="brand">
-            zip<b>code</b>
-          </span>
+          <Logo twoTone style={{ height: 20, width: 'auto', display: 'block', color: 'var(--ink)' }} />
           <span className="meta">A venue-neutral credit rail · 2026</span>
         </div>
       </footer>
