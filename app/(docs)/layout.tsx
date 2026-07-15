@@ -17,7 +17,7 @@ export default async function DocsLayout({
   const navbar = (
     <Navbar
       logo={<Logo twoTone style={{ height: 22, width: 'auto', display: 'block', color: 'var(--ink)' }} />}
-      projectLink="https://github.com/resi-labs-ai/zipcode-docs"
+      projectLink="https://github.com/resi-labs-ai/zipcode-euler"
     >
       <ThemeToggle />
     </Navbar>

@@ -25,7 +25,7 @@ export default function Landing() {
           <div className="nav-right">
             <ThemeToggle />
             <a
-              href="https://github.com/resi-labs-ai/zipcode-docs"
+              href="https://github.com/resi-labs-ai/zipcode-euler"
               className="nav-icon"
               aria-label="GitHub"
               title="GitHub"
