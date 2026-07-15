@@ -15,7 +15,7 @@ export default function Landing() {
         <div className="wrap">
           <nav className="top">
           <a href="/" aria-label="Zipcode home" className="brand">
-            <Logo twoTone style={{ height: 26, width: 'auto', display: 'block', color: 'var(--ink)' }} />
+            <Logo twoTone className="brand-logo" />
           </a>
           <div className="nav-links">
             <span className="soon" aria-disabled="true">

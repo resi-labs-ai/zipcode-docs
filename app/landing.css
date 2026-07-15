@@ -56,6 +56,7 @@
   display: inline-flex; align-items: center; gap: 8px; border-radius: 999px;
   border: 1px solid var(--ink); padding: 11px 22px; font-family: var(--mono);
   font-size: 11px; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase;
+  white-space: nowrap;
   transition: background-color .15s ease, color .15s ease;
 }
 /* Primary pill mirrors the portal's .btn-pill-primary: mint-300 fill, black
@@ -74,6 +75,7 @@
   display: flex; align-items: center; gap: 32px; height: 68px;
 }
 .zc-landing .brand { font-weight: 700; font-size: 19px; letter-spacing: -0.03em; }
+.zc-landing .brand-logo { height: 26px; width: auto; display: block; color: var(--ink); }
 .zc-landing .brand b { color: var(--mint); font-weight: 700; }
 .zc-landing .nav-links { display: flex; gap: 26px; margin-left: 8px; }
 .zc-landing .nav-links a {
@@ -171,6 +173,16 @@
   .zc-landing .cell { border-right: none; border-bottom: 1px solid var(--hair-soft); }
   .zc-landing .cell:last-child { border-bottom: none; }
 }
+/* Compact header so logo + toggle + GitHub + docs pill fit on one line
+   down to 320px-wide phones without the pill label wrapping. */
+@media (max-width: 560px) {
+  .zc-landing .wrap { padding-inline: 18px; }
+  .zc-landing nav.top { gap: 12px; height: 60px; }
+  .zc-landing .nav-right { gap: 10px; }
+  .zc-landing .brand-logo { height: 19px; }
+  .zc-landing nav.top .pill { padding: 8px 12px; font-size: 10px; }
+}
+
 /* theme toggle styling is global (app/globals.css .theme-toggle) so the same
    icon button works in the landing nav and the docs navbar. */
 
