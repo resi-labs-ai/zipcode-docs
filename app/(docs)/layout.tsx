@@ -31,7 +31,7 @@ export default async function DocsLayout({
       docsRepositoryBase="https://github.com/resi-labs-ai/zipcode-docs/tree/main"
       editLink={null}
       feedback={{ content: null }}
-      footer={<Footer>Zipcode — a venue-neutral credit rail.</Footer>}
+      footer={<Footer>Zipcode — a network for real-world credit.</Footer>}
     >
       <div className="zc-docs">{children}</div>
     </Layout>

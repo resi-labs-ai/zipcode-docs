@@ -118,6 +118,17 @@
 .zc-landing h1 .accent { color: var(--mint); font-style: italic; }
 .zc-landing .lead { margin: 26px 0 0; max-width: 44ch; font-size: 18px; color: var(--muted); line-height: 1.55; }
 .zc-landing .lead b { color: var(--ink); font-weight: 600; }
+/* Hero bullets — inherit the lead's size/colour, marked with the same mint
+   square the eyebrow uses rather than a default disc. */
+.zc-landing .lead-list {
+  margin: 30px 0 0; padding: 0; list-style: none; max-width: 44ch;
+  font-size: 18px; color: var(--muted); line-height: 1.55;
+}
+.zc-landing .lead-list li { position: relative; padding-left: 20px; margin-top: 9px; }
+.zc-landing .lead-list li::before {
+  content: ''; position: absolute; left: 0; top: 0.6em;
+  width: 7px; height: 7px; background: var(--mint);
+}
 .zc-landing .cta { margin-top: 34px; display: flex; gap: 12px; flex-wrap: wrap; }
 
 /* hero schematic figure */
@@ -149,20 +160,6 @@
 .zc-landing .cell p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
 .zc-landing .cell code { font-family: var(--mono); font-size: 12.5px; background: var(--mint-wash); color: var(--mint-ink); padding: 1px 6px; border-radius: 3px; }
 
-/* roadmap rail */
-.zc-landing .rail { display: grid; grid-template-columns: repeat(4, 1fr); position: relative; }
-.zc-landing .rail::before { content: ''; position: absolute; top: 9px; left: 6%; right: 6%; height: 1px; background: var(--hair); }
-.zc-landing .node { text-align: center; position: relative; }
-.zc-landing .node .dot { width: 18px; height: 18px; border: 1px solid var(--ink); background: var(--paper); margin: 0 auto; position: relative; z-index: 1; }
-.zc-landing .node.live .dot { background: var(--mint); border-color: var(--mint); }
-.zc-landing .node .name { font-family: var(--serif); text-transform: uppercase; font-size: 16px; margin-top: 18px; letter-spacing: -0.01em; }
-.zc-landing .node .tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); margin-top: 6px; }
-.zc-landing .node.live .tag { color: var(--mint); }
-
-/* closing CTA */
-.zc-landing .close h2 { font-family: var(--serif); font-weight: 400; text-transform: uppercase; letter-spacing: -0.015em; font-size: clamp(28px, 4.4vw, 52px); margin: 12px 0 0; line-height: 1; }
-.zc-landing .close .cta { margin-top: 30px; }
-
 .zc-landing footer.site { border-top: 1px solid var(--hair); padding: 30px 0 46px; }
 .zc-landing footer.site .brand { font-size: 16px; }
 .zc-landing footer.site span.meta { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
@@ -174,11 +171,6 @@
   .zc-landing .cell { border-right: none; border-bottom: 1px solid var(--hair-soft); }
   .zc-landing .cell:last-child { border-bottom: none; }
 }
-@media (max-width: 560px) {
-  .zc-landing .rail { grid-template-columns: repeat(2, 1fr); gap: 34px 0; }
-  .zc-landing .rail::before { display: none; }
-}
-
 /* theme toggle styling is global (app/globals.css .theme-toggle) so the same
    icon button works in the landing nav and the docs navbar. */
 

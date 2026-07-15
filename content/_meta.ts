@@ -4,6 +4,6 @@ export default {
   'bank-of-bittensor': 'Bank of Bittensor',
   backing: 'Onchain Settlement',
   supply: 'Supply',
-  solvency: 'Solvency & Loss',
+  solvency: 'Borrows',
   reference: 'Reference',
 }

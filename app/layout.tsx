@@ -20,7 +20,7 @@ const platypi = Platypi({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Zipcode — a venue-neutral credit rail',
+    default: 'Zipcode — a network for real-world credit',
     template: '%s · Zipcode',
   },
   description:

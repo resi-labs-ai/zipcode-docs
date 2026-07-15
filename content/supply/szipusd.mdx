@@ -10,7 +10,7 @@ title: szipUSD
 
 * Moloch v3 (Baal) is a Gnosis Safe Zodiac module with a built-in pro-rata, multi-token equity accounting system, based on NAV.
 * The `ExitGate` is the sole custodian of the DAO's Loot, and collaborates with the Exit Queue to facilitate exits for users, and to burn their underlying shares. This way `szipUSD.totalSupply()` always reflects the total distributed share value of the Junior Tranche Vault. Depositors hold freely transferable szipUSD tokens, and can buy or sell these tokens through the [CoW limit orderbook](/supply/cow-exit).
-* The Moloch DAO has no governance shares, and the native `ragequit()` burning of equity is intermediated through a [CRE managed Exit Queue](/solvency/winddown).
+* The Moloch DAO has no governance shares, and the native `ragequit()` burning of equity is intermediated through a [CRE managed Exit Queue](/supply/winddown).
 
 Moloch v3, Gnosis Safe Zodiac Modules & Chainlink CRE were chosen for the Junior Tranche Vault because this infrastructure can handle automated onchain strategies, preserve protocol solvency, and protect depositors.
 
