@@ -15,7 +15,7 @@ export default function Landing() {
         <div className="wrap">
           <nav className="top">
           <a href="/" aria-label="Zipcode home" className="brand">
-            <Logo twoTone style={{ height: 26, width: 'auto', display: 'block', color: 'var(--ink)' }} />
+            <Logo twoTone className="brand-logo" />
           </a>
           <div className="nav-links">
             <span className="soon" aria-disabled="true">
@@ -91,8 +91,8 @@ export default function Landing() {
                 </marker>
                 {/* Bael seal (public domain — Mathers & Crowley's Goetia, via Wikimedia).
                     Pre-processed to a luminance mask: ink → white, paper → black. */}
-                <mask id="baal" maskUnits="userSpaceOnUse" x="286" y="234" width="60" height="60">
-                  <image href="/baal-mask.png" x="286" y="234" width="60" height="60" />
+                <mask id="baal" maskUnits="userSpaceOnUse" x="286" y="241" width="46" height="46">
+                  <image href="/baal-mask.png" x="286" y="241" width="46" height="46" />
                 </mask>
               </defs>
               {/* PAD = 14 is the grid unit. Every box keeps 14 clear on all four sides,
@@ -113,7 +113,7 @@ export default function Landing() {
                 {/* 02 — CRE sits between the oracle and execution. Logo-only, so the box
                     is exactly the 36-tall mark plus 2·PAD. */}
                 <rect x="90" y="100" width="200" height="64" style={{ fill: 'var(--panel)', stroke: 'var(--ink)' }} />
-                <ChainlinkMark x={119} y={114} width={142} height={36} />
+                <ChainlinkMark x={135} y={118} width={110} height={28} />
 
                 {/* fan-out bus into the two execution siblings */}
                 <line x1="190" y1="164" x2="190" y2="178" strokeWidth="1.3" style={{ stroke: 'var(--ink)' }} />
@@ -127,9 +127,10 @@ export default function Landing() {
                 <text x="101" y="218" fontSize="8.5" letterSpacing="0.14em" style={{ fill: 'var(--faint)' }}>
                   CREDIT WAREHOUSE
                 </text>
-                {/* Euler is a wide mark, so PAD caps it by *width*: 134 inner width →
-                    33 tall. It's centred in the 234–294 band the sigils fill. */}
-                <EulerMark x={34} y={247.5} width={134} height={33} />
+                {/* Marks sit at ~60% of the inner width rather than flush to PAD, so
+                    the boxes keep air around their logos. Euler: 100 wide → 24.6 tall,
+                    centred on the same y-264 midline as the sigils. */}
+                <EulerMark x={51} y={251.7} width={100} height={24.6} />
 
                 <line x1="182" y1="252" x2="198" y2="252" strokeWidth="1.3" style={{ stroke: 'var(--ink)' }} />
 
@@ -137,12 +138,12 @@ export default function Landing() {
                 <text x="279" y="218" fontSize="8.5" letterSpacing="0.14em" style={{ fill: 'var(--faint)' }}>
                   ZODIAC VAULTS
                 </text>
-                {/* Zodiac badge + the Bael seal (Moloch v3's contract is "Baal"): 60 + 14
-                    + 60 = 134, exactly the inner width. The seal is a raster and can't
-                    take a fill, so it's punched through a luminance mask with the ink
-                    painted behind it — which keeps it theme-aware. */}
-                <ZodiacBadge x={212} y={234} size={60} />
-                <rect x="286" y="234" width="60" height="60" mask="url(#baal)" style={{ fill: 'var(--ink)' }} />
+                {/* Zodiac badge + the Bael seal (Moloch v3's contract is "Baal"): two
+                    46s + a 14 gap = 106, centred in the 162 box. The seal is a raster
+                    and can't take a fill, so it's punched through a luminance mask with
+                    the ink painted behind it — which keeps it theme-aware. */}
+                <ZodiacBadge x={226} y={241} size={46} />
+                <rect x="286" y="241" width="46" height="46" mask="url(#baal)" style={{ fill: 'var(--ink)' }} />
               </g>
             </svg>
           </div>

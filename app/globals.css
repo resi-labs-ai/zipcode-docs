@@ -375,6 +375,15 @@ button[title='Collapse sidebar']:hover {
   text-transform: uppercase;
   color: var(--faint) !important;
 }
+/* Parent crumbs render as <a> when they link to a section's first page —
+   keep them muted like the plain-text crumbs instead of the content mint. */
+.zc-docs .nextra-breadcrumb a {
+  color: var(--faint);
+  border-bottom: none;
+}
+.zc-docs .nextra-breadcrumb a:hover {
+  color: var(--ink);
+}
 
 /* TOC — "On This Page" title mono-caps; mint active */
 .nextra-toc {
