@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: '%s · Zipcode',
   },
   description:
-    'Zipcode is infrastructure that routes stablecoin capital into on-chain credit lines. A rail, not a fund.',
+    'Asset-Backed Credit for HELOC Originators, and their secondary markets.',
 }
 
 export default function RootLayout({
