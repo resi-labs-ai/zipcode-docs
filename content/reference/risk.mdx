@@ -7,21 +7,42 @@ title: Risk
 # Risk
 
 ### 1. Secondary Market Shutdown
-Our lines of credit are underwritten by the preferences of specific take-out providers / secondary markets, before the loan is even offered. However, in 2008, secondary markets for HELOC positions were broadely shut down for a time, cutting the buy pressure from the market, and bankrupting Credit Warehouses who were reliant on those capital flows. 
 
-They got stuck holding HELOC liens, which are 2nd lien agreements, during a housing downturn, with no secondary market -- and those liens received haircuts on the underlying paper, because in settlement, 2nd lien agreements do not take precedent over 1st lien agreements. 
+#### Risk:
 
-* A sudden 2008 style scenario would cause an extended duration freeze on szipUSD shares.
-* Some people would leave, accepting haircuts through the CoW orderbook.
-* Yield would have to be directed to plug holes. 
-* The protocol would need to decide whether to sell the lien at a loss, or take custody and wait until the secondary market recovered.
-* The protocol would have difficulty maintaining operations because cashflow and reserves would likely need to be directed toward buying szipUSD shares. 
+In 2008, secondary markets for HELOC positions were broadely shut down for 3-6 mo, cutting the buy pressure from the market, and bankrupting Credit Warehouses who were reliant on those capital flows. 
 
-### 2. Limited Liquidity Run
-In a situation where some default or freeze is taking place, and liquidity is limited, impatient depositors will likely capitulate into unfavorable CoW bids. 
+Warehouses got stuck holding HELOCs, and those liens received haircuts because in bankruptcy, 1st lien agreements take precedent over HELOCs. 
 
-### 3. Key Compromise
-If the team is irresponsible with its key management, a change could be made in the timelock, which would start a 2-day self-destruct process on the effected silos. 
+In a scenario like this, Zipcode would need to constrict operations, and direct Yield to allow depositors to exit. The protocol would end up custodying illiquid liens, until secondary markets recovered.
+
+#### Solutions: 
+
+1) Our validation process is tied directly to what secondary markets partners are currently accepting, which would increase the quality of inventory. 
+
+2) Securitize would enable us to tokenize these assets and sell to funds similar to ACRED.
+
+### 2. Limited Liquidity
+
+#### Risk:
+
+Illiquidity is socialized per Junior Tranche, meaning that if a Warehouse is 80% utilized, then 80% of the NAV of the Junior Tranche will be inaccessible for exit until lines of credit are paid off. 
+
+#### Solutions: 
+
+CoW Limit Orderbook enables secondary market offerings on szipUSD shares, for those who need immediate exit. 
+
+For those who remain, they will continue to earn yield throughout the duration, and the Redemption Queue will digest withdrawals in batches as liquidity is available.
+
+### 3. Security / Key Compromise
+
+#### Risk: 
+
+Most of the security compromises in the last year have been key management issues.
+
+#### Solutions: 
+
+A 2-day timelock enables a self-destruct process on the effected silos. 
 
 * All liquid value for that Silo would need to be exited through CoW redemptions. 
 * Creditors would be contacted.
@@ -30,10 +51,30 @@ If the team is irresponsible with its key management, a change could be made in 
 Value capture could be minimized.
 
 ### 4. Governance / build-phase wiring.
-Until the pre-production immutable re-freeze, the Timelock can re-point wiring. A single one-sided re-point fails closed (a real redirect needs two coordinated Timelock actions on two contracts), and the owner has no sweep, pause, or NAV-inflation power. The decisive warehouse control — the Zodiac Roles scope — lives in deploy config by design, and that deployed scope tree is the single most important audit artifact. See [Roles & Permissions](/reference/control).
+
+#### Risk:
+
+Team is maintaining admin control via Timelock while the protocol is on training wheels. 
+
+#### Solutions:
+
+* A redirect needs two coordinated Timelock actions on two contracts), and the owner has no sweep, pause, or NAV-inflation power.
+* The [Zodiac Roles](/reference/control) narrowly restrict what the Warehouse is allowed to do with funds, and to whom lines of credit can be offered.
+
+After full audits, we can increase immutability.
 
 ### 5. Security posture — Full External Audit Needed.
 
-* Zipcode is working with Octane to provide security audits, and has an LOI with Sherlock.
-* We are actively pursuing grants to fund a full audit. 
-* We have built our stack intentionally on top of high integrity protocols.
+#### Risk: 
+
+We are working with Octane to provide additional security consulation, but the protocol has not been fully audited.
+
+These audits are expensive, and require commitments of up to $100k per deployment.
+
+#### Solutions:
+
+We are partnering with Octane, and have secured an LOI with Sherlock to receive pre-audit security consultations. 
+
+These consultations offer architectural, and security posture advice, which gives us the confidence to approach chains and protocols about grants -- which would be used to pay for full audits. 
+
+We have built our stack intentionally on top of high integrity protocols, which means we are standing on the shoulders of Euler v2, Gnosis Safe Zodiac, Chainlink CRE, Chainlink CCIP, and Bittensor.

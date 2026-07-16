@@ -20,8 +20,6 @@ Every re-pointable contract carries one owner: a `TimelockController` with a ~2-
 
 ### Zodiac Roles Modifier v2
 
-The warehouse Safe holds the money, and in front of it sits a **Zodiac Roles Modifier v2**. `WarehouseAdminModule` pushes a CRE report into one of [four operations](/backing/warehouse) — SUPPLY, APPROVE, REDEEM, REPAY — with every receiver, spender, and destination pinned by the scope.
-
-Even a fully compromised CRE workflow can only move funds along warehouse policy. The one liveness invariant — the adapter and the modifier must agree on the Safe — fails *closed* if broken: nothing leaks, redemption funding simply jams until the paired, order-sensitive re-point is completed.
+The `WarehouseAdminModule` CRE workflow can only run one of [four operations](/backing/warehouse) — SUPPLY, APPROVE, REDEEM, REPAY — with every receiver, spender, and destination restricted in scope.
 
 [We will escalate from a Timelock to an immutable codebase, when we have concluded testing.]

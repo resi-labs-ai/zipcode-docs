@@ -4,24 +4,19 @@ title: Euler Credit Warehouse
 
 <p className="zc-eyebrow">Onchain Settlement</p>
 
-# Euler v2 Credit Warehouse
+# Credit Warehouse
 
-Zipcode's first venue for onchain settlement is Euler. 
+Euler is truly the DeFi Legos Protocol of EVM money markets: 
 
-* The Credit Warehouse is built on top of an EulerEarn USDC Vault.
-* Each Line of Credit is its own isolated vault.
-* Interest rates and Oracles are set per vault.
+* Euler Earn enables allocation between Credit Lines.
+* Each Line of Credit is its own isolated Vault.
+* Interest rates and Oracles are set Line of Credit.
 * Capital is protected by gated access via hooks.
-* Cross-Vault strategies are available through EVC Batching.
-* zipUSD was even built as an Euler Synth. 
+* Euler Synth was used to recieve USDC, and issue zipUSD.
 
-Euler provides a great foundation for Zipcode, and will serve as our launch venue.
+## Euler Earn & Gnosis Zodiac Roles for Allocation.
 
-## EulerEarn & Gnosis Zodiac Roles for Allocation.
-
-EulerEarn enables allocation of funds to specific lines of credit [EVK Vaults].
-
-The warehouse itself is a Gnosis Safe, which holds EulerEarn Shares, and uses Zodiac Roles to set `WarehouseAdminModule` as the sole Operator.
+The warehouse itself is a Gnosis Safe, which holds Euler Earn Shares, and uses Zodiac Roles to set `WarehouseAdminModule` as the sole Operator.
 
 The WarehouseAdminModule can only take these actions:
 
@@ -30,7 +25,7 @@ The WarehouseAdminModule can only take these actions:
 * **REDEEM** — EulerEarn shares can be redeemed to bring USDC back into the Warehouse Safe.
 * **REPAY** — USDC can be set to the redemption queue, which is governed by the Junior Tranche Safe.
 
-The Safe is a share-accumulator: the only naked USDC it ever holds is redemption proceeds in transit.
+The Safe is a share-accumulator: the only naked USDC it ever holds is in transit to the redemption queue.
 
 ## Isolated Credit Lines
 
@@ -43,7 +38,7 @@ Each credit line has its own isolated cluster:
 * **`LienCollateralToken`** — is a 1/1 identity-and-collateral token, whose entire purpose is to fill the collateral slot for that Line of Credit.
 * **`LineAccount`** — the per-line borrower-of-record, created deterministically from the lien identity and inert after birth.
 
-Euler's structure lends itself toward this "Single-Use Credit Vault" structure, while EulerEarn maintains allocation amgonst the currently active lines of credit.
+Euler's structure lends itself toward this "Single-Use Credit Vault" structure, while Euler Earn maintains allocation amongst the currently active lines of credit.
 
 ## Interest Rate Curves & Fees
 

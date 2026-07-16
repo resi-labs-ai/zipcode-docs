@@ -6,17 +6,12 @@ title: Credit Oracle
 
 # Bittensor Credit Oracle
 
-A Credit Oracle is a basket of information which indicates that a credit line has been validated, and for what amount: 
+A Credit Oracle is a basket of information which validates Lines of Credit:
 
-* **Plaid** pulls KYB and Business Credit Score.
-* **Erebor** faciliates Bank Integration.
+* **Plaid** pulls KYB & Business Credit Score.
+* **Erebor** Enables ACH Bank Integration.
 * **Proof** provides Notary access which validate Lien Custody & Repurchase Agreements.
 
-Zipcode works backward from the underwriting qualifications secondary market partners, to ensure that all credit lines have a Take-Out provider. Underwriting terms are set by secondary markets, and then the APIs above pull the information. 
+APIs pull the information above, and validators on the Zipcode Subnet provide secure confirmation through zkProofs.
 
-### How does that information get validated, and pushed onchain? 
-
-* **A Bittensor subnet runs zkProof Validation.** Data is confirmed and packaged into a customer account, without exposing underlying personal information. 
-* **Chainlink CRE relays this information Onchain.** CRE is a runtime environment that automates and transmites information onchain. CRE provides the foundation for the [gated access to Euler Vaults](/backing/warehouse) as well as the lien value the protocol underwrites against.
-
-These requirements must be met before any credit line is opened.
+Chainlink CRE relays this datastream from Bittensor to EVM, and enables gated access &  to [Euler Vaults](/backing/warehouse).

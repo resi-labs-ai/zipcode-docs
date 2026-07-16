@@ -6,7 +6,7 @@ title: Legal Structuring
 
 # Legal Structuring
 
-Collateral is only real if the claim behind it is enforceable off-chain. Zipcode's legal wrapper mirrors the onchain rail: **one vault, one bankruptcy-remote entity** — risk never crosses the wall, and title moves by instrument, not by trust.
+Collateral is only real if the claim is enforceable:
 
 * The **Zipcode Foundation (Cayman)** charters a bankruptcy-remote SPV for every vault.
 * Each SPV takes ownership of an originator's lien under a **repurchase agreement**.
@@ -14,20 +14,6 @@ Collateral is only real if the claim behind it is enforceable off-chain. Zipcode
 * The vault holds the note in custody until the originator repurchases the lien and retires the line.
 * On default, the vault already owns the collateral and enforces directly.
 
-Every entity, instrument, and claim below is a real off-chain contract; the [Credit Silo](/backing/credit-silos) is its onchain counterpart, kept in lockstep and never substituted for it.
+Every entity, instrument, and claim below is a real off-chain contract; the [Credit Silo](/backing/credit-silos) is its onchain counterpart.
 
-### Foundation & Vault SPVs
-
-The Foundation is the ownerless parent — a Cayman foundation company with no members or shareholders, whose only role is to charter and administer the SPVs below it. Each credit vault gets its own dedicated **bankruptcy-remote SPV**: passive, originating nothing, holding liens, issuing notes, and distributing cash flows. Because each vault sits in its own entity, a default in one silo can't pull collateral or liability into another — losses stay local by construction.
-
-### The Three Instruments
-
-* **The lien.** The originator's perfected security interest in the homeowner's property — priced by a real secondary takeout bid, not a mark. Zipcode never faces the homeowner; consumer credit obligations sit with the licensed originator.
-* **The repurchase agreement.** The originator sells the lien into the vault SPV as a true sale. It's contractually bound to repurchase the lien and retire the line within 90 days — failure to repurchase is a default, and the SPV keeps the lien.
-* **The promissory note.** The vault issues a note against each lien it holds and can sell it to secondary takeout markets, but retains custody of the note until it's paid — the buyer holds the economic claim, the vault holds the paper.
-
-### Title, Custody & Default
-
-Title moves in a fixed sequence — origination, sale into the SPV, note issuance to the secondary market, repurchase and retirement — and the vault never surrenders the note before payment. On a missed repurchase, the SPV already holds title of record and enforces against the property directly, while the repurchase obligation stands as a separate contractual claim against the originator. Because the transfer is documented as a true sale into a passive, bankruptcy-remote SPV, an originator's own insolvency doesn't pull the collateral back into its estate.
-
-This page describes intended legal architecture, not legal advice — final characterization depends on governing law and executed documentation.
+Legal Structures are currently being solidified with Counsel.
