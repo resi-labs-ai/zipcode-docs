@@ -145,6 +145,25 @@
   padding-bottom: 12px; margin-bottom: 16px;
 }
 .zc-landing .figure svg { display: block; width: 100%; height: auto; }
+/* Schematic marks: resting mint halo comes from the #logo-glow filter attribute;
+   hover swaps to the brighter #logo-glow-hover and lifts the mark a touch.
+   (The filter swap is a hard cut — url() filters don't interpolate — so the
+   scale transition carries the motion.) */
+.zc-landing .figure svg .mark {
+  transform-box: fill-box; transform-origin: center;
+  transition: transform 0.18s ease;
+}
+.zc-landing .figure svg .mark:hover {
+  filter: url(#logo-glow-hover);
+  transform: scale(1.06);
+}
+/* Hover name-tags: each mark's label is its immediate next sibling in the SVG. */
+.zc-landing .figure svg .mark-name {
+  fill: var(--mint-ink);
+  opacity: 0; transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+.zc-landing .figure svg .mark:hover + .mark-name { opacity: 1; }
 
 /* section scaffolding */
 .zc-landing section.band { padding: 74px 0; border-top: 1px solid var(--hair); }

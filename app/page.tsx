@@ -94,6 +94,28 @@ export default function Landing() {
                 <mask id="baal" maskUnits="userSpaceOnUse" x="286" y="241" width="46" height="46">
                   <image href="/baal-mask.png" x="286" y="241" width="46" height="46" />
                 </mask>
+                {/* Soft mint halo behind the partner marks. floodColor rides the
+                    theme token (mint flips light↔dark), and the region is padded
+                    generously so the blur never clips on wide, thin wordmarks. */}
+                <filter id="logo-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow
+                    dx="0"
+                    dy="0"
+                    stdDeviation="2.5"
+                    floodOpacity="0.55"
+                    style={{ floodColor: 'var(--mint)' }}
+                  />
+                </filter>
+                {/* Hover variant — CSS swaps a .mark group onto this (see landing.css). */}
+                <filter id="logo-glow-hover" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow
+                    dx="0"
+                    dy="0"
+                    stdDeviation="4"
+                    floodOpacity="0.9"
+                    style={{ floodColor: 'var(--mint-bright)' }}
+                  />
+                </filter>
               </defs>
               {/* PAD = 14 is the grid unit. Every box keeps 14 clear on all four sides,
                   the gap under each label is 14, and the gap between the two sigils is
@@ -104,7 +126,19 @@ export default function Landing() {
                     replaces the "BITTENSOR" wordline; 20 tall + 2·PAD + the title sets
                     the box at 70. */}
                 <rect x="90" y="10" width="200" height="70" style={{ fill: 'var(--mint-wash)', stroke: 'var(--mint)' }} />
-                <BittensorMark x={176} y={24} width={28} height={20} />
+                {/* Each .mark group carries a transparent hit rect (padded past the
+                    logo bounds) so the hover catches the whole footprint, not just
+                    the painted strokes. */}
+                {/* Each .mark group carries a transparent hit rect (padded past the
+                    logo bounds) so the hover catches the whole footprint, not just
+                    the painted strokes. The sigils additionally get a .mark-name
+                    hover label — CSS fades it in via `.mark:hover + .mark-name`, so
+                    each label must stay its group's immediate next sibling. The
+                    wordmarks spell their own names, so only the sigils are labelled. */}
+                <g className="mark" filter="url(#logo-glow)">
+                  <rect x="168" y="18" width="44" height="32" fill="transparent" stroke="none" />
+                  <BittensorMark x={176} y={24} width={28} height={20} />
+                </g>
                 <text x="190" y="63" fontSize="13" style={{ fill: 'var(--mint-ink)' }}>
                   zk-Credit Oracle
                 </text>
@@ -113,7 +147,10 @@ export default function Landing() {
                 {/* 02 — CRE sits between the oracle and execution. Logo-only, so the box
                     is exactly the 36-tall mark plus 2·PAD. */}
                 <rect x="90" y="100" width="200" height="64" style={{ fill: 'var(--panel)', stroke: 'var(--ink)' }} />
-                <ChainlinkMark x={135} y={118} width={110} height={28} />
+                <g className="mark" filter="url(#logo-glow)">
+                  <rect x="129" y="112" width="122" height="40" fill="transparent" stroke="none" />
+                  <ChainlinkMark x={135} y={118} width={110} height={28} />
+                </g>
 
                 {/* fan-out bus into the two execution siblings */}
                 <line x1="190" y1="164" x2="190" y2="178" strokeWidth="1.3" style={{ stroke: 'var(--ink)' }} />
@@ -130,7 +167,10 @@ export default function Landing() {
                 {/* Marks sit at ~60% of the inner width rather than flush to PAD, so
                     the boxes keep air around their logos. Euler: 100 wide → 24.6 tall,
                     centred on the same y-264 midline as the sigils. */}
-                <EulerMark x={51} y={251.7} width={100} height={24.6} />
+                <g className="mark" filter="url(#logo-glow)">
+                  <rect x="45" y="245" width="112" height="38" fill="transparent" stroke="none" />
+                  <EulerMark x={51} y={251.7} width={100} height={24.6} />
+                </g>
 
                 <line x1="182" y1="252" x2="198" y2="252" strokeWidth="1.3" style={{ stroke: 'var(--ink)' }} />
 
@@ -142,8 +182,20 @@ export default function Landing() {
                     46s + a 14 gap = 106, centred in the 162 box. The seal is a raster
                     and can't take a fill, so it's punched through a luminance mask with
                     the ink painted behind it — which keeps it theme-aware. */}
-                <ZodiacBadge x={226} y={241} size={46} />
-                <rect x="286" y="241" width="46" height="46" mask="url(#baal)" style={{ fill: 'var(--ink)' }} />
+                <g className="mark" filter="url(#logo-glow)">
+                  <rect x="222" y="237" width="54" height="54" fill="transparent" stroke="none" />
+                  <ZodiacBadge x={226} y={241} size={46} />
+                </g>
+                <text className="mark-name" x="249" y="300" fontSize="8" letterSpacing="0.12em">
+                  GNOSIS ZODIAC
+                </text>
+                <g className="mark" filter="url(#logo-glow)">
+                  <rect x="282" y="237" width="54" height="54" fill="transparent" stroke="none" />
+                  <rect x="286" y="241" width="46" height="46" mask="url(#baal)" style={{ fill: 'var(--ink)' }} />
+                </g>
+                <text className="mark-name" x="309" y="300" fontSize="8" letterSpacing="0.12em">
+                  MOLOCH V3
+                </text>
               </g>
             </svg>
           </div>
