@@ -6,9 +6,9 @@ import { ThemeToggle } from '../theme-toggle'
 import { EulerMark } from '../euler-mark'
 
 export const metadata: Metadata = {
-  title: 'Why Euler',
+  title: 'Why Euler:',
   description:
-    'Euler is great.',
+    'Euler empowers curators to be creative.',
 }
 
 const S = [
@@ -71,17 +71,22 @@ const S = [
     node: 'oracle-registry',
     body: [
       `Bespoke Private Credit agreements, with RWA assets as collateral, require custom Oracles.`,
-      `To date, RWA Oracles have been of Tokenized Funds, that way each individual ACRED share tracks the underlying value of its backing.`,
+      `To date, RWA Oracles have been of Tokenized Funds, that way each individual ACRED share tracks the underlying value of its backing. Chainlink has quietly introduced an alternative to this in the form of CRE managed datastreams, which can be fit into adapters to provide more ephemeral price feeds.`,
+      `Secondary Markets for RWAs are off-chain -- tied to individual property, lien values, or offchain credit scores. Onchain settlement, and sourced capital can supply loans to these collateral types as long as there is an oracle which can report the value of that collateral. Structurally, this gets into zkProofs on underwriting qualifications, and notarized liens with repurchase agreements, but this is also where onchain finance needs to go in order to serve financial needs beyond onchains speculation.`,
+      `The long tail of collateral types requires a long tail of oracles.`,
     ],
   },
   {
     idx: '05',
     prim: 'EVK Hooks',
-    title: 'Gating for Private Credit',
+    title: 'Access-Gating for Private Credit.',
     node: 'cre-gating-hook',
     body: [
-      `Every per-line borrow vault carries our CREGatingHook, installed with exactly OP_BORROW | OP_LIQUIDATE. A borrow clears only when the account has authorized the wired borrow-driver as its EVC operator; the hook decodes the EVC-authenticated caller the vault appends, and refuses spoofing from non-factory callers.`,
-      `Repay is never hooked — a line can always be repaid. We put credit policy inside Euler's own execution path without touching a line of vault code. That is what a hook interface is for, and it is the sharpest tool in the kit.`,
+      `EVK Vaults have a hooks feature, which can gate vault functions to specific parties:`,
+      `- Vaults that are Whitelisted to KYB Entities.`,
+      `- Vaults which require a certain credit score, or verified income to access capital.`,
+      `- Vaults which can only be liquidated through specialized machines.`,
+      `These hooks enable Institutional Lending, Private Credit, Underwriting, or bespoke structured products intended for specific large holders to deploy capital. Again, Euler lands on the side of empowering curators to build custom solutions, rather than narrowing that capacity in favor of a more unilateral risk framework. The result is a less opinionated infrastructure, which can facilitate many approaches to onchain finance -- rather than a more limited pallete. `,
     ],
   },
   {
@@ -107,7 +112,7 @@ export default function WhyEuler() {
             </a>
             <div className="nav-links">
               <a href="/map">Schematic</a>
-              <a href="/why-euler">Why Euler</a>
+              <a href="/why-euler">Why Euler?</a>
             </div>
             <div className="nav-right">
               <ThemeToggle />
@@ -135,16 +140,14 @@ export default function WhyEuler() {
         <div className="wrap">
           <span className="eyebrow">Why Euler?</span>
           <h1 className="display">
-            We built on Euler,
-            <br />
-            DeFi has <span className="accent">Green Words</span>.
+            Curators can get creative,<span className="accent"> with Euler</span>.
           </h1>
           <p className="lead">
-            Euler is great.
+            DeFi is a game of whales, and Euler has the best set of Legos.
           </p>
           <div className="cta">
             <a href="/map" className="pill pill--primary">
-              See the interactive map →
+              Look at pretty value flows →
             </a>
             <a
               href="https://github.com/resi-labs-ai/zipcode-euler"
@@ -187,17 +190,14 @@ export default function WhyEuler() {
         <div className="wrap">
           <div className="why-close-card">
             <span className="why-euler-mark" aria-label="Euler">
-              <EulerMark x={0} y={0} width={120} height={29.5} />
+
             </span>
-            <p>
-              The senior machine is built, tested, and documented down to the wire — every
-              contract has a plain-English summary, a wiring map, and a security X-ray. If
-              you designed these primitives and can see a better way to use them, that is
-              exactly the note we want.
-            </p>
+            <h4>
+              Want to see how these pieces look within a larger machine?
+            </h4>
             <div className="cta">
               <a href="/map" className="pill pill--primary">
-                Walk the machine →
+                Claude made you a Schematic →
               </a>
             </div>
           </div>
