@@ -95,8 +95,14 @@ const S = [
     title: 'A minimalist, Euler-native Synthetic Asset Vault',
     node: 'eulerswap',
     body: [
-      `zipUSD is not our token standard: it is Euler's ESynth, deployed with (EVC, "Zipcode USD", "zipUSD"). The deposit zap is a capacity-granted minter; the redemption queue burns from its own balance through the allowance-free seam. The senior dollar is an Euler-native object end to end.`,
-      `Euler's own synth documentation holds the peg with EulerSwap JIT-liquidity pools, not a PSM. That is our liquidity plan for zipUSD and the szipUSD pair — and it is the one piece of this machine we have not shipped. If you have opinions about bootstrapping ESynth liquidity on EulerSwap, this is precisely where we want them.`,
+      `Do you need a trust-minimized, synthetic asset, which is built directly into the Euler Stack?`,
+      `Euler's ESynth works great with Chainlink CRE and Gnosis Safe Zodiac Roles to build meaningful structures around discretionary vault strategies:`,
+      `- Zodiac Roles narrow the scope of operations.`,
+      `- Zodiac Modules physically define the onchain operations which can be executed.`,
+      `- Chainlink CRE evaulates conditions, and runs operations according to set workflows.`,
+      `- Esynth is the entrance and exit gate which determines what underlyingm assets are utilzied in the strategy.`,
+      `The stack above is more of a structural response to the question of discretionary operation in vault strategy. Onchain finance is beautiful because it enables the articulation of these opinionated structures, without an intermediary who must remain to operate the structures -- and then allows onchain capital to coordinate and evaluate these opinions.`,
+      `Euler just happens to do all of that very well.`,
     ],
   },
 ]
