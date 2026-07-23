@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
+  <defs>
+    <mask id="gnosis-cut">
+      <rect width="600" height="600" fill="#fff"/>
+      <circle cx="298" cy="298" r="68" fill="#000"/>
+      <line x1="298" y1="298" x2="490" y2="298" stroke="#000" stroke-width="30" stroke-linecap="round"/>
+    </mask>
+  </defs>
+  <circle cx="300" cy="299" r="242.5" fill="#000" mask="url(#gnosis-cut)"/>
+</svg>

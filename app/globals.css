@@ -49,6 +49,19 @@
   --shadow-sharp: 4px 4px 0 rgba(0, 0, 0, 0.04); /* institutional offset drop */
 }
 
+/* Docs-navbar text links to the app routes (/map, /why-euler) — mono caps to
+   match the rest of the chrome furniture. */
+.zc-nav-link {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.zc-nav-link:hover { color: var(--mint-ink); }
+
 /* === Dark theme — "institutional terminal" ===
    Portal dark palette (zip-code-portal globals.css). Near-black cool depth
    ladder, soft off-white ink, mint kept as a *glowing* accent. Selectors cover

@@ -19,6 +19,12 @@ export default async function DocsLayout({
       logo={<Logo twoTone style={{ height: 22, width: 'auto', display: 'block', color: 'var(--ink)' }} />}
       projectLink="https://github.com/resi-labs-ai/zipcode-euler"
     >
+      <a href="/map" className="zc-nav-link">
+        The machine
+      </a>
+      <a href="/why-euler" className="zc-nav-link">
+        Why Euler
+      </a>
       <ThemeToggle />
     </Navbar>
   )

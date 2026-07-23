@@ -1,0 +1,981 @@
+{
+  "nodes": [
+    {
+      "id": "lender",
+      "title": "USDC Lenders",
+      "kind": "actor",
+      "stratum": "actor",
+      "tagline": "senior supply",
+      "summary": "USDC suppliers who back the shared senior dollar. They deposit through the zap and hold zipUSD; the redemption queue is their exit at par.",
+      "links": []
+    },
+    {
+      "id": "originator",
+      "title": "HELOC Originators",
+      "kind": "actor",
+      "stratum": "actor",
+      "tagline": "the borrowers",
+      "summary": "Home-equity originators who open isolated credit lines against their liens, draw USDC, and repurchase by end of term.",
+      "links": []
+    },
+    {
+      "id": "evk",
+      "title": "Euler Vault Kit",
+      "kind": "primitive",
+      "stratum": "euler",
+      "tagline": "isolated erc-4626 credit vaults",
+      "summary": "A system for constructing credit vaults: ERC-4626 vaults with borrowing added, deployed as proxies from a shared GenericFactory. Each vault is a passive lending pool with its own collateral list, oracle, interest model, and governor, so risk stays inside the vault that took it. Zipcode mints a fresh pair of EVK vaults for every credit line — a bare escrow vault holding the lien token and an isolated USDC borrow vault — and zipUSD itself is an EVK ESynth: Euler's mintable/burnable synthetic dollar token (not a vault), deployed with the constructor (EVC, \"Zipcode USD\", \"zipUSD\") and minted only by capacity-granted minters.",
+      "eulerPrimitive": null,
+      "code": {
+        "excerpt": "/// @notice Minimal local interface for the zipUSD `ESynth` burn seam used by the `ZipRedemptionQueue`.\n/// @dev zipUSD = Euler `ESynth` (18-dp). Verified against `reference/euler-vault-kit/src/Synths/ESynth.sol:81`:\ninterface IZipUSD {\n    function burn(address burnFrom, uint256 amount) external;\n}",
+        "path": "contracts/src/interfaces/euler/IZipUSD.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/interfaces/euler/IZipUSD.sol"
+      },
+      "links": [
+        {
+          "label": "euler-vault-kit (Euler)",
+          "url": "https://github.com/euler-xyz/euler-vault-kit"
+        },
+        {
+          "label": "interfaces-euler.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/interfaces/interfaces-euler.md"
+        }
+      ]
+    },
+    {
+      "id": "evc",
+      "title": "Ethereum Vault Connector",
+      "kind": "primitive",
+      "stratum": "euler",
+      "tagline": "account + operator substrate",
+      "summary": "The foundational layer that mediates between vaults: it tracks which vault controls an account's debt, batches calls, and lets an account authorize an operator to act on its behalf. Every address owns 256 sub-accounts sharing a 19-byte prefix, which is how one owner can hold many isolated positions. Zipcode leans on exactly this: each credit line gets a fresh LineAccount that registers its own EVC prefix and grants the venue adapter the operator bit over a code-free sub-account, and the gating hook asks the EVC one question — is the borrower's account operator-authorized to the borrow driver.",
+      "eulerPrimitive": null,
+      "code": null,
+      "links": [
+        {
+          "label": "ethereum-vault-connector (Euler)",
+          "url": "https://github.com/euler-xyz/ethereum-vault-connector"
+        },
+        {
+          "label": "venue.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/venue.md"
+        }
+      ]
+    },
+    {
+      "id": "euler-earn",
+      "title": "EulerEarn",
+      "kind": "primitive",
+      "stratum": "euler",
+      "tagline": "curated multi-vault usdc aggregator",
+      "summary": "An aggregation vault (a fork of MetaMorpho v1.1) that spreads one ERC-4626 deposit across up to 30 accepted strategy vaults, run by owner/curator/allocator roles with per-strategy supply caps. Depositors get a passive yield position; the curator decides where the money can go. In Zipcode, each silo's senior pool is a EulerEarn USDC vault: it holds the USDC that backs zipUSD, the venue adapter is its curator and funds credit lines by reallocating into per-line borrow vaults, and the 30-market queue ceiling is why a silo caps out at 28 lines.",
+      "eulerPrimitive": null,
+      "code": {
+        "excerpt": "interface IEulerEarn {\n    function deposit(uint256 assets, address receiver) external returns (uint256 shares);\n\n    function redeem(uint256 shares, address receiver, address owner) external returns (uint256 assets);\n\n    function convertToAssets(uint256 shares) external view returns (uint256 assets);\n\n    function balanceOf(address account) external view returns (uint256);\n\n    function asset() external view returns (address);\n}",
+        "path": "contracts/src/interfaces/euler/IEulerEarn.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/interfaces/euler/IEulerEarn.sol"
+      },
+      "links": [
+        {
+          "label": "euler-earn (Euler)",
+          "url": "https://github.com/euler-xyz/euler-earn"
+        },
+        {
+          "label": "interfaces-euler.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/interfaces/interfaces-euler.md"
+        }
+      ]
+    },
+    {
+      "id": "euler-oracles",
+      "title": "Euler Price Oracles",
+      "kind": "primitive",
+      "stratum": "euler",
+      "tagline": "pluggable quote-based price routing",
+      "summary": "A library of modular oracle adapters behind one interface, IPriceOracle: ask for a quote (how much USDC is this much of that token worth) instead of a raw price. EVK vaults resolve collateral value through a router (EulerRouter) that maps each asset pair to whichever adapter the governor configured. Zipcode gives every credit line its own EulerRouter, wired once to price the line's lien token through the ZipcodeOracleRegistry (itself an IPriceOracle adapter) and then frozen — governance transferred to address(0) so nobody can ever re-point the line's price source.",
+      "eulerPrimitive": null,
+      "code": null,
+      "links": [
+        {
+          "label": "euler-price-oracle (Euler)",
+          "url": "https://github.com/euler-xyz/euler-price-oracle"
+        },
+        {
+          "label": "ZipcodeOracleRegistry.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/ZipcodeOracleRegistry.md"
+        }
+      ]
+    },
+    {
+      "id": "euler-hooks",
+      "title": "EVK Hooks",
+      "kind": "primitive",
+      "stratum": "euler",
+      "tagline": "operation-level policy injection",
+      "summary": "Every EVK vault carries a hook config: a target contract plus a bitfield of operations (borrow, deposit, liquidate, ...) that must consult it. When a hooked operation runs, the vault calls the target with the original calldata plus the EVC-authenticated caller appended; if the hook call fails, the operation fails. It is how a vault governor injects custom policy without touching vault code. Zipcode installs its CREGatingHook on every per-line borrow vault with exactly OP_BORROW | OP_LIQUIDATE hooked — and never OP_REPAY, so a line can always be repaid.",
+      "eulerPrimitive": null,
+      "code": null,
+      "links": [
+        {
+          "label": "EVK whitepaper — hooks",
+          "url": "https://github.com/euler-xyz/euler-vault-kit/blob/master/docs/whitepaper.md"
+        },
+        {
+          "label": "CREGatingHook.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/CREGatingHook.md"
+        }
+      ]
+    },
+    {
+      "id": "eulerswap",
+      "title": "EulerSwap",
+      "kind": "primitive",
+      "stratum": "euler",
+      "tagline": "jit liquidity amm over vaults",
+      "summary": "Euler's AMM built on top of its own lending infrastructure: pool capital sits inside Euler vaults, so the same assets earn lending yield, serve as collateral, and fill swaps, with just-in-time liquidity (borrowing the output token against the input) simulating far deeper books than a plain AMM. Euler's own synth documentation uses EulerSwap pools — not a peg-stability module — as how ESynth dollars hold their peg. Since zipUSD is an ESynth, this is the natural route for its secondary-market liquidity — but note this is the liquidity-bootstrap plan, not shipped code: the zipcode-euler repo contains no EulerSwap integration and its docs do not mention it.",
+      "eulerPrimitive": null,
+      "code": null,
+      "links": [
+        {
+          "label": "euler-swap (Euler)",
+          "url": "https://github.com/euler-xyz/euler-swap"
+        },
+        {
+          "label": "evk-periphery synths doc (Euler)",
+          "url": "https://github.com/euler-xyz/evk-periphery/blob/master/docs/synths.md"
+        }
+      ]
+    },
+    {
+      "id": "controller",
+      "title": "ZipcodeController",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "credit-line orchestrator",
+      "summary": "The orchestrator that opens, draws on, and closes credit lines when an off-chain Chainlink keeper sends it a typed instruction. Origination is one all-or-nothing batch — create the lien token, open the line, seed its price, set limits, fund, draw to the off-ramp, record, bump the silo count — and any failure rolls the whole thing back, including the freshly deployed contracts. It never touches a lending venue directly: every venue effect goes through the venue-neutral interface, and draws and closes re-resolve the venue from the line's stored silo so a retired silo can never strand a line.",
+      "eulerPrimitive": null,
+      "code": {
+        "excerpt": "        address lien = ILienTokenFactory(lienFactory).create(p.lienId);\n        if (lien != ILienTokenFactory(lienFactory).computeAddress(p.lienId, address(this))) revert PrecomputeMismatch();\n\n        // 3: custody approve — exactly 1e18 (no standing allowance left, F-7).\n        ILienToken(lien).approve(venue_, FULL_LIEN);\n\n        // 4: open the line with the FULL lien (the venue backstops != 1e18); oracleKey == lien by construction.\n        (address lineRef, address oracleKey) = IZipcodeVenue(venue_).openLine(p.lienId, lien, FULL_LIEN);\n\n        IZipcodeOracleRegistry(oracleRegistry).seedPrice(oracleKey, p.equityMark, p.sourceTs);\n        IZipcodeVenue(venue_).setLineLimits(lineRef, p.borrowLTV, p.liqLTV, p.cap);\n        IZipcodeVenue(venue_).fund(lineRef, p.drawAmount);\n        IZipcodeVenue(venue_).draw(lineRef, p.drawAmount, erebor);",
+        "path": "contracts/src/ZipcodeController.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/ZipcodeController.sol"
+      },
+      "links": [
+        {
+          "label": "ZipcodeController.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/ZipcodeController.sol"
+        },
+        {
+          "label": "ZipcodeController.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/ZipcodeController.md"
+        }
+      ]
+    },
+    {
+      "id": "venue-adapter",
+      "title": "EulerVenueAdapter",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "euler line factory + driver",
+      "summary": "The implementation of IZipcodeVenue — the venue-neutral interface (open, set limits, fund, draw, read debt, close; only plain values cross it) — against Euler, and the only venue built today. For each line it mints an isolated cluster: a fresh LineAccount, a bare escrow vault for the lien collateral, an isolated USDC borrow vault with the gating hook installed, and a per-line price router frozen at birth. It also charges the per-draw origination fee, installs the roughly 7.5% flat line interest rate, routes the curator's share of interest to the curator vault, and reclaims both EulerEarn queue slots on close so a pool can churn lines forever.",
+      "eulerPrimitive": {
+        "id": "evk",
+        "how": "It deploys two EVK vault proxies per line from the GenericFactory — a governance-stripped escrow vault for the lien and an isolated USDC borrow vault — and funds them from the EulerEarn pool it curates."
+      },
+      "code": {
+        "excerpt": "        // step 0: fresh per-line borrower account + its operator grant (the adapter is the granted operator).\n        LineAccount la = new LineAccount{salt: lienId}(address(evc), address(this));\n        address borrowAccount = address(uint160(address(la)) ^ 1);\n\n        // step 1: escrow collateral vault (bare holding box: no oracle, no unit-of-account, no governance).\n        address collat =\n            eVaultFactory.createProxy(address(0), false, abi.encodePacked(lienToken, address(0), address(0)));\n        IEVault(collat).setHookConfig(address(0), 0);\n        IEVault(collat).setGovernorAdmin(address(0));\n\n        // step 2: dedicated per-line router; wire COLLAT -> lienToken -> registry (the adapter is governor at birth).\n        EulerRouter router = new EulerRouter(address(evc), address(this));\n        router.govSetResolvedVault(collat, true); // unwrap escrow shares -> lienToken, 1:1\n        router.govSetConfig(lienToken, usdc, oracleRegistry); // price (lienToken, USDC) via the registry",
+        "path": "contracts/src/venue/EulerVenueAdapter.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/venue/EulerVenueAdapter.sol"
+      },
+      "links": [
+        {
+          "label": "EulerVenueAdapter.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/venue/EulerVenueAdapter.sol"
+        },
+        {
+          "label": "IZipcodeVenue.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/venue/IZipcodeVenue.sol"
+        },
+        {
+          "label": "venue.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/venue.md"
+        }
+      ]
+    },
+    {
+      "id": "line-account",
+      "title": "LineAccount",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "per-line borrower of record",
+      "summary": "A tiny constructor-only contract, CREATE2-deployed by the adapter for each line with the lien id as its salt. Its deterministic address establishes a fresh EVC owner-prefix, and in its constructor it grants the adapter the operator bit over its code-free borrow account — sub-account 1 of its own prefix, reached by XOR-ing the low bit. That one grant is what isolates every line's debt and collateral from every other line; after birth the contract is inert, and the cluster is abandoned when the line closes.",
+      "eulerPrimitive": {
+        "id": "evc",
+        "how": "Its constructor calls EVC.setAccountOperator on its own prefix-sharing, code-free sub-account, registering itself as prefix owner and authorizing the adapter as the borrow path's operator."
+      },
+      "code": {
+        "excerpt": "    constructor(address evc_, address operator_) {\n        // Sub-account 1 of this contract's own prefix: shares the 19-byte prefix, and is code-free (a plain\n        // account address, not this contract's coded address) so the EVC's non-owner-must-be-code-free guard\n        // (EthereumVaultConnector.sol:787) does NOT trip on the operator path.\n        address borrowAccount = address(uint160(address(this)) ^ 1);\n\n        // Owner-self path: authenticateCaller(borrowAccount, allowOperator:true) finds the shared prefix, registers\n        // this contract as the prefix owner, then sets the operator bit for `operator_` over sub-account 1.\n        IEVC(evc_).setAccountOperator(borrowAccount, operator_, true);\n    }",
+        "path": "contracts/src/venue/LineAccount.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/venue/LineAccount.sol"
+      },
+      "links": [
+        {
+          "label": "LineAccount.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/venue/LineAccount.sol"
+        },
+        {
+          "label": "venue.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/venue.md"
+        }
+      ]
+    },
+    {
+      "id": "cre-gating-hook",
+      "title": "CREGatingHook",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "borrow gate on lien markets",
+      "summary": "The gate installed on every per-line borrow vault: a borrow or liquidation goes through only when the borrowing account has authorized the wired borrow-driver as its EVC operator; anyone else is rejected. The subtle part is anti-spoofing — it trusts the borrower identity the vault appends to the call only when the caller is a recognized factory proxy, otherwise it falls back to the raw caller, so a non-vault caller cannot impersonate an authorized account. It moves no value, and repay is never among the hooked operations, so a line can always be repaid.",
+      "eulerPrimitive": {
+        "id": "euler-hooks",
+        "how": "It is an EVK IHookTarget installed with OP_BORROW | OP_LIQUIDATE on each line's borrow vault, decoding the EVC-authenticated account the vault appends as trailing calldata."
+      },
+      "code": {
+        "excerpt": "    fallback() external {\n        address caller = _msgSender();\n        if (!evc.isAccountOperatorAuthorized(caller, borrowDriver)) revert NotAuthorizedOperator();\n    }\n\n    function _msgSender() internal view returns (address msgSender) {\n        if (!eVaultFactory.isProxy(msg.sender)) return msg.sender;\n\n        assembly {\n            msgSender := shr(96, calldataload(sub(calldatasize(), 20)))\n        }\n    }",
+        "path": "contracts/src/CREGatingHook.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/CREGatingHook.sol"
+      },
+      "links": [
+        {
+          "label": "CREGatingHook.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/CREGatingHook.sol"
+        },
+        {
+          "label": "CREGatingHook.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/CREGatingHook.md"
+        }
+      ]
+    },
+    {
+      "id": "lien-token",
+      "title": "Lien token + factory",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "one token, one line",
+      "summary": "Each credit line's collateral is exactly one token: a near-vanilla ERC-20 whose constructor mints the whole 1e18 supply to the controller, with decimals pinned to 18 and a controller-only burn — the token's address IS the line's identity, and the supply can only shrink. The factory deploys these via CREATE2 with salt = keccak256(lienId) and the caller's address baked into the init-code, so the controller can precompute a lien's address before origination and a stranger reusing the line id lands at a different address. The factory is stateless: no admin, no map, no upgrade — caller-binding is the whole authorization.",
+      "eulerPrimitive": {
+        "id": "evk",
+        "how": "The single lien token is deposited into a bare EVK escrow vault as the line's only collateral, and the fixed 1e18 supply is what lets close reclaim exactly one token before burning."
+      },
+      "code": {
+        "excerpt": "    function create(bytes32 lienId) external returns (address lien) {\n        bytes32 salt = keccak256(abi.encode(lienId));\n        bytes memory initCode =\n            abi.encodePacked(type(LienCollateralToken).creationCode, abi.encode(msg.sender));\n        lien = Create2.deploy(0, salt, initCode);\n        emit LienCreated(lienId, lien);\n    }",
+        "path": "contracts/src/LienTokenFactory.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/LienTokenFactory.sol"
+      },
+      "links": [
+        {
+          "label": "LienTokenFactory.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/LienTokenFactory.sol"
+        },
+        {
+          "label": "LienCollateralToken.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/LienCollateralToken.sol"
+        },
+        {
+          "label": "LienTokenFactory.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/LienTokenFactory.md"
+        },
+        {
+          "label": "LienCollateralToken.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/LienCollateralToken.md"
+        }
+      ]
+    },
+    {
+      "id": "oracle-registry",
+      "title": "ZipcodeOracleRegistry",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "lien price cache, fail-closed",
+      "summary": "The price source for every line's collateral: one cached USD mark per lien token — the line's appraised value minus its senior debt. The controller seeds a mark at origination and an off-chain Chainlink keeper revalues lines in all-or-nothing batches; every write is fail-closed (zero, oversized, future-dated, non-newer, or non-18-decimal marks are rejected). The read serves the lending market's collateral valuation, rounds down against the borrower, and reverts if the mark is missing or older than the validity window — a stale line simply cannot be borrowed against.",
+      "eulerPrimitive": {
+        "id": "euler-oracles",
+        "how": "It is an Euler IPriceOracle adapter (quote-based _getQuote, PriceOracle_* errors, ScaleUtils math) that each line's frozen EulerRouter resolves the (lienToken, USDC) pair through."
+      },
+      "code": {
+        "excerpt": "    /// @notice Shared write guards (fail-closed): price != 0, price <= uint208.max, ts <= now, decimals() == 18.\n    function _writePrice(address lien, uint256 price, uint48 ts) internal {\n        if (price == 0) revert Errors.PriceOracle_InvalidAnswer();\n        if (price > type(uint208).max) revert Errors.PriceOracle_Overflow();\n        if (ts > block.timestamp) revert FutureTimestamp();\n        if (ts <= cache[lien].timestamp) revert StaleReport(); // strictly-newer (first write: timestamp==0 passes); covers seedPrice clobber + out-of-order rt-3\n        if (_strictDecimals(lien) != LIEN_DECIMALS) revert InvalidLienDecimals(lien);\n        cache[lien] = Cache({price: uint208(price), timestamp: ts});\n    }",
+        "path": "contracts/src/ZipcodeOracleRegistry.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/ZipcodeOracleRegistry.sol"
+      },
+      "links": [
+        {
+          "label": "ZipcodeOracleRegistry.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/ZipcodeOracleRegistry.sol"
+        },
+        {
+          "label": "ZipcodeOracleRegistry.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/ZipcodeOracleRegistry.md"
+        }
+      ]
+    },
+    {
+      "id": "warehouse",
+      "title": "Credit Warehouse",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "senior backing safe, four ops",
+      "summary": "The senior side's vault and its gatekeeper. A plain Gnosis Safe holds the EulerEarn pool shares that back every zipUSD in circulation, and an audited Zodiac Roles Modifier in front of it permits exactly four operations: supply USDC into the pool, approve the pool to pull USDC, redeem shares back to USDC, and repay USDC to the redemption queue. WarehouseAdminModule is the thin adapter a Chainlink CRE workflow drives — it turns one instruction into one allowed operation and forwards it through the Roles engine, holding no funds itself. A compromised CRE controls amounts and timing only; it cannot pick a recipient.",
+      "eulerPrimitive": {
+        "id": "euler-earn",
+        "how": "Its SUPPLY and REDEEM ops deposit into and redeem from the silo's EulerEarn USDC vault, always with the warehouse Safe hardcoded as receiver and share owner."
+      },
+      "code": {
+        "excerpt": "        } else if (opType == REDEEM) {\n            uint256 shares = abi.decode(payload, (uint256));\n            to = eePool;\n            data = abi.encodeWithSelector(IEulerEarn.redeem.selector, shares, warehouseSafe, warehouseSafe);\n        } else if (opType == REPAY) {\n            (address dest, uint256 amount) = abi.decode(payload, (address, uint256));\n            if (dest != redemptionBox) revert WrongRedemptionBox(dest);\n            to = usdc;\n            data = abi.encodeWithSelector(IERC20.transfer.selector, redemptionBox, amount);\n        } else {\n            revert UnsupportedOpType(opType);\n        }\n        bool ok = roles.execTransactionWithRole(to, 0, data, OP_CALL, roleKey, true);\n        if (!ok) revert RoleExecFailed();",
+        "path": "contracts/src/supply/CreditWarehouse/WarehouseAdminModule.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/CreditWarehouse/WarehouseAdminModule.sol"
+      },
+      "links": [
+        {
+          "label": "WarehouseAdminModule.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/CreditWarehouse/WarehouseAdminModule.sol"
+        },
+        {
+          "label": "WarehouseAdminModule.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/supply/CreditWarehouse/WarehouseAdminModule.md"
+        }
+      ]
+    },
+    {
+      "id": "deposit-module",
+      "title": "ZipDepositModule",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "usdc in, zipusd out",
+      "summary": "The open front door for supplying USDC: anyone can call it from a wallet. Deposit pulls USDC, mints zipUSD one-for-one by value to the supplier, and parks the USDC in the senior EulerEarn pool with the warehouse Safe as the share holder. Zap is the default experience — it does the same but atomically routes the minted zipUSD through the Exit Gate so the caller lands directly in the transferable junior share (szipUSD). It makes no pricing decision and keeps no funds: net-zero custody is checked after every path.",
+      "eulerPrimitive": {
+        "id": "evk",
+        "how": "It is a capacity-granted minter on the zipUSD ESynth (an EVK synth): each deposit mints usdcIn * scaleUp zipUSD through the EVK capacity gate."
+      },
+      "code": {
+        "excerpt": "    function deposit(uint256 usdcIn) external nonReentrant returns (uint256 zipMinted) {\n        if (usdcIn == 0) revert ZeroAmount();\n        IERC20(usdc).safeTransferFrom(msg.sender, address(this), usdcIn);\n        zipMinted = usdcIn * scaleUp;\n        IESynth(zipUSD).mint(msg.sender, zipMinted); // capacity-gated; mint(·,0) is a no-op (the ZeroAmount guard covers it)\n        IERC20(usdc).forceApprove(eePool, usdcIn);\n        IEulerEarn(eePool).deposit(usdcIn, warehouseSafe); // shares -> warehouseSafe Safe; the module never holds shares\n        emit Deposited(msg.sender, usdcIn, zipMinted);\n    }",
+        "path": "contracts/src/supply/ZipDepositModule.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/ZipDepositModule.sol"
+      },
+      "links": [
+        {
+          "label": "ZipDepositModule.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/ZipDepositModule.sol"
+        },
+        {
+          "label": "ZipDepositModule.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/supply/ZipDepositModule.md"
+        }
+      ]
+    },
+    {
+      "id": "redemption-queue",
+      "title": "ZipRedemptionQueue",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "par exit, burn on fill",
+      "summary": "The senior exit: it redeems zipUSD for USDC at a strict one dollar per token, burning the zipUSD as USDC is delivered. It is treasury-internal plumbing, not an open market — exactly one requester (the redemption vault) is ever open, and it pays par regardless of impairment because the junior side absorbs losses. Par credits round down, so cumulative USDC out can never exceed cumulative USDC in; there is no pause, no upgrade, and no sweep, and the only USDC-out path is a claimant's own withdrawal.",
+      "eulerPrimitive": {
+        "id": "evk",
+        "how": "On settle it burns its own escrowed zipUSD through the ESynth burn seam (burn from own balance needs no allowance or minter capacity), dropping supply by exactly the filled amount."
+      },
+      "code": {
+        "excerpt": "        uint256 pending = totalPending;\n        uint256 availableAssets = IERC20(usdc).balanceOf(address(this)) - reservedAssets; // free REPAY USDC\n        uint256 maxFillAssets = pending / scaleUp; // par capacity (floor)\n        uint256 fillAssets = availableAssets < maxFillAssets ? availableAssets : maxFillAssets;\n        uint256 filledShares = fillAssets * scaleUp; // <= pending, EXACT multiple of scaleUp\n\n        if (filledShares != 0) {\n            address r = pendingRequester;\n            totalPending = pending - filledShares;\n            pendingShares[r] -= filledShares;\n            claimableAssets[r] += fillAssets; // par, round DOWN (KR-5)\n            reservedAssets += fillAssets;\n            if (pendingShares[r] == 0) pendingRequester = address(0); // fully drained\n            IZipUSD(zipUSD).burn(address(this), filledShares);",
+        "path": "contracts/src/supply/ZipRedemptionQueue.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/ZipRedemptionQueue.sol"
+      },
+      "links": [
+        {
+          "label": "ZipRedemptionQueue.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/ZipRedemptionQueue.sol"
+        },
+        {
+          "label": "ZipRedemptionQueue.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/supply/ZipRedemptionQueue.md"
+        }
+      ]
+    },
+    {
+      "id": "federation",
+      "title": "Federation",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "many silos, one senior dollar",
+      "summary": "The machinery that lets many credit pools run under one shared senior dollar. A silo is one complete credit stack — venue adapter, warehouse Safe, EulerEarn pool, junior tranche — and each holds at most 28 lines, so scaling means more silos, all tied back to one mutualized zipUSD. The registry admits a silo only after a six-clause topology check proves its parts all point at their own pool, Safe, and oracle (never a neighbor's), counts open lines, and names where new loans route. The aggregator sums every silo's senior par-backing into one solvency number, reading the warehouse-owned position through ERC-4626 views so a token donation can never move the figure. Both are venue-agnostic: they ask each adapter for its senior pool through a venue-neutral getter.",
+      "members": [
+        {
+          "name": "SiloRegistry",
+          "blurb": "The Timelock-owned catalog and admission gate: rejects mis-wired silos, caps each at 28 lines, and routes new loans to the current silo."
+        },
+        {
+          "name": "SeniorNavAggregator",
+          "blurb": "Pure-view solvency telemetry: donation-immune sum of all silos' senior backing, compared against zipUSD supply (returns maximum coverage when supply is zero so a breaker cannot false-trip)."
+        }
+      ],
+      "eulerPrimitive": {
+        "id": "euler-earn",
+        "how": "Each silo's senior pool is a EulerEarn vault — the 28-line cap derives from its 30-market queue, admission proves adapter.seniorPool() == eePool, and backing is read through its donation-immune share-value views."
+      },
+      "code": {
+        "excerpt": "        // topology assert (Key req 2): the exact 6-clause web. All clauses must hold; the silo must point only at\n        // its OWN components (curator/juniorBasket carried for routing only — NOT asserted).\n        if (\n            IFreeze(cfg.freeze).eulerEarn() != cfg.eePool || IFreeze(cfg.freeze).warehouseSafe() != cfg.warehouseSafe\n                || IFreeze(cfg.freeze).navOracle() != cfg.navOracle\n                || IEscrow(cfg.escrow).coordinator() != cfg.defaultCoordinator\n                || INavWriter(cfg.defaultCoordinator).navOracle() != cfg.navOracle\n                || ISeniorVenue(cfg.adapter).seniorPool() != cfg.eePool\n        ) revert SiloMiswired();",
+        "path": "contracts/src/SiloRegistry.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/SiloRegistry.sol"
+      },
+      "links": [
+        {
+          "label": "SiloRegistry.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/SiloRegistry.sol"
+        },
+        {
+          "label": "SeniorNavAggregator.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/SeniorNavAggregator.sol"
+        },
+        {
+          "label": "SiloRegistry.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/SiloRegistry.md"
+        },
+        {
+          "label": "SeniorNavAggregator.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/SeniorNavAggregator.md"
+        }
+      ]
+    },
+    {
+      "id": "loss",
+      "title": "Loss engine",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "default markdown + bond slash",
+      "summary": "The first-loss and insurance side. Every credit line is backed by a slashable xALPHA bond, and on a default two things happen: junior NAV is marked down by the recognized loss, and the bond is slashed as partial insurance. The coordinator is the only contract that can write the NAV impairment provision, bounded on-chain — down by atRisk times (1 minus recoveryFloor), healed up only by realized recovery receipts. The escrow custodies each line's bond with recorded amounts (donation-immune) and can only ever send xALPHA to three fixed destinations — the bond originator, the treasury Safe, or the junior tranche Safe — never an arbitrary address. Chainlink CRE drives both; a compromised CRE can grief but cannot steal.",
+      "members": [
+        {
+          "name": "DefaultCoordinator",
+          "blurb": "The CRE-gated loss orchestrator: runs the lien status machine (Bonded to Defaulted to Resolved/WrittenOff), bounds the provision, and is the sole writeProvision caller into the NAV oracle."
+        },
+        {
+          "name": "LienXAlphaEscrow",
+          "blurb": "Per-line xALPHA bond custody: locks at origination, returns on clean repayment, and on default slashes part to the treasury Safe and routes the remainder to the junior tranche Safe as the cohort premium."
+        }
+      ],
+      "eulerPrimitive": null,
+      "code": {
+        "excerpt": "    function _default(bytes memory data) internal {\n        (bytes32 lienId, uint256 atRisk) = abi.decode(data, (bytes32, uint256));\n        if (lienLoss[lienId].status != LienStatus.Bonded) revert BadStatus();\n        if (atRisk == 0) revert ZeroAtRisk();\n\n        uint256 p = atRisk * (1e18 - recoveryFloor) / 1e18;\n        lienLoss[lienId].provision = p;\n        lienLoss[lienId].status = LienStatus.Defaulted;\n        totalProvision += p;\n\n        navOracle.writeProvision(totalProvision);\n\n        emit Defaulted(lienId, atRisk, p);\n    }",
+        "path": "contracts/src/loss/DefaultCoordinator.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/loss/DefaultCoordinator.sol"
+      },
+      "links": [
+        {
+          "label": "DefaultCoordinator.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/loss/DefaultCoordinator.sol"
+        },
+        {
+          "label": "LienXAlphaEscrow.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/loss/LienXAlphaEscrow.sol"
+        },
+        {
+          "label": "loss.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/loss.md"
+        }
+      ]
+    },
+    {
+      "id": "exit-gate",
+      "title": "ExitGate + szipUSD",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "minter, burner, basket custodian",
+      "summary": "The junior vault's custody, issuance, and exit core: the only contract that can mint or burn szipUSD, and the sole holder of the vault's underlying Baal Loot tokens. A deposit is priced off the NAV oracle's entry price (rounding down, in the vault's favor), routed straight into the main-Safe basket, and answered with a paired mint — Loot to the gate, transferable szipUSD to the depositor — so szipUSD supply always equals the Loot the gate holds. There is no in-kind exit and no ragequit: exiting means selling szipUSD on CoW, and the bought tokens are retired here through the keeper-only burnFor. Issuance fails closed on a stale or unseeded price and is capped by a governed total-value ceiling.",
+      "eulerPrimitive": null,
+      "code": {
+        "excerpt": "navOracle.poke();\nuint256 navE = navOracle.navEntry(); // reverts StalePrice if a required leg is stale (issuance pauses)\nuint256 value = navOracle.valueOf(asset, amount); // the Gate owns valuation; no caller asserts a price\nif (navOracle.grossBasketValue() + value > tvlCap) revert TvlCapExceeded();\n\nshares = value * 1e18 / navE; // round DOWN (favor the vault)\nif (shares == 0) revert ZeroShares();\n\nuint256 basketBefore = IERC20(asset).balanceOf(juniorTrancheSafe);\nIERC20(asset).safeTransferFrom(msg.sender, juniorTrancheSafe, amount);\nif (IERC20(asset).balanceOf(juniorTrancheSafe) - basketBefore != amount) revert TransferShortfall();\n\n// Mint Loot to the Gate (manager(2)) + transferable szipUSD to the receiver — paired, equal amounts.\nbaal.mintLoot(_one(address(this)), _one(shares));\nSzipUSD(shareToken).mint(receiver, shares);",
+        "path": "contracts/src/supply/szipUSD/ExitGate.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/szipUSD/ExitGate.sol"
+      },
+      "links": [
+        {
+          "label": "ExitGate summary",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/supply/szipUSD/ExitGate.md"
+        },
+        {
+          "label": "SzipUSD (the share token)",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/supply/szipUSD/SzipUSD.md"
+        },
+        {
+          "label": "SzipUSD.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/szipUSD/SzipUSD.sol"
+        }
+      ],
+      "members": null
+    },
+    {
+      "id": "nav-oracle",
+      "title": "SzipNavOracle",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "NAV per share, bracketed both ways",
+      "summary": "The junior vault's price engine and the protocol's economic keystone: it values every basket leg on-chain — including the staked LP, net of strike debt — and divides by the share supply to get a live NAV per share the protocol acts on. Most prices are read trustlessly; the two it cannot read on Base (xALPHA/USD and HYDX/USD) are pushed by an off-chain Chainlink keeper behind deviation and freshness guards. It keeps a time-averaged price and serves a bracket: issuance uses the higher of spot and average, exit the lower, so a one-block spike can never mint cheap or exit rich. A stale leg pauses issuance but never blocks exit; the loss provision that marks NAV down is writable only by the DefaultCoordinator.",
+      "eulerPrimitive": null,
+      "code": {
+        "excerpt": "function navEntry() external view returns (uint256) {\n    if (_legStale(LEG_ALPHA_USD)) revert StalePrice(LEG_ALPHA_USD);\n    if (_legStale(LEG_HYDX_USD)) revert StalePrice(LEG_HYDX_USD);\n    if (xAlphaRateOracle != address(0) && !IXAlphaRateFresh(xAlphaRateOracle).fresh()) revert StaleRate();\n    uint256 s = spotNavPerShare();\n    uint256 t = twapNavPerShare();\n    return s > t ? s : t;\n}\n\n/// @notice The exit price `min(spot, twap)`. Does NOT revert on staleness (prices off the last good mark).\nfunction navExit() external view returns (uint256) {\n    uint256 s = spotNavPerShare();\n    uint256 t = twapNavPerShare();\n    return s < t ? s : t;\n}",
+        "path": "contracts/src/supply/SzipNavOracle.sol",
+        "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/SzipNavOracle.sol"
+      },
+      "links": [
+        {
+          "label": "SzipNavOracle summary",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/supply/SzipNavOracle.md"
+        },
+        {
+          "label": "Wiring map (8-B4)",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/wires/8-B4-SzipNavOracle.md"
+        },
+        {
+          "label": "System seam map (the NAV hub)",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/wires/SYSTEM-SEAM-MAP.md"
+        }
+      ],
+      "members": null
+    },
+    {
+      "id": "engine",
+      "title": "The auto-compounder engine",
+      "kind": "engine",
+      "stratum": "zipcode",
+      "tagline": "Keeper-driven options-yield flywheel",
+      "summary": "A fleet of Zodiac modules on the engine Safe, each triggered by an off-chain keeper or CRE report, that runs the junior vault's yield flywheel: claim oHYDX option rewards from the Hydrex gauge, pay the USDC strike to exercise them into liquid HYDX, sell the HYDX on Algebra, rebuild and re-stake the zipUSD/xALPHA ICHI LP, and recycle the realized free value into NAV — or divert it to top up a recognized senior loss. The strike money comes from a leverage loop that borrows the warehouse's resting USDC against the vault's own LP on an isolated Euler vault, bounded by an aggregate cap and a borrow guard. The freeze module fences committed junior equity above the live senior coverage floor, and the buy-and-burn module is the protocol's only exit valve. No module holds funds; every output is hard-pinned to the vault.",
+      "eulerPrimitive": null,
+      "code": null,
+      "links": [
+        {
+          "label": "Junior-side index",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/README.md"
+        },
+        {
+          "label": "Engine module docs",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/tree/main/docs/supply/szipUSD"
+        }
+      ],
+      "members": [
+        {
+          "name": "HarvestVoteModule",
+          "blurb": "Claims the gauge's oHYDX rewards into the vault, permanently locks a slice into vote power, votes the gauges, and claims anti-dilution rebases.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/szipUSD/HarvestVoteModule.sol"
+        },
+        {
+          "name": "ExerciseModule",
+          "blurb": "Pays a capped USDC strike to exercise oHYDX options into liquid HYDX minted straight to the vault, aborting instead of overpaying on a price spike.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/szipUSD/ExerciseModule.sol"
+        },
+        {
+          "name": "SellModule",
+          "blurb": "Three hard-pinned Algebra swaps — sell HYDX for USDC, buy and sell xALPHA against zipUSD — with a slippage floor and a per-call HYDX size cap.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/szipUSD/SellModule.sol"
+        },
+        {
+          "name": "LpStrategyModule",
+          "blurb": "Builds, stakes, and unstakes the vault's zipUSD/xALPHA ICHI LP, and dissolves only LP that is excess over the solvency coverage floor.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/szipUSD/LpStrategyModule.sol"
+        },
+        {
+          "name": "RecycleModule",
+          "blurb": "The free-value ledger: recycles credited yield into NAV-lifting backed zipUSD, or diverts USDC to the senior pool to heal a recognized loss, capped by the provision.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/szipUSD/RecycleModule.sol"
+        },
+        {
+          "name": "FarmUtilityLoopModule",
+          "blurb": "Borrows the warehouse's resting USDC against the vault's LP on an isolated Euler vault to finance option strikes, then repays and releases the collateral.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/szipUSD/FarmUtilityLoopModule.sol"
+        },
+        {
+          "name": "OffRampModule",
+          "blurb": "Turns the basket's idle zipUSD into USDC at par by driving the senior redemption queue, with every queue argument pinned to the vault.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/szipUSD/OffRampModule.sol"
+        },
+        {
+          "name": "SzipBuyBurnModule",
+          "blurb": "The only exit valve: a resting CoW buy order for szipUSD at or below NAV minus a set discount, whose fills the Exit Gate burns.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/szipUSD/SzipBuyBurnModule.sol"
+        },
+        {
+          "name": "DurationFreezeModule",
+          "blurb": "Fences committed junior equity in a non-withdrawable sidecar Safe and never releases a move that would drop coverage below the live senior-liability floor.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/supply/szipUSD/DurationFreezeModule.sol"
+        }
+      ]
+    },
+    {
+      "id": "safe-zodiac",
+      "title": "Safe + Zodiac",
+      "kind": "neighborhood",
+      "stratum": "external",
+      "tagline": "Custody Safes behind a permission firewall",
+      "summary": "Gnosis Safes are the containers that hold the protocol's real assets: the junior main, engine, and sidecar Safes custody the basket, and the warehouse Safe custodies the EulerEarn shares backing the zipUSD float. A Zodiac Roles Modifier v2 fronts the warehouse Safe as a permission firewall — the WarehouseAdminModule is its sole role member and can encode only four scoped operations, so the deployed Roles scope config, not module bytecode, is the security boundary. The engine modules are Zodiac module clones enabled on the shared Safes; the enabled-module set is the access control, and Chainlink CRE is the driver behind those modules. Zipcode trusts Safe for custody and execution, and Zodiac for enforcing exactly the scoped call surface.",
+      "eulerPrimitive": null,
+      "code": null,
+      "links": [
+        {
+          "label": "Safe interfaces",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/interfaces/interfaces-safe.md"
+        },
+        {
+          "label": "Zodiac interfaces",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/interfaces/interfaces-zodiac.md"
+        },
+        {
+          "label": "Roles + CRE identity wiring",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/roles.md"
+        }
+      ],
+      "members": [
+        {
+          "name": "Gnosis Safe (SafeL2 1.4.1)",
+          "blurb": "The custody container the modules and deploy scripts drive: enable a module, execute a transaction, manage owners.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/interfaces/safe/ISafe.sol"
+        },
+        {
+          "name": "Zodiac Roles Modifier v2",
+          "blurb": "The warehouse Safe's bouncer: it forwards only calls matching its scope — pinned targets, selectors, and parameters, Call-only.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/interfaces/zodiac/IRoles.sol"
+        },
+        {
+          "name": "ModuleProxyFactory",
+          "blurb": "The clone factory every engine module and the warehouse's Roles instance is minted through as a cheap CREATE2 clone of a mastercopy.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/interfaces/zodiac/IModuleProxyFactory.sol"
+        }
+      ]
+    },
+    {
+      "id": "chainlink-cre",
+      "title": "Chainlink CRE",
+      "kind": "neighborhood",
+      "stratum": "external",
+      "tagline": "The off-chain driver and price pusher",
+      "summary": "Chainlink CRE is the protocol's off-chain operator: its keepers and signed reports trigger every engine module, push the two NAV price legs (xALPHA/USD and HYDX/USD) and the cross-chain xALPHA rate, drive the warehouse's four operations and the loss coordinator, and call the Exit Gate's burnFor after a buy-and-burn fill. Every report path is forwarder-gated and fail-closed — the CloneReportReceiver base leaves an unconfigured clone inert until the Timelock wires a trusted sender. Separately, the CREGatingHook installed on each credit line's borrow vault allows a borrow only when the account has authorized the line's CRE borrow driver, with an anti-spoof guard on the appended borrower identity. CRE is trusted for magnitude and timing, but each contract bounds a bad report to grief; the residual risk is those griefs firing correlated under one compromised workflow.",
+      "eulerPrimitive": null,
+      "code": null,
+      "links": [
+        {
+          "label": "CREGatingHook",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/CREGatingHook.md"
+        },
+        {
+          "label": "CloneReportReceiver",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/supply/szipUSD/CloneReportReceiver.md"
+        },
+        {
+          "label": "System seam map (the CRE driver class)",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/wires/SYSTEM-SEAM-MAP.md"
+        }
+      ],
+      "members": null
+    },
+    {
+      "id": "bittensor-bridge",
+      "title": "szALPHA bridge",
+      "kind": "neighborhood",
+      "stratum": "external",
+      "tagline": "Staked ALPHA, mirrored onto Base",
+      "summary": "szALPHA is a liquid-staking token on Bittensor EVM (chain 964) wrapping ALPHA staked with a validator; its exchange rate rises as staking rewards accrue. A Chainlink CCT lane bridges it to Base: tokens are locked (never burned) in a lock-release pool on 964 and a mirror is minted on Base, so total supply and the exchange rate stay truthful. That Base mirror is the xALPHA leg the junior basket holds, LPs against zipUSD, and posts as per-line first-loss bonds. Zipcode trusts the CCT lock/release topology for supply conservation and a CRE job to push the validator's exchange rate to the Base rate oracle — NAV prices the leg off that pushed rate, and issuance fails closed when it is stale or unseeded.",
+      "eulerPrimitive": null,
+      "code": null,
+      "links": [
+        {
+          "label": "Bridge overview",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/bridge.md"
+        },
+        {
+          "label": "Bridge interfaces",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/interfaces/interfaces-bridge.md"
+        }
+      ],
+      "members": [
+        {
+          "name": "SzAlpha (964)",
+          "blurb": "The LST wrapper on Bittensor: mints szALPHA shares against validator stake, with a redeem that is never pausable by design.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/bridge/SzAlpha.sol"
+        },
+        {
+          "name": "SzAlphaLockReleasePool (964)",
+          "blurb": "The CCIP endpoint on Bittensor that locks szALPHA (rather than burning it) when it bridges to Base.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/bridge/SzAlphaLockReleasePool.sol"
+        },
+        {
+          "name": "SzAlphaMirror (Base)",
+          "blurb": "The bridged szALPHA that actually circulates on Base — the basket's xALPHA leg.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/bridge/SzAlphaMirror.sol"
+        },
+        {
+          "name": "SzAlphaTokenPool (Base)",
+          "blurb": "The CCIP endpoint on Base: mints mirror tokens on arrival and burns them on exit, balancing supply across chains.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/bridge/SzAlphaTokenPool.sol"
+        },
+        {
+          "name": "SzAlphaRateOracle (Base)",
+          "blurb": "The on-chain feed a CRE job pushes the validator's exchange rate into — the freshness gate NAV issuance depends on.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/bridge/SzAlphaRateOracle.sol"
+        }
+      ]
+    },
+    {
+      "id": "cow",
+      "title": "CoW Protocol",
+      "kind": "neighborhood",
+      "stratum": "external",
+      "tagline": "The szipUSD exit orderbook",
+      "summary": "CoW Protocol's settlement contract (GPv2Settlement) is where szipUSD trades — and where the protocol's only exit lives. A holder who wants out rests a sell order from their own wallet; CoW matches it against whoever offers the best price, whether an outside buyer or the protocol's standing bid. SzipBuyBurnModule rests that backstop bid — buying szipUSD with USDC at or below NAV minus a discount — signed on-chain because the engine Safe has no private key, and everything it buys is retired by the Exit Gate. Zipcode trusts CoW only to settle at or better than the signed limit price; a protocol wind-down is this same bid, sized larger and re-armed.",
+      "eulerPrimitive": null,
+      "code": null,
+      "links": [
+        {
+          "label": "CoW interfaces",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/interfaces/interfaces-cow.md"
+        },
+        {
+          "label": "SzipBuyBurnModule",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/supply/szipUSD/SzipBuyBurnModule.md"
+        }
+      ],
+      "members": null
+    },
+    {
+      "id": "algebra-ichi",
+      "title": "Algebra + ICHI",
+      "kind": "neighborhood",
+      "stratum": "external",
+      "tagline": "The DEX and managed-LP venue",
+      "summary": "Algebra Integral is the AMM Hydrex runs on Base: the SellModule swaps through its router (HYDX to USDC, zipUSD to and from xALPHA), and its pools and TWAP plugin feed the fair-LP and NAV pricing. ICHI is the automated liquidity manager that holds the junior's zipUSD/xALPHA LP — single-sided deposits that ICHI balances into the underlying Algebra position, with the LP receipt token doubling as Euler collateral for the strike-financing loop. Zipcode trusts Algebra for honest swap execution and pool state, and ICHI to manage the position; the NAV oracle defends against manipulation by reconstructing the LP's reserves through the fair-reserves math rather than trusting spot.",
+      "eulerPrimitive": null,
+      "code": null,
+      "links": [
+        {
+          "label": "Algebra interfaces",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/interfaces/interfaces-algebra.md"
+        },
+        {
+          "label": "ICHI interfaces",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/interfaces/interfaces-ichi.md"
+        }
+      ],
+      "members": [
+        {
+          "name": "Algebra SwapRouter",
+          "blurb": "The router the SellModule's three hard-pinned market swaps go through.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/interfaces/algebra/ISwapRouter.sol"
+        },
+        {
+          "name": "Algebra pool + TWAP plugin",
+          "blurb": "The pool state and time-weighted prices the fair-LP oracle and NAV oracle read.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/interfaces/algebra/IAlgebraPool.sol"
+        },
+        {
+          "name": "ICHI vault",
+          "blurb": "The managed-liquidity vault holding the junior's zipUSD/xALPHA LP; it runs the underlying Algebra position.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/interfaces/ichi/IICHIVault.sol"
+        }
+      ]
+    },
+    {
+      "id": "hydrex",
+      "title": "Hydrex",
+      "kind": "neighborhood",
+      "stratum": "external",
+      "tagline": "The ve(3,3) options-yield venue",
+      "summary": "Hydrex is the ve(3,3) emissions venue the flywheel farms: the junior's LP is staked in a Hydrex gauge, which pays rewards in oHYDX — a discounted call option on HYDX. The engine claims those options, pays the USDC strike to exercise them, sells the HYDX, and permanently locks a slice of rewards into vote power to direct future emissions back to its own pool. Zipcode trusts Hydrex's gauge accounting, the option contract's own strike math (bounded by a per-call payment cap), and the vote-escrow; the NAV oracle marks held oHYDX at intrinsic value, HYDX price minus the discount.",
+      "eulerPrimitive": null,
+      "code": null,
+      "links": [
+        {
+          "label": "Hydrex interfaces",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/interfaces/interfaces-hydrex.md"
+        }
+      ],
+      "members": [
+        {
+          "name": "Gauge",
+          "blurb": "Where the LP is staked to earn rewards — the strategy stakes and unstakes here, and the harvest module claims the oHYDX.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/interfaces/hydrex/IGauge.sol"
+        },
+        {
+          "name": "oHYDX option token",
+          "blurb": "The discounted call option on HYDX the gauge actually pays out; exercising it (paying the strike) mints liquid HYDX.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/interfaces/hydrex/IOptionToken.sol"
+        },
+        {
+          "name": "Voting escrow + voter",
+          "blurb": "The permalock vote-power position the harvest module mints to the vault, and the voter it directs gauge weights through.",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/interfaces/hydrex/IVotingEscrow.sol"
+        }
+      ]
+    },
+    {
+      "id": "baal",
+      "title": "Baal (Moloch v3)",
+      "kind": "neighborhood",
+      "stratum": "external",
+      "tagline": "The DAO substrate under szipUSD",
+      "summary": "Baal is the Moloch v3 DAO container beneath the junior vault: a Zodiac module on the main Safe whose soulbound Loot token is the underlying economic share of the tranche. Depositors never touch Loot — the Exit Gate, granted the manager shaman, is the sole Loot custodian and mints or burns it 1:1 against the transferable szipUSD receipt. Baal's native ragequit is deliberately not wired, because it would pay the wrong amount against the free basket; exits run instead through the CoW buy-and-burn, and a full unwind is the same mechanism scaled up. Zipcode trusts Baal for the Loot mint/burn mechanics and the avatar (main Safe) linkage, nothing more.",
+      "eulerPrimitive": null,
+      "code": null,
+      "links": [
+        {
+          "label": "Baal interfaces",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/interfaces/interfaces-baal.md"
+        }
+      ],
+      "members": null
+    },
+    {
+      "id": "zipusd",
+      "title": "zipUSD",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "the senior dollar — an Euler ESynth",
+      "summary": "The shared senior dollar is not a token we wrote: it is Euler's ESynth, deployed with the three-argument constructor (EVC, \"Zipcode USD\", \"zipUSD\"), 18 decimals. Only capacity-granted minters can create it — the deposit module mints one-for-one by value against USDC in — and the redemption queue burns it at par through the allowance-free own-balance burn seam. Every zipUSD in circulation is backed by USDC sitting in the credit warehouse's EulerEarn pool.",
+      "eulerPrimitive": {
+        "id": "evk",
+        "how": "It IS an EVK-family primitive — Euler's ESynth (euler-vault-kit/src/Synths/ESynth.sol), governed by mint capacities rather than a custom token contract."
+      },
+      "code": null,
+      "links": [
+        {
+          "label": "IZipUSD.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/interfaces/euler/IZipUSD.sol"
+        },
+        {
+          "label": "interfaces-euler.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/interfaces/interfaces-euler.md"
+        }
+      ]
+    },
+    {
+      "id": "line-vault",
+      "title": "An isolated credit line",
+      "kind": "contract",
+      "stratum": "zipcode",
+      "tagline": "one lien, one EVK vault pair",
+      "summary": "Every credit line is its own pair of freshly deployed EVK vaults: a bare escrow vault holding the line's single 1e18 lien token, and an isolated USDC borrow vault only that line's driver can draw on — with the CREGatingHook installed and the line's own price router frozen at birth. The line is funded by a curator reallocation from the EulerEarn pool, and its debt lives under its own LineAccount EVC prefix. A silo holds at most 28 of these; one bad lien never meets its neighbor.",
+      "eulerPrimitive": {
+        "id": "evk",
+        "how": "Both vaults are EVK proxies from the GenericFactory — isolation is the vault kit's own guarantee, not custom code."
+      },
+      "code": null,
+      "links": [
+        {
+          "label": "venue.md",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/docs/venue.md"
+        },
+        {
+          "label": "EulerVenueAdapter.sol",
+          "url": "https://github.com/resi-labs-ai/zipcode-euler/blob/main/contracts/src/venue/EulerVenueAdapter.sol"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "senior-supply",
+      "title": "Senior supply",
+      "blurb": "A lender's USDC enters through the deposit module, which mints zipUSD one-for-one by value and parks the USDC in the senior pool with the warehouse Safe as the share holder; the warehouse custodies the EulerEarn shares backing the zipUSD float.",
+      "path": [
+        "lender",
+        "deposit-module",
+        "warehouse",
+        "euler-earn"
+      ],
+      "kind": "senior"
+    },
+    {
+      "id": "borrow",
+      "title": "Open and draw a credit line",
+      "blurb": "The controller — the venue layer's only caller — opens each isolated line through the Euler venue adapter: the line's 1/1 lien token is its collateral, priced by the oracle registry (appraised value minus debt), and the CRE gating hook installed on the line's borrow vault lets only the account that authorized the line's borrow driver draw. Repayment is never gated.",
+      "path": [
+        "originator",
+        "controller",
+        "venue-adapter",
+        "lien-token",
+        "oracle-registry",
+        "cre-gating-hook",
+        "line-account",
+        "evk"
+      ],
+      "kind": "senior"
+    },
+    {
+      "id": "senior-exit",
+      "title": "Senior par redemption",
+      "blurb": "zipUSD comes back to USDC at strict par through the redemption queue: the warehouse redeems EulerEarn shares and repays USDC into the queue, which burns zipUSD as claims fill. The queue is treasury-internal plumbing — the engine's off-ramp module is its driver, turning the basket's idle zipUSD into USDC — and it pays par regardless of impairment, because the junior side absorbs losses.",
+      "path": [
+        "euler-earn",
+        "warehouse",
+        "redemption-queue",
+        "engine"
+      ],
+      "kind": "exit"
+    },
+    {
+      "id": "junior-entry",
+      "title": "Junior entry",
+      "blurb": "The default experience is the zap: the deposit module takes USDC, mints zipUSD, and hands it straight to the Exit Gate, which prices the deposit at the NAV oracle's entry price (max of spot and time-average, rounded down) and mints szipUSD paired 1:1 with Baal Loot held only by the gate.",
+      "path": [
+        "lender",
+        "deposit-module",
+        "exit-gate",
+        "nav-oracle"
+      ],
+      "kind": "junior"
+    },
+    {
+      "id": "flywheel",
+      "title": "The yield flywheel",
+      "blurb": "Keepers drive the engine's loop: claim oHYDX from the Hydrex gauge, exercise it into HYDX by paying USDC strikes financed by borrowing warehouse USDC against the vault's own LP, sell the HYDX on Algebra, rebuild and re-stake the zipUSD/xALPHA ICHI LP, and recycle the realized free value into backed zipUSD that lifts NAV per share for every holder.",
+      "path": [
+        "keeper",
+        "engine",
+        "hydrex",
+        "algebra-ichi",
+        "nav-oracle"
+      ],
+      "kind": "junior"
+    },
+    {
+      "id": "junior-exit",
+      "title": "Junior exit (buy and burn)",
+      "blurb": "There is no in-kind exit: a szipUSD holder rests a sell order on CoW, where the engine's buy-and-burn module maintains the protocol's backstop bid at or below the NAV exit price (min of spot and time-average) minus a discount. Bought szipUSD is retired at the Exit Gate with its paired Loot, ticking NAV per share up for stayers.",
+      "path": [
+        "lender",
+        "cow",
+        "engine",
+        "exit-gate"
+      ],
+      "kind": "exit"
+    },
+    {
+      "id": "loss-waterfall",
+      "title": "Loss waterfall",
+      "blurb": "When a credit line defaults, the CRE-gated DefaultCoordinator writes an impairment provision into the NAV oracle — marking junior NAV down so szipUSD holders absorb the loss first — and slashes the line's xALPHA first-loss bond, part to the treasury and the remainder to the junior Safe. The engine's recycle module can then divert free value into the senior pool to heal the hole, capped by the live provision, so the shared zipUSD only ever sees what remains after the junior is exhausted.",
+      "path": [
+        "line-account",
+        "chainlink-cre",
+        "nav-oracle",
+        "engine",
+        "warehouse"
+      ],
+      "kind": "loss"
+    },
+    {
+      "id": "xalpha-rate",
+      "title": "The cross-chain xALPHA mark",
+      "blurb": "szALPHA bridges from Bittensor to Base over a Chainlink CCT lock/release lane, and a CRE job pushes the validator's exchange rate to the Base rate oracle. The NAV oracle prices the basket's xALPHA leg off that pushed rate: a stale rate blocks issuance at the Exit Gate but never blocks exit.",
+      "path": [
+        "bittensor-bridge",
+        "chainlink-cre",
+        "nav-oracle",
+        "exit-gate"
+      ],
+      "kind": "junior"
+    }
+  ]
+}

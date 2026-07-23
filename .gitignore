@@ -12,3 +12,5 @@ public/rag-index.json
 public/_pagefind
 .DS_Store
 .vercel
+# session working notes (local only)
+CLAUDE.md

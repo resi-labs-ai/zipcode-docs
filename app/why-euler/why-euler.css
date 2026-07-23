@@ -1,0 +1,60 @@
+/* ============================================================
+   /why-euler — the essay. Rides .zc-landing chrome + tokens.
+   ============================================================ */
+
+.zc-why .why-hero { padding: 64px 0 28px; }
+.zc-why .why-hero .lead { max-width: 640px; }
+.zc-why .why-hero .display em { font-style: italic; }
+
+.zc-why .why-body { padding: 28px 0 8px; }
+
+.zc-why .why-cell {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 28px;
+  padding: 40px 0;
+  border-top: 1px solid var(--hair-soft);
+}
+.zc-why .why-cell:last-child { border-bottom: 1px solid var(--hair-soft); }
+
+.zc-why .why-meta { display: flex; flex-direction: column; gap: 6px; }
+.zc-why .why-meta .idx {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; color: var(--mint);
+}
+.zc-why .why-meta .prim {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--faint);
+}
+
+.zc-why .why-text { max-width: 660px; }
+.zc-why .why-text h2 {
+  font-family: var(--serif); font-size: 27px; font-weight: 500; color: var(--ink);
+  margin: 0 0 2px; letter-spacing: 0.01em;
+}
+.zc-why .why-text .rule { width: 34px; height: 2px; background: var(--mint); margin: 14px 0 16px; }
+.zc-why .why-text p { font-size: 15px; line-height: 1.7; color: var(--body); margin: 0 0 14px; }
+/* question/list line — indented, marked with the mint square the eyebrow uses */
+.zc-why .why-text p.why-q { position: relative; padding-left: 22px; }
+.zc-why .why-text p.why-q::before {
+  content: ''; position: absolute; left: 0; top: 0.5em;
+  width: 8px; height: 8px; background: var(--mint);
+}
+.zc-why .why-map-link {
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em;
+  color: var(--mint-ink); text-decoration: none;
+}
+.zc-why .why-map-link:hover { text-decoration: underline; }
+
+.zc-why .why-close { padding: 56px 0 72px; }
+.zc-why .why-close-card {
+  border: 1px solid var(--hair); background: var(--panel); border-radius: var(--radius);
+  box-shadow: var(--shadow-sharp);
+  padding: 40px 44px; max-width: 720px;
+}
+.zc-why .why-euler-mark { display: block; margin-bottom: 18px; }
+.zc-why .why-close-card p { font-size: 15px; line-height: 1.7; color: var(--body); margin: 0 0 20px; }
+
+@media (max-width: 760px) {
+  .zc-why .why-cell { grid-template-columns: 1fr; gap: 10px; padding: 30px 0; }
+  .zc-why .why-close-card { padding: 28px 22px; }
+}

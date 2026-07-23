@@ -1,0 +1,303 @@
+/* ============================================================
+   /map — the interactive protocol schematic.
+   Rides the .zc-landing chrome + tokens (landing.css, globals.css);
+   everything here is the map stage, the SVG marks, and the panel.
+   ============================================================ */
+
+.zc-map .map-hero { padding: 56px 0 8px; }
+.zc-map .map-hero .lead { max-width: 620px; }
+
+.zc-map .map-stage { padding: 18px 0 56px; }
+.zc-map .map-stage .wrap { max-width: 1400px; }
+.zc-map .map-stage .figure { padding: 0; overflow: hidden; }
+
+/* —— shell: one column normally; diagram + docked spec sheet when a box is open —— */
+/* Two tracks always (panel track collapses to 0), so grid-template-columns can
+   ease between states — the diagram resizes smoothly instead of snapping. */
+.map-shell {
+  position: relative; display: grid;
+  grid-template-columns: minmax(0, 1fr) 0px;
+  transition: grid-template-columns .32s cubic-bezier(.4, 0, .2, 1);
+}
+.map-shell.panel-open { grid-template-columns: minmax(0, 1fr) 390px; }
+@media (prefers-reduced-motion: reduce) { .map-shell { transition: none; } }
+.map-shell .map-flows, .map-shell .map-flow-blurb { grid-column: 1 / -1; }
+.map-shell .map-canvas { grid-column: 1; }
+.map-flows {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding: 14px 16px 4px;
+}
+.map-flows-label {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--faint); margin-right: 4px;
+}
+.map-flow-pill {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+  padding: 6px 12px; border: 1px solid var(--hair-soft); border-radius: 999px;
+  background: transparent; color: var(--muted); cursor: pointer;
+  transition: border-color .15s ease, color .15s ease, background .15s ease;
+}
+.map-flow-pill:hover { border-color: var(--mint); color: var(--ink); }
+.map-flow-pill.on { background: var(--mint-wash); border-color: var(--mint); color: var(--mint-ink); }
+.map-flow-blurb {
+  font-family: var(--sans); font-size: 13.5px; color: var(--muted);
+  padding: 6px 16px 0; margin: 0; max-width: 720px;
+}
+
+/* —— canvas —— */
+.map-canvas { overflow-x: auto; padding: 10px 6px 16px; }
+.map-canvas svg { display: block; min-width: 1150px; width: 100%; height: auto; }
+
+/* the spine reads at book width, centered */
+.spine-canvas svg { min-width: 0; max-width: 840px; margin: 0 auto; }
+
+/* the charge view */
+.chg-canvas svg { min-width: 0; max-width: 940px; margin: 0 auto; }
+.chg-click { cursor: pointer; outline: none; }
+.chg-click .lab-world-lens { fill: transparent; }
+.chg-click:hover .lab-world-lens, .chg-click:focus-visible .lab-world-lens, .chg-click.sel .lab-world-lens { stroke: var(--mint-bright); stroke-width: 2; }
+/* bare-diamond nodes (reserve / farm / credit lines) — the open reserve diamond
+   has no fill, so give it a transparent hit area, and highlight every vault on
+   hover / select the way the lens circles do */
+.chg-click .lab-vault-open { fill: transparent; }
+.chg-click:hover .lab-vault-open, .chg-click:focus-visible .lab-vault-open, .chg-click.sel .lab-vault-open,
+.chg-click:hover .lab-vault-sq, .chg-click:focus-visible .lab-vault-sq, .chg-click.sel .lab-vault-sq { stroke: var(--mint-bright); stroke-width: 2; }
+/* hovering CoW lights its nested Redemption-Queue cells — the slots it draws from */
+.chg-click:hover .lab-seg, .chg-click:focus-visible .lab-seg, .chg-click.sel .lab-seg { stroke: var(--mint-bright); opacity: 1; }
+/* clickable hexagon node (NAV Oracle) — keep the authority-blue, thicken on interaction */
+.chg-click:hover .lab-hex-charge, .chg-click:focus-visible .lab-hex-charge, .chg-click.sel .lab-hex-charge { stroke-width: 2.8; opacity: 1; }
+/* invisible hit area — makes a whole wedge/region hoverable even where the marks
+   inside it are fill:none (the queue cells, the gaps between them) */
+.chg-hit { fill: transparent; stroke: none; }
+/* the CREDIT WAREHOUSE view runs flat — strip the hexagon glow (this view only) */
+.chg-flat .lab-hex-charge,
+.chg-flat .lab-hex-charge.blue { filter: none; }
+/* USDC mark: authentic line-art, never a fill. Weight is set per-instance via
+   strokeWidth (compensated for the group scale) so it matches the lens circles
+   on the path (.lab-world-lens, 1.4). */
+.chg-usdc { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; opacity: 0.8; }
+/* the official Safe mark inside the Credit Warehouse (the dot + bar identity) */
+.chg-safe { fill: none; stroke: var(--ink); stroke-width: 2.4; opacity: 0.85; }
+/* the Zodiac axis ray — chainlink blue (matches the NAV oracle / hex ramp) */
+.chg-ray { fill: none; stroke: #137acd; stroke-width: 1.4; opacity: 0.8; }
+.dark .chg-ray, [data-theme='dark'] .chg-ray { stroke: #77deff; }
+/* brand marks seated inside a node (e.g. Hydrex in the LP pool) — track --ink
+   so they read correctly in both themes (light-on-dark, dark-on-light) */
+.chg-logo { fill: var(--ink); }
+
+/* the dial */
+.map-tick { stroke: var(--faint); stroke-width: 1; opacity: 0.5; }
+.map-tick.major { stroke: var(--ink); stroke-width: 1.6; opacity: 0.9; }
+.map-ring-line { fill: none; stroke: var(--ink); stroke-width: 1.2; opacity: 0.7; }
+.map-cross { stroke: var(--faint); stroke-width: 0.9; opacity: 0.4; }
+.map-hit { fill: transparent; stroke: none; }
+.map-bore { stroke: var(--ink); stroke-width: 1.2; opacity: 0.55; }
+
+/* the token grammar: ink = USDC (raw dollars), mint = zipUSD (the note) */
+.map-drop { fill: var(--ink); }
+.map-field-dot { fill: var(--ink); opacity: 0.4; }
+.map-field-note { fill: var(--mint); opacity: 0.55; }
+.map-dlabel.mint { fill: var(--mint-ink); text-transform: none; }
+.map-dnum { font-size: 11px; fill: var(--mint-ink); }
+.map-dlabel {
+  font-size: 9px; letter-spacing: 0.12em; fill: var(--muted); text-transform: uppercase;
+}
+.map-dlabel.dim { fill: var(--faint); font-size: 8px; }
+/* with the spec sheet docked, the machine scales to fit its column — nothing clips */
+.panel-open .machine-canvas svg { min-width: 0; }
+/* likewise the chg-canvas views (system map, credit vault, …) scale to fit their
+   column when the panel is open, so the diagram stays centred, not jammed right */
+.panel-open .chg-canvas svg { min-width: 0; }
+.map-views { display: inline-flex; gap: 0; margin-right: 10px; }
+.map-view-pill { border-radius: 0; }
+.map-view-pill:first-child { border-radius: 999px 0 0 999px; }
+.map-view-pill:last-child { border-radius: 0 999px 999px 0; margin-left: -1px; }
+/* lift the active AND hovered pill above their neighbours so the -1px overlap
+   on the next pill can't paint its gray border over the green right edge */
+.map-view-pill.on { position: relative; z-index: 1; }
+.map-view-pill:hover { position: relative; z-index: 2; }
+.spine-motto {
+  font-family: var(--serif); font-style: italic; font-size: 20px; fill: var(--ink);
+}
+
+.map-band-label {
+  font-size: 8.5px; letter-spacing: 0.14em; fill: var(--faint);
+}
+.map-foundation-band {
+  fill: var(--mint-wash); opacity: 0.35; stroke: var(--mint); stroke-opacity: 0.35;
+}
+
+/* drafting ground */
+.map-grid-glyph { stroke: var(--ink); opacity: 0.07; }
+.map-reg path { fill: none; stroke: var(--faint); opacity: 0.55; }
+
+/* title block */
+.map-titleblock rect { fill: var(--panel); stroke: var(--hair-soft); }
+.map-titleblock line { stroke: var(--hair-soft); }
+.map-titleblock text { font-size: 8.5px; letter-spacing: 0.1em; fill: var(--faint); }
+.map-titleblock text:first-of-type { fill: var(--mint-ink); }
+
+/* sigils + seals */
+.map-seal { fill: var(--ink); }
+.map-sigil { pointer-events: none; }
+
+/* engine machinery cells */
+.map-cell rect { fill: transparent; stroke: var(--hair-soft); }
+.map-cell text {
+  font-size: 6.8px; letter-spacing: 0.08em; fill: var(--faint);
+}
+.map-node:hover .map-cell rect, .map-node.sel .map-cell rect { stroke: var(--mint); }
+.map-node:hover .map-cell text, .map-node.sel .map-cell text { fill: var(--mint-ink); }
+
+/* seams */
+.map-ar { fill: var(--ink); }
+.map-ar-lit { fill: var(--mint-bright); }
+.map-edge { fill: none; stroke: var(--ink); stroke-width: 1.2; opacity: 0.55; }
+.map-edge-label {
+  font-size: 8.5px; letter-spacing: 0.08em; fill: var(--faint); text-anchor: middle;
+}
+.map-edges g { transition: opacity .2s ease; }
+.map-edges g.dim { opacity: 0.16; }
+.map-edges g.lit .map-edge {
+  stroke: var(--mint-bright); stroke-width: 2; opacity: 1;
+  stroke-dasharray: 7 5;
+  animation: map-conveyor 0.9s linear infinite;
+}
+.map-edges g.lit .map-edge-label { fill: var(--mint-ink); }
+@keyframes map-conveyor { to { stroke-dashoffset: -12; } }
+@media (prefers-reduced-motion: reduce) {
+  .map-edges g.lit .map-edge { animation: none; stroke-dasharray: none; }
+}
+
+/* stands-on ties */
+.map-tie {
+  fill: none; stroke: var(--mint); stroke-width: 1.1; stroke-dasharray: 3 5;
+  opacity: 0.1; transition: opacity .2s ease, stroke-width .2s ease;
+}
+.map-tie.lit { opacity: 0.95; stroke-width: 1.8; stroke: var(--mint-bright); }
+
+/* particles — a comet with two embers */
+.map-particle { fill: var(--mint-bright); }
+.map-ember { opacity: 0.55; }
+.map-ember2 { opacity: 0.28; }
+
+/* —— nodes —— */
+.map-node { cursor: pointer; transition: opacity .2s ease; outline: none; }
+.map-node.dim { opacity: 0.22; }
+.map-node .map-box {
+  fill: var(--panel); stroke: var(--ink); stroke-width: 1.1;
+  transition: stroke .15s ease, fill .15s ease;
+}
+.map-node .map-title { font-size: 13px; fill: var(--ink); }
+.map-node .map-tagline { font-size: 8.5px; letter-spacing: 0.1em; fill: var(--faint); text-transform: uppercase; }
+.map-node .map-count { font-size: 8px; letter-spacing: 0.08em; fill: var(--mint-ink); }
+
+.map-node:hover .map-box, .map-node:focus-visible .map-box {
+  stroke: var(--mint-bright); stroke-width: 1.6; filter: url(#map-glow-hover);
+}
+.map-node.sel .map-box { stroke: var(--mint-bright); stroke-width: 2; filter: url(#map-glow); }
+
+/* strata voices */
+.map-node.k-primitive .map-box { fill: var(--mint-wash); stroke: var(--mint); filter: url(#map-glow); }
+.map-node.k-primitive .map-title { fill: var(--mint-ink); }
+.map-node.k-neighborhood .map-box { stroke-dasharray: 4 3; stroke: var(--faint); fill: transparent; }
+.map-node.k-neighborhood .map-title { font-size: 11px; fill: var(--muted); }
+.map-node.k-actor .map-box { fill: transparent; stroke: var(--ink); stroke-width: 1.6; }
+.map-node.k-actor .map-title { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+.map-node.k-engine .map-box { fill: var(--paper-lift); }
+
+/* nodes the dial already expresses — red-flagged for eventual replacement.
+   Placed after the strata voices so it wins over k-primitive/k-actor strokes. */
+.map-node.expressed .map-box { stroke: #e5484d; stroke-width: 1.8; filter: none; }
+.map-node.expressed:hover .map-box, .map-node.expressed.sel .map-box { stroke: #ff7276; }
+.dark .map-node.expressed .map-box,
+[data-theme='dark'] .map-node.expressed .map-box { stroke: #ff5d63; }
+
+/* —— detail panel: a docked spec sheet, never an overlay —— */
+.map-panel {
+  grid-column: 2;
+  /* fixed width so the text doesn't rewrap while the track animates in/out;
+     the .figure's overflow:hidden clips it to a clean slide from the right */
+  width: 390px; box-sizing: border-box;
+  position: sticky; top: 16px; align-self: start;
+  max-height: calc(100vh - 32px);
+  background: var(--panel);
+  border-left: 1px solid var(--hair-soft);
+  padding: 24px 24px 32px; overflow-y: auto;
+}
+@media (max-width: 1100px) {
+  .map-shell, .map-shell.panel-open { grid-template-columns: minmax(0, 1fr); }
+  .map-panel {
+    grid-column: 1; position: static; max-height: none; width: auto;
+    border-left: none; border-top: 1px solid var(--hair-soft);
+  }
+}
+.map-panel-close {
+  position: absolute; top: 14px; right: 16px; font-size: 22px; line-height: 1;
+  background: none; border: none; color: var(--faint); cursor: pointer;
+}
+.map-panel-close:hover { color: var(--ink); }
+.map-panel-eyebrow {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--mint-ink);
+}
+.map-panel h2 {
+  font-family: var(--serif); font-size: 26px; font-weight: 500;
+  color: var(--ink); margin: 8px 0 2px;
+}
+.map-panel-tagline {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--faint); margin: 0 0 14px;
+}
+.map-panel-summary { font-size: 14.5px; line-height: 1.65; color: var(--body); margin: 0 0 18px; }
+
+.map-panel-primitive {
+  border: 1px solid var(--mint); background: var(--mint-wash);
+  border-radius: 3px; padding: 12px 14px; margin-bottom: 18px;
+}
+.map-panel-primitive span {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--mint-ink);
+}
+.map-panel-primitive button {
+  display: block; font-family: var(--serif); font-size: 16px; color: var(--ink);
+  background: none; border: none; padding: 2px 0 4px; cursor: pointer; text-align: left;
+}
+.map-panel-primitive button:hover { color: var(--mint-ink); }
+.map-panel-primitive p { font-size: 13px; line-height: 1.55; color: var(--body); margin: 0; }
+
+.map-panel-sub {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--faint);
+}
+.map-panel-members ul { list-style: none; padding: 8px 0 0; margin: 0 0 18px; }
+.map-panel-members li {
+  font-size: 13px; line-height: 1.5; color: var(--body);
+  padding: 7px 0; border-bottom: 1px solid var(--hair-soft);
+}
+.map-panel-members li b { color: var(--ink); font-weight: 600; }
+.map-panel-members li a { color: var(--mint-ink); text-decoration: none; font-weight: 600; }
+.map-panel-members li a:hover { text-decoration: underline; }
+
+.map-panel-code { margin-bottom: 18px; border: 1px solid var(--hair-soft); border-radius: 3px; overflow: hidden; }
+.map-panel-code-head {
+  font-family: var(--mono); font-size: 10px; color: var(--faint);
+  padding: 7px 12px; border-bottom: 1px solid var(--hair-soft); background: var(--paper-lift);
+  overflow-x: auto; white-space: nowrap;
+}
+.map-panel-code pre {
+  margin: 0; padding: 12px; overflow-x: auto; background: var(--panel);
+}
+.map-panel-code code { font-family: var(--mono); font-size: 11px; line-height: 1.55; color: var(--body); }
+
+.map-panel-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.map-panel-links a {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+  color: var(--mint-ink); border: 1px solid var(--hair-soft); border-radius: 999px;
+  padding: 6px 12px; text-decoration: none;
+}
+.map-panel-links a:hover { border-color: var(--mint); }
+
+@media (max-width: 760px) {
+  .zc-map .map-hero { padding-top: 36px; }
+}

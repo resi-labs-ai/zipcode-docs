@@ -1,0 +1,195 @@
+/* /lab — the senior-gate triangle: synth ⊣ gate ⊣ warehouse */
+
+.zc-lab .lab-grid-wrap { padding: 28px 0 72px; }
+.zc-lab .lab-grid-wrap .wrap { max-width: 1400px; }
+.lab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.lab-tile { padding: 0; margin: 0; }
+.lab-tile svg { display: block; width: 100%; height: auto; }
+.lab-tile figcaption {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em;
+  color: var(--faint); padding: 10px 14px 12px; border-top: 1px solid var(--hair-soft);
+}
+@media (max-width: 900px) { .lab-grid { grid-template-columns: 1fr; } }
+
+/* shared voices (the dial's language) */
+.lab-ar { fill: var(--ink); }
+.lab-ar.mint { fill: var(--mint-bright); }
+.lab-ar.blue { fill: #137acd; }
+.dark .lab-ar.blue, [data-theme='dark'] .lab-ar.blue { fill: #77deff; }
+.lab-lbl { font-size: 8.5px; letter-spacing: 0.08em; fill: var(--faint); }
+.lab-tag { font-size: 8.5px; letter-spacing: 0.1em; fill: var(--faint); }
+.lab-title { font-size: 13px; fill: var(--ink); }
+.lab-title.mintfill, .lab-cell-title.mintfill { fill: var(--mint-ink); }
+.lab-cell-title { font-size: 12px; fill: var(--ink); }
+.lab-node rect { fill: var(--panel); stroke: var(--ink); stroke-width: 1.1; rx: 2; }
+.lab-node.lab-mint rect { fill: var(--mint-wash); stroke: var(--mint); }
+.lab-node.lab-mint .lab-cell-title, .lab-node.lab-mint .lab-title { fill: var(--mint-ink); }
+.lab-core { fill: var(--panel); stroke: var(--ink); stroke-width: 2; }
+.lab-core.mint { fill: var(--mint-wash); stroke: var(--mint); }
+.lab-tick { stroke: var(--faint); stroke-width: 1; opacity: 0.5; }
+.lab-tick.major { stroke: var(--ink); stroke-width: 1.6; opacity: 0.9; }
+.lab-ring-line { fill: none; stroke: var(--ink); stroke-width: 1.2; opacity: 0.7; }
+.lab-door circle, .lab-door line { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.lab-door circle:first-child { stroke: var(--mint); stroke-width: 1.8; }
+
+/* relationship labels */
+.lab-rel { font-size: 9px; letter-spacing: 0.12em; fill: var(--muted); }
+.lab-rel.blue { fill: #137acd; }
+.dark .lab-rel.blue, [data-theme='dark'] .lab-rel.blue { fill: #77deff; }
+.lab-rel.mint { fill: var(--mint-ink); }
+
+/* line grammars: solid = money, dashed = authority */
+.lab-money { fill: none; stroke: var(--ink); stroke-width: 1.6; opacity: 0.7; }
+.lab-money.thin { stroke-width: 1.2; }
+.lab-auth-line { fill: none; stroke: var(--mint); stroke-width: 1.3; stroke-dasharray: 4 4; }
+
+/* T1 — triad */
+.lab-arc { fill: none; stroke: var(--ink); stroke-width: 1.4; opacity: 0.65; }
+.lab-arc.auth { stroke: var(--mint); stroke-dasharray: 4 4; opacity: 0.9; }
+
+/* T2 — linkage */
+.lab-rod { stroke: var(--ink); stroke-width: 2; opacity: 0.65; }
+.lab-rod.auth { stroke: var(--mint); stroke-dasharray: 5 4; opacity: 0.9; }
+.lab-pivot { fill: var(--panel); stroke: var(--ink); stroke-width: 1.4; }
+
+/* T3 — valve */
+.lab-chamber-big { fill: var(--panel); stroke: var(--ink); stroke-width: 2; }
+.lab-chamber { fill: var(--paper-lift); stroke: var(--ink); stroke-width: 1.3; }
+.lab-doorline { stroke: var(--ink); stroke-width: 1.4; opacity: 0.7; }
+.lab-chevron { fill: none; stroke: var(--mint); stroke-width: 1.6; }
+
+/* T4 — triptych */
+.lab-plate { fill: var(--panel); stroke: var(--ink); stroke-width: 1.4; }
+.lab-plate-cap { fill: var(--paper-lift); stroke: var(--ink); stroke-width: 1.4; }
+.lab-plate-title { font-size: 9px; letter-spacing: 0.14em; fill: var(--mint-ink); }
+.lab-spec { font-size: 8px; letter-spacing: 0.08em; fill: var(--muted); }
+.lab-step-cell { fill: var(--paper-lift); stroke: var(--hair-soft); }
+.lab-seam-mask { fill: var(--paper); opacity: 0.9; }
+
+/* the synth mandala */
+.lab-hemi { stroke: var(--ink); stroke-width: 1.3; }
+.lab-hemi.entry { fill: var(--panel); }
+.lab-hemi.exit { fill: var(--paper-lift); }
+.lab-hemi.lane { fill: var(--panel); }
+.lab-lane { stroke: var(--ink); stroke-width: 1.4; opacity: 0.7; fill: none; }
+.lab-lane.mint { stroke: var(--mint); opacity: 0.95; }
+.lab-drop { fill: var(--ink); opacity: 0.55; }
+.lab-note { fill: var(--mint); opacity: 0.7; }
+.lab-leader { stroke: var(--faint); stroke-width: 0.9; opacity: 0.6; }
+.lab-world { fill: none; stroke: var(--faint); stroke-width: 1; stroke-dasharray: 3 6; }
+.lab-lbl.mintink, .lab-rel.mintink { fill: var(--mint-ink); }
+
+.lab-junction { fill: var(--ink); opacity: 0.8; }
+.lab-pulse { fill: none; stroke: var(--mint-bright); stroke-width: 1.6; filter: drop-shadow(0 0 3px var(--mint-bright)); }
+.lab-hex polygon { fill: none; stroke: var(--mint-bright); stroke-width: 1.5; filter: drop-shadow(0 0 4px var(--mint-bright)); }
+.lab-hex-static polygon { fill: none; stroke: var(--mint); stroke-width: 1.2; opacity: 0.55; }
+.lab-vault-open { fill: none; stroke: var(--mint); stroke-width: 1.6; }
+.lab-hex-charge { fill: none; stroke: var(--mint-bright); stroke-width: 1.8; filter: drop-shadow(0 0 3px var(--mint-bright)); }
+.lab-hex-notch { fill: var(--mint-bright); }
+
+/* blue — the authority color, derived not picked: the mint family sits at
+   OKLCH hue ≈150°; these blues are the SAME lightness and chroma rotated to
+   hue 250° (225–240 reads teal beside mint, 260+ drifts lavender).
+   dark #77deff ⟷ #6ff7a1 · light stroke #1da1ff ⟷ #1bbc57 · light ink
+   #137acd ⟷ #0d8f41 (contrast 3.75 vs paper; mint-ink is 3.50). */
+.lab-hex-charge.blue { stroke: #137acd; filter: drop-shadow(0 0 3px #1da1ff); }
+.dark .lab-hex-charge.blue,
+[data-theme='dark'] .lab-hex-charge.blue { stroke: #77deff; filter: drop-shadow(0 0 4px #77deff); }
+
+/* lab tiles run flat — strip every glow (the hexagon drop-shadows). Scoped to
+   .zc-lab so /map and /lab-river keep theirs. */
+.zc-lab .lab-hex-charge,
+.zc-lab .lab-hex-charge.blue,
+.zc-lab .lab-pulse,
+.zc-lab .lab-hex polygon { filter: none; }
+
+/* the standing seal: always present, only sometimes active */
+.lab-hex-standing polygon { fill: none; stroke: var(--mint); stroke-width: 1.2; opacity: 0.25; }
+.lab-hex-standing.blue polygon { stroke: #1da1ff; }
+.dark .lab-hex-standing.blue polygon,
+[data-theme='dark'] .lab-hex-standing.blue polygon { stroke: #77deff; }
+
+/* nested worlds */
+.lab-band { fill: none; stroke: var(--ink); opacity: 0.07; }
+.lab-band-edge { fill: none; stroke: var(--faint); stroke-width: 1; opacity: 0.35; }
+.lab-world-lens { fill: none; stroke: var(--ink); stroke-width: 1.4; opacity: 0.8; }
+.lab-safe { fill: none; stroke: var(--ink); stroke-width: 2.4; opacity: 0.85; }
+
+/* the burn side */
+.lab-queue-dot { fill: var(--mint); opacity: 0.75; }
+.lab-burn-dot { fill: var(--ink); opacity: 0.8; }
+.lab-core.burn { fill: var(--paper-lift); stroke: var(--ink); }
+.lab-arc-life { fill: none; stroke: var(--mint); stroke-width: 0.9; stroke-dasharray: 2 5; opacity: 0.5; }
+
+/* the event grammar */
+.lab-flash { fill: none; stroke: var(--mint-bright); stroke-width: 1.6; }
+.lab-flash.blue { stroke: #137acd; }
+.dark .lab-flash.blue, [data-theme='dark'] .lab-flash.blue { stroke: #77deff; }
+.lab-vertex-box { fill: none; stroke: var(--ink); stroke-width: 1.2; stroke-dasharray: 5 4; opacity: 0.7; }
+.lab-counterline { stroke: var(--ink); stroke-width: 2.4; opacity: 0.85; }
+.lab-post { stroke: var(--ink); stroke-width: 2.4; }
+.lab-head { fill: var(--panel); stroke: var(--ink); stroke-width: 1.6; }
+.lab-ram { fill: var(--paper-lift); stroke: var(--ink); stroke-width: 1.6; }
+.lab-die { fill: var(--mint-wash); stroke: var(--mint); stroke-width: 1.6; }
+.lab-tube { fill: none; stroke: var(--ink); stroke-width: 1.8; }
+.lab-fill.ink { fill: var(--ink); opacity: 0.35; }
+.lab-fill.mint { fill: var(--mint); opacity: 0.5; }
+
+/* animated motes: ink = USDC, mint = zipUSD. Crisp fills, no glow. */
+.lab-drop-m { fill: var(--ink); }
+.lab-note-m { fill: var(--mint-bright); }
+/* hollow green mote — an ICHI single-sided LP receipt token */
+.lab-lp-m { fill: none; stroke: var(--mint-bright); stroke-width: 1.3; }
+/* blue (Hydrex/oracle) motes — hollow = out, solid = returned */
+.lab-lp-m.blue { stroke: #137acd; }
+.lab-drop-m.blue { fill: #137acd; }
+.dark .lab-lp-m.blue, [data-theme='dark'] .lab-lp-m.blue { stroke: #77deff; }
+.dark .lab-drop-m.blue, [data-theme='dark'] .lab-drop-m.blue { fill: #77deff; }
+
+/* charge-fork marks: USDC coin (line art), Euler Earn container, shares tie */
+.lab-usdc { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; opacity: 0.85; }
+.lab-usdc.hit { cursor: pointer; }
+.lab-usdc.hit:hover { stroke: var(--mint-bright); opacity: 1; }
+.lab-frame { fill: none; stroke: var(--ink); stroke-width: 1.3; opacity: 0.5; }
+.lab-frame-fill { fill: var(--ink); opacity: 0.03; }
+.lab-earn-label { font-size: 10px; letter-spacing: 0.16em; fill: var(--mint-ink); }
+.lab-shares { fill: none; stroke: var(--mint); stroke-width: 1.2; stroke-dasharray: 3 4; opacity: 0.85; }
+.lab-share-tok { fill: var(--mint-wash); stroke: var(--mint); stroke-width: 1.1; }
+.lab-brace { fill: none; stroke: var(--ink); stroke-width: 1.3; opacity: 0.55; }
+
+/* Chainlink CRE = command, not custody: azure authority. Governance ties are
+   blue dashed; oracle feeds blue solid-thin; function labels blue. */
+.lab-gov { fill: none; stroke: #137acd; stroke-width: 1.15; stroke-dasharray: 4 4; opacity: 0.9; }
+.dark .lab-gov, [data-theme='dark'] .lab-gov { stroke: #77deff; }
+.lab-oracle { fill: none; stroke: #137acd; stroke-width: 1.1; opacity: 0.75; }
+.dark .lab-oracle, [data-theme='dark'] .lab-oracle { stroke: #77deff; }
+.lab-gov-lbl { font-size: 8px; letter-spacing: 0.12em; fill: #137acd; }
+.dark .lab-gov-lbl, [data-theme='dark'] .lab-gov-lbl { fill: #77deff; }
+.lab-gov-title { font-size: 10px; letter-spacing: 0.14em; fill: #137acd; }
+.dark .lab-gov-title, [data-theme='dark'] .lab-gov-title { fill: #77deff; }
+.lab-gate { fill: none; stroke: #137acd; stroke-width: 1.4; }
+/* neutral (non-blue) section divider for the redemption-queue band */
+.lab-seg { fill: none; stroke: var(--muted); stroke-width: 1.2; opacity: 0.55; }
+.dark .lab-gate, [data-theme='dark'] .lab-gate { stroke: #77deff; }
+.lab-accent-ring { fill: none; stroke: var(--mint); stroke-width: 1; stroke-dasharray: 2 10; opacity: 0.5; }
+.lab-sweep { stroke: var(--faint); stroke-width: 1.2; opacity: 0.7; }
+.lab-tooth { stroke: var(--ink); stroke-width: 2; opacity: 0.7; }
+.lab-spray-guide { fill: none; stroke: var(--mint); stroke-width: 0.8; stroke-dasharray: 2 5; opacity: 0.35; }
+
+/* the synth glyph candidates */
+.lab-vault-sq { fill: var(--mint-wash); stroke: var(--mint); stroke-width: 1.5; }
+.lab-bore { stroke: var(--ink); stroke-width: 1; opacity: 0.4; }
+.lab-valve path { fill: var(--panel); stroke: var(--ink); stroke-width: 1.4; }
+.lab-valve line { stroke: var(--ink); stroke-width: 1.6; }
+.lab-capsule { fill: var(--mint-wash); stroke: var(--mint); stroke-width: 1.6; }
+.lab-mini-label { font-size: 9px; letter-spacing: 0.1em; fill: var(--mint-ink); }
+.lab-mini-label.pool { fill: var(--ink); }
+.lab-bowl { fill: none; stroke: var(--ink); stroke-width: 1.8; }
+.lab-bar-note { fill: none; stroke: var(--mint); stroke-width: 1.6; }
+.lab-bar-pool { fill: var(--mint-wash); stroke: var(--mint); stroke-width: 1; }
+.lab-tie { stroke: var(--ink); stroke-width: 2; opacity: 0.7; }
+.lab-pipe { stroke: var(--ink); stroke-width: 1.6; opacity: 0.75; }
+.lab-beam { stroke: var(--ink); stroke-width: 2.2; }
+.lab-fulcrum { fill: var(--panel); stroke: var(--ink); stroke-width: 1.4; }
+.lab-string { stroke: var(--ink); stroke-width: 1; opacity: 0.6; }
+.lab-coin { fill: var(--mint-wash); stroke: var(--mint-ink); stroke-width: 1.4; }

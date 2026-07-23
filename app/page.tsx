@@ -18,9 +18,8 @@ export default function Landing() {
             <Logo twoTone className="brand-logo" />
           </a>
           <div className="nav-links">
-            <span className="soon" aria-disabled="true">
-              Credit Warehouse<i>Soon</i>
-            </span>
+            <a href="/map">Schematic</a>
+            <a href="/why-euler">Why Euler</a>
           </div>
           <div className="nav-right">
             <ThemeToggle />
