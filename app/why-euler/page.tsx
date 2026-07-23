@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import '../landing.css'
 import './why-euler.css'
 import { Logo } from '../logo'
@@ -15,53 +16,49 @@ const S = [
   {
     idx: '01',
     prim: 'Euler Vault Kit',
-    title: 'EVK vaults are extremely customizable.',
+    title: 'Creative Authority for Risk Curators.',
     node: 'evk',
     body: [
-      `The Euler Github reads like an old garage full of shelved inventions, built by an architect who never bothered to share them with the market. Euler is probably the most flexible, curator-centric money market infrastructure on EVM.`,
-      `The result is a resilient and liberated design system:`,
+      `The [Euler Github](https://github.com/euler-xyz) reads like an old garage full of shelved inventions, built by an architect who assumed that the app layer would take care of itself.`,
+      `The result is a the most curator-centric, money market stack on EVM:`,
       `- Do you want single-use, Isolated vaults?`,
-      `- Do you want a custom oracle for each vault?`,
-      `- Do you want Gated Access to vaults based on having met underwriting criteria?`,
-      `Euler has everything you need to build a private credit market.`,
+      `- Do you want a custom oracle for each line of credit?`,
+      `- Do you want Gated Access to vaults based on underwriting criteria?`,
+      `Euler built a composable toolkit around isolated credit vaults, and just left the code in a repo for you to discover. Kind of incredible.`,
     ],
   },
   {
     idx: '02',
     prim: 'Euler Earn I',
-    title: 'A built-in Allocation.',
+    title: 'Built-in Allocator.',
     node: 'line-account',
     body: [
-      `Each Euler Earn structure can house 30 USDC supply vaults, and allocate deposits between those vaults.`,
-      `In the case of Zipcode, we interpret this as:`,
+      `Euler Earn allows for allocation amongst a portfolio of 30 supply vaults.`,
+      `Zipcode Credit Warehouses construct that porftolio like this:`,
       `- One USDC Reserve vault, which holds idle supply.`,
       `- One Farm vault, which is a credit line dedicated to auto-exercising oHYDX tokens.`,
       `- 28 Lines of Credit, which are single use, isolated EVK vaults.`,
-      `Credit lines will only lend USDC when the underwriting & KYB gates have been fulfilled. The Allocator funds the loan from the Reserve vault. When the borrower has paid the loan off, the credit line is deregistered, to make room for a new line.`,
-      `Basically condoms for Private Credit.`,
+      `When a line has been approved, funds are transferred from the USDC Reserve, and then made available to the borrower through the Coinbase SDK or bridged out through Erebor. When the loan has been paid off, the credit line is retired, making room for a new line.`,
+      `Euler Earn moves capital where it needs to be, within the within a Credit Warehouse.`,
     ],
   },
   {
     idx: '03',
     prim: 'Euler Earn II',
-    title: 'An Accounting Engine.',
+    title: 'Built-in Accounting Engine.',
     node: 'euler-earn',
     body: [
-      `A happy discovery of the 30 slot limitation is the implicit Federation of Isolated Vaults pattern.`,
-      `ZipUSD addresses depeg risk by imposing duration risk on lenders:`,
-      `If $1mm in Credit Lines are in use, the Junior Tranche must have $1mm of value held in reserve.`,
-      `The resulting structure is a paired Warehouse <> Junior Tranche facility, which can facilitate up to 28 active lines of credit.`,
-      `A couple of questions come to mind:`,
-      `- What if you need 29 lines of credit?`,
-      `The limitation is a forcing function for qualification of borrowers, requiring them to have better underwriting than the other applicants.`,
-      `- How can a Private Credit Conglomorate better serve lenders & borrowers?`,
-      `If you end up needing to take on more than 28 credit lines, you end up with a small cluster of credit facilites. This is interesting, because different tranches of risk, and different credit products can be offered by each Warehouse. Each Warehouse Cluster contains its Risk, Utilization & Redemption rules.`,
-      `In short:`,
-      `If Warehouse A has a default, and both Warehouse A & Warehouse B share a Credit Dollar, then the until that default is resolved, the credit dollar lacks backing. If each Warehouse Cluster tracks its [Utilizaton]/[Total Shares], and requires that at least that much be present in NAV for the Junior Tranche -- then you can protect the credit dollar from depeg through quarantine within each warehouse.`,
-      `RWA Private Credit recourse is achieved through SPVs, Repurchase Agreements, and off-chain secondary credit funds. This illiquidity requires depositors to coordinate:`,
+      `A happy discovery that grew out of discovering the 30 slot limitation of Euler Earn is the implicit pattern of Warehouse Clusters.`,
+      `The MVP Private Credit structure is a Credit Warehouse <> Junior Tranche Pairing. If there are only 28 lines available, then you need to either launch multiple warehouses, or diversify your risk into multiple credit products / curators.`,
+      `- Underwriting quality is more competitive, because of fewer lines.`,
+      `- Diversification of risk is forced, due to the coded limitation.`,
+      `Protocols with a shared credit dollar also benefit from this structure:`,
+      `If Warehouse A has a default, and Warehouse B does not, underlying Junior for the Warehouse A Cluster, can be frozen into extended duration, proportionate to the amount of current utilization. == Protecting the shared credit dollar from depeg, and isolating the impact to the Warehouse B Cluster.`,
+      `Private Credit recourse is achieved through SPVs, Repurchase Agreements, & off-chain secondary credit funds, rather than onchain liquidity pools. Onchain depositors can benefit from offchain yields, provided these recourse structures are in place to protect depositors -- but only if you cannot lend your dollars, and sell them too.:`,
+      `A tension must be maintained:`,
       `- Enough deposits to attract borrowers.`,
       `- Enough isolation to diminish risk.`,
-      `An honest accounting of what this looks like, is a Junior Tranche that doesn't underwrite trash, and holds until the loan is paid off (or the default clears). These Warehouse Clustes scale into a diversified set of credit products, run by what is essentially a Private Credit conglomorate.`,
+      `In this way, if a Junior Tranche wants to underwrite trash, their risk can be quarantined from other clusters. Scaled out, this grows into a type of onchain Credit Union, or Private Credit Conglomorate.`,
     ],
   },
   {
@@ -70,10 +67,14 @@ const S = [
     title: 'An Oracle for Every Loan.',
     node: 'oracle-registry',
     body: [
-      `Bespoke Private Credit agreements, with RWA assets as collateral, require custom Oracles.`,
-      `To date, RWA Oracles have been of Tokenized Funds, that way each individual ACRED share tracks the underlying value of its backing. Chainlink has quietly introduced an alternative to this in the form of CRE managed datastreams, which can be fit into adapters to provide more ephemeral price feeds.`,
-      `Secondary Markets for RWAs are off-chain -- tied to individual property, lien values, or offchain credit scores. Onchain settlement, and sourced capital can supply loans to these collateral types as long as there is an oracle which can report the value of that collateral. Structurally, this gets into zkProofs on underwriting qualifications, and notarized liens with repurchase agreements, but this is also where onchain finance needs to go in order to serve financial needs beyond onchains speculation.`,
-      `The long tail of collateral types requires a long tail of oracles.`,
+      `Bespoke Private Credit collateral, requires custom Oracles.`,
+      `Oracles for Tokenized RWA funds are meant to be reflective of the underlying assets, to mark the value per share. It's expensive to launch oracles, and the tokenized fund approach seems like it relies on a periodic third party assessment to vault the underlying, and reflect that value in the feed.`,
+      `Chainlink has quietly introduced an alternative to this in the form of CRE managed datastreams, which can pull information from multiple sources, and digest that information into a price feed. Chainlink Oracle Adapters can plug this feed directly into Euler, decreasing the cost of an ephemeral oracle.`,
+      `Lenders can underwrite risk however they want:`,
+      `- zkProofs validating Plaid KYB, Credit Check and Income requirements`,
+      `- Notarized liens with repurchase agreements from secondary markets with a history of purchases`,
+      `- Cross-chain LSTs, representing Bittensor Subnet Validator yield.`,
+      `As an asset class, RWAs & Private Credit are out on the risk curve, and the long tail of collateral types requires a long tail of oracles.`,
     ],
   },
   {
@@ -85,27 +86,51 @@ const S = [
       `EVK Vaults have a hooks feature, which can gate vault functions to specific parties:`,
       `- Vaults that are Whitelisted to KYB Entities.`,
       `- Vaults which require a certain credit score, or verified income to access capital.`,
-      `- Vaults which can only be liquidated through specialized machines.`,
-      `These hooks enable Institutional Lending, Private Credit, Underwriting, or bespoke structured products intended for specific large holders to deploy capital. Again, Euler lands on the side of empowering curators to build custom solutions, rather than narrowing that capacity in favor of a more unilateral risk framework. The result is a less opinionated infrastructure, which can facilitate many approaches to onchain finance -- rather than a more limited pallete. `,
+      `- Vaults which can only be liquidated through specialized processes.`,
+      `These hooks enable Institutional Lending, Private Credit, Underwriting, or bespoke structured products intended for specific large holders to deploy capital. Euler empowers curators to build custom solutions, rather than narrowing that capacity in favor of a more unilateral risk framework. The result is a less opinionated infrastructure, which can facilitate more diverse approaches to onchain finance.`,
     ],
   },
   {
     idx: '06',
     prim: 'ESynth',
-    title: 'A minimalist, Euler-native Synthetic Asset Vault',
+    title: 'A Minimalist, Euler-Native Synthetic Asset Vault',
     node: 'eulerswap',
     body: [
       `Do you need a trust-minimized, synthetic asset, which is built directly into the Euler Stack?`,
-      `Euler's ESynth works great with Chainlink CRE and Gnosis Safe Zodiac Roles to build meaningful structures around discretionary vault strategies:`,
+      `ESynth works great with Chainlink CRE & Zodiac Roles to build permissionless vault strategies:`,
       `- Zodiac Roles narrow the scope of operations.`,
       `- Zodiac Modules physically define the onchain operations which can be executed.`,
       `- Chainlink CRE evaulates conditions, and runs operations according to set workflows.`,
-      `- Esynth is the entrance and exit gate which determines what underlyingm assets are utilzied in the strategy.`,
-      `The stack above is more of a structural response to the question of discretionary operation in vault strategy. Onchain finance is beautiful because it enables the articulation of these opinionated structures, without an intermediary who must remain to operate the structures -- and then allows onchain capital to coordinate and evaluate these opinions.`,
-      `Euler just happens to do all of that very well.`,
+      `- Esynth is the Entrance & Exit Gate which determines which assets are utilzied in the strategy.`,
+      `The stack above is a structural response to the re-occuring issue of discretionary operation in vault strategies. Onchain finance enables the articulation of opinionated structures, without intermediaries or operators. These structures then allow onchain capital to coordinate around these opinions.`,
+      `Euler just happens to integrate cleanly with the whole stack.`,
     ],
   },
 ]
+
+// Render a body line, turning markdown-style [text](url) into real links.
+function renderText(text: string) {
+  const parts: ReactNode[] = []
+  const re = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g
+  let last = 0
+  let m: RegExpExecArray | null
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) parts.push(text.slice(last, m.index))
+    parts.push(
+      <a
+        key={m.index}
+        href={m[2]}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {m[1]}
+      </a>,
+    )
+    last = m.index + m[0].length
+  }
+  if (last < text.length) parts.push(text.slice(last))
+  return parts
+}
 
 export default function WhyEuler() {
   return (
@@ -146,11 +171,8 @@ export default function WhyEuler() {
         <div className="wrap">
           <span className="eyebrow">Why Euler?</span>
           <h1 className="display">
-            Curators can get creative,<span className="accent"> with Euler</span>.
+            Building Private Credit,<span className="accent"> on Euler</span>.
           </h1>
-          <p className="lead">
-            DeFi is a game of whales, and Euler has the best set of Legos.
-          </p>
           <div className="cta">
             <a href="/map" className="pill pill--primary">
               Look at pretty value flows →
@@ -182,7 +204,7 @@ export default function WhyEuler() {
                   const bullet = p.startsWith('- ') // prefix a body line with "- " to green-bullet it
                   return (
                     <p key={i} className={bullet ? 'why-q' : undefined}>
-                      {bullet ? p.slice(2) : p}
+                      {renderText(bullet ? p.slice(2) : p)}
                     </p>
                   )
                 })}
@@ -199,7 +221,7 @@ export default function WhyEuler() {
 
             </span>
             <h4>
-              Want to see how these pieces look within a larger machine?
+              Want to see how we used Euler to build Zipcode Finance?
             </h4>
             <div className="cta">
               <a href="/map" className="pill pill--primary">
