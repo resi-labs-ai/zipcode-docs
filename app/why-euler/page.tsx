@@ -46,7 +46,7 @@ const S = [
     idx: '03',
     prim: 'Euler Earn II',
     title: 'Built-in Accounting Engine.',
-    node: 'euler-earn',
+    node: 'federation',
     body: [
       `A happy discovery that grew out of discovering the 30 slot limitation of Euler Earn is the implicit pattern of Warehouse Clusters.`,
       `The MVP Private Credit structure is a Credit Warehouse <> Junior Tranche Pairing. If there are only 28 lines available, then you need to either launch multiple warehouses, or diversify your risk into multiple credit products / curators.`,
@@ -175,7 +175,7 @@ export default function WhyEuler() {
           </h1>
           <div className="cta">
             <a href="/map" className="pill pill--primary">
-              Look at pretty value flows →
+              Read the system map →
             </a>
             <a
               href="https://github.com/resi-labs-ai/zipcode-euler"

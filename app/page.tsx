@@ -19,7 +19,7 @@ export default function Landing() {
           </a>
           <div className="nav-links">
             <a href="/map">Schematic</a>
-            <a href="/why-euler">Why Euler</a>
+            <a href="/why-euler">Why Euler?</a>
           </div>
           <div className="nav-right">
             <ThemeToggle />

@@ -23,6 +23,12 @@ export interface MapNodeContent {
     url: string
   } | null
   links: { label: string; url: string }[]
+  /** Inline "read more" doc link shown directly under the summary */
+  docLink?: { label: string; url: string } | null
+  /** "Source contracts" group (the .sol files this node covers) */
+  sources?: { label: string; url: string }[] | null
+  /** "Built on" group (the external Euler primitives/repos) */
+  builtOn?: { label: string; url: string }[] | null
   /** For collapsed blocks (the engine, federation, loss, neighborhoods) */
   members?: { name: string; blurb: string; url?: string }[] | null
 }

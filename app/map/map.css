@@ -69,6 +69,11 @@
 /* invisible hit area — makes a whole wedge/region hoverable even where the marks
    inside it are fill:none (the queue cells, the gaps between them) */
 .chg-hit { fill: transparent; stroke: none; }
+/* decorative animation overlays (moving motes, notes, drops, flashes) and the
+   standalone charge cells sit ON TOP of the interactive vaults/hexes — they must
+   never intercept the pointer, or the node beneath won't highlight on hover */
+.lab-drop-m, .lab-note-m, .lab-lp-m, .lab-flash { pointer-events: none; }
+.chg-flat .lab-hex-charge { pointer-events: none; }
 /* the CREDIT WAREHOUSE view runs flat — strip the hexagon glow (this view only) */
 .chg-flat .lab-hex-charge,
 .chg-flat .lab-hex-charge.blue { filter: none; }
@@ -249,7 +254,7 @@
   font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--faint); margin: 0 0 14px;
 }
-.map-panel-summary { font-size: 14.5px; line-height: 1.65; color: var(--body); margin: 0 0 18px; }
+.map-panel-summary { font-size: 14.5px; line-height: 1.65; color: var(--body); margin: 0 0 18px; white-space: pre-line; }
 
 .map-panel-primitive {
   border: 1px solid var(--mint); background: var(--mint-wash);
@@ -289,6 +294,15 @@
   margin: 0; padding: 12px; overflow-x: auto; background: var(--panel);
 }
 .map-panel-code code { font-family: var(--mono); font-size: 11px; line-height: 1.55; color: var(--body); }
+
+.map-panel-doclink {
+  display: inline-block; font-family: var(--mono); font-size: 12px;
+  color: var(--mint-ink); text-decoration: none; margin: -6px 0 18px;
+}
+.map-panel-doclink:hover { text-decoration: underline; }
+
+.map-panel-linkgroup { margin-bottom: 16px; }
+.map-panel-linkgroup .map-panel-sub { display: block; margin-bottom: 8px; }
 
 .map-panel-links { display: flex; flex-wrap: wrap; gap: 10px; }
 .map-panel-links a {

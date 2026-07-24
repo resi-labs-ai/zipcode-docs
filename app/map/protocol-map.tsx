@@ -522,8 +522,8 @@ function ChargeV2View({ animate, selected, onSelect }: { animate: boolean; selec
 
         {/* farm vault — a bare diamond off the reserve (no lens circle) */}
         <g
-          className={`chg-click${selected === 'euler-earn' ? ' sel' : ''}`}
-          onClick={() => onSelect('euler-earn')}
+          className={`chg-click${selected === 'farm-vault' ? ' sel' : ''}`}
+          onClick={() => onSelect('farm-vault')}
           tabIndex={0}
           role="button"
           aria-label="The farm vault"
@@ -571,13 +571,6 @@ function ChargeV2View({ animate, selected, onSelect }: { animate: boolean; selec
         <text x={LX} y={Math.max(...LINE_YS) + 40} textAnchor="middle" className="lab-rel">
           CREDIT VAULTS
         </text>
-
-        {/* CRE — signed feeds in; the charge cells live inside the reserve */}
-        <line x1="466" y1="74" x2="466" y2="108" className="lab-oracle" />
-        <text x="466" y="66" textAnchor="middle" className="lab-gov-lbl">
-          CRE · ALLOCATOR
-        </text>
-        <line x1="460" y1="112" x2={(RX + RES_S * 0.7).toFixed(2)} y2={(CY - RES_S * 0.7).toFixed(2)} className="lab-gov" />
 
         {/* auto-stake sign: a green dashed stub off the deposit → zodiac connector */}
         <line x1={DEP} y1={asY} x2={DEP + 28} y2={asY - 30} className="lab-auth-line" />
@@ -736,6 +729,27 @@ function CreditVaultView({ animate, selected, onSelect }: { animate: boolean; se
           CREDIT VAULTS
         </text>
 
+        {/* two solid CRE-blue feeds: drop from the Lien Factory (diamond) + Oracle Registry (hex),
+            then a 90° crook inward that lands on the midpoint of each of the 01 vault's two top edges */}
+        <path
+          d={`M ${LX + EXT - 19.5 * 1.4} 137 L ${LX + EXT - 19.5 * 1.4} ${LINE_YS[0] - RES_DIAG / 2} L ${LX + EXT - RES_DIAG / 2} ${LINE_YS[0] - RES_DIAG / 2}`}
+          fill="none"
+          className="chg-ray"
+        />
+        <path
+          d={`M ${LX + EXT + 19.5 * 1.4} 139 L ${LX + EXT + 19.5 * 1.4} ${LINE_YS[0] - RES_DIAG / 2} L ${LX + EXT + RES_DIAG / 2} ${LINE_YS[0] - RES_DIAG / 2}`}
+          fill="none"
+          className="chg-ray"
+        />
+        {/* a single solid CRE-blue drop from the Bittensor⟷CRE hex into the 01 vault apex below */}
+        <line
+          x1={LX + EXT}
+          y1={45 + 19.5 / COS30}
+          x2={LX + EXT}
+          y2={LINE_YS[0] - RES_DIAG}
+          className="chg-ray"
+        />
+
         {/* ported from the System Map: the pair (Lien Factory diamond + Oracle
             Registry hex) with the large blue hexagon + TAO mark above the vault
             column (LX). Hex centre at y=45; pair baseline at y=128. The pair is
@@ -746,10 +760,37 @@ function CreditVaultView({ animate, selected, onSelect }: { animate: boolean; se
           const PS = 1.4
           return (
             <g key={dx} transform={`translate(${dx} 0)`}>
-              <Endpiece x={LX - 19.5 * PS} cy={128} kind="dia" halfW={15.5 * PS} ballR={11 * PS - 3} shaftH={36 * PS} />
-              <Endpiece x={LX + 19.5 * PS} cy={128} kind="hex" halfW={15.5 * PS} ballR={10 * PS - 3} shaftH={36 * PS} />
-              <polygon points={chgHexPts(19.5 / COS30)} transform={`translate(${LX} 45)`} className="lab-hex-charge blue" />
-              <BittensorMark x={LX - 14} y={45 + 1 - (26 * 5) / 7 / 2} width={26} height={(26 * 5) / 7} color="var(--ink)" />
+              <g
+                className={`chg-click${selected === 'lien-token' ? ' sel' : ''}`}
+                onClick={() => onSelect('lien-token')}
+                tabIndex={0}
+                role="button"
+                aria-label="Lien Factory"
+              >
+                <circle cx={LX - 19.5 * PS} cy={128} r={15} fill="transparent" />
+                <Endpiece x={LX - 19.5 * PS} cy={128} kind="dia" halfW={15.5 * PS} ballR={11 * PS - 3} shaftH={36 * PS} />
+              </g>
+              <g
+                className={`chg-click${selected === 'oracle-registry' ? ' sel' : ''}`}
+                onClick={() => onSelect('oracle-registry')}
+                tabIndex={0}
+                role="button"
+                aria-label="Oracle Registry"
+              >
+                <circle cx={LX + 19.5 * PS} cy={128} r={15} fill="transparent" />
+                <Endpiece x={LX + 19.5 * PS} cy={128} kind="hex" halfW={15.5 * PS} ballR={10 * PS - 3} shaftH={36 * PS} />
+              </g>
+              <g
+                className={`chg-click${selected === 'cre-gating-hook' ? ' sel' : ''}`}
+                onClick={() => onSelect('cre-gating-hook')}
+                tabIndex={0}
+                role="button"
+                aria-label="Bittensor CRE credit oracle"
+              >
+                <circle cx={LX} cy={45} r={24} fill="transparent" />
+                <polygon points={chgHexPts(19.5 / COS30)} transform={`translate(${LX} 45)`} className="lab-hex-charge blue" />
+                <BittensorMark x={LX - 14} y={45 + 1 - (26 * 5) / 7 / 2} width={26} height={(26 * 5) / 7} color="var(--ink)" />
+              </g>
             </g>
           )
         })}
@@ -1001,8 +1042,8 @@ function SystemMapView({ animate, selected, onSelect }: { animate: boolean; sele
 
         {/* farm vault — a bare diamond off the reserve (no lens circle) */}
         <g
-          className={`chg-click${selected === 'euler-earn' ? ' sel' : ''}`}
-          onClick={() => onSelect('euler-earn')}
+          className={`chg-click${selected === 'farm-vault' ? ' sel' : ''}`}
+          onClick={() => onSelect('farm-vault')}
           tabIndex={0}
           role="button"
           aria-label="The farm vault"
@@ -1043,22 +1084,49 @@ function SystemMapView({ animate, selected, onSelect }: { animate: boolean; sele
             (hex), each an endpiece seated snug in its socket (lab winner I1).
             Both sockets share a width (halfW); their centres sit symmetric about
             the vault column (LX). */}
-        <Endpiece x={520.5} cy={102} kind="dia" halfW={15.5} ballR={11} shaftH={102 - (JRY - JRR)} />
-        <Endpiece x={559.5} cy={102} kind="hex" halfW={15.5} ballR={10} shaftH={102 - (JRY - JRR)} />
+        <g
+          className={`chg-click${selected === 'lien-token' ? ' sel' : ''}`}
+          onClick={() => onSelect('lien-token')}
+          tabIndex={0}
+          role="button"
+          aria-label="Lien Factory"
+        >
+          <circle cx={520.5} cy={102} r={14} fill="transparent" />
+          <Endpiece x={520.5} cy={102} kind="dia" halfW={15.5} ballR={11} shaftH={102 - (JRY - JRR)} />
+        </g>
+        <g
+          className={`chg-click${selected === 'oracle-registry' ? ' sel' : ''}`}
+          onClick={() => onSelect('oracle-registry')}
+          tabIndex={0}
+          role="button"
+          aria-label="Oracle Registry"
+        >
+          <circle cx={559.5} cy={102} r={14} fill="transparent" />
+          <Endpiece x={559.5} cy={102} kind="hex" halfW={15.5} ballR={10} shaftH={102 - (JRY - JRR)} />
+        </g>
 
         {/* CRE-blue feeds — independent paths (kept when scaffolding is removed):
             down v1/v2 from the endpiece centres, then kink onto the X arms and
             run in to dock on the top vault diamond's two top-edge midpoints. */}
         <path d="M 520.5 113 L 520.5 160.5 L 532.22 172.22" fill="none" className="lab-gov" />
         <path d="M 559.5 112 L 559.5 160.5 L 547.78 172.22" fill="none" className="lab-gov" />
+        {/* blue dotted CRE line: the Bittensor⟷CRE hex → the top vault apex */}
+        <line x1={LX} y1={lpY - lpR} x2={LX} y2={LINE_YS[0] - LINE_S * SQRT2} className="lab-gov" />
         {/* large blue hexagon: centred on the vault-column scaffold (LX), its two
             vertical sides landing on v1 (520.5) and v2 (559.5), pushed up so its
             bottom vertex rests on the top-of-Hydrex scaffold (lpY - lpR) */}
-        <polygon points={chgHexPts(19.5 / COS30)} transform={`translate(${LX} ${lpY - lpR - 19.5 / COS30})`} className="lab-hex-charge blue" />
-        {/* TAO / Bittensor mark inside the large blue hexagon: centred at
-            (LX − 1, hexCy + 1) — x nudged left ~1 for the tau's right-weighted
-            glyph, y +1 for optical balance (ink: white in dark, black in light) */}
-        <BittensorMark x={LX - 14} y={lpY - lpR - 19.5 / COS30 + 1 - (26 * 5) / 7 / 2} width={26} height={(26 * 5) / 7} color="var(--ink)" />
+        <g
+          className={`chg-click${selected === 'cre-gating-hook' ? ' sel' : ''}`}
+          onClick={() => onSelect('cre-gating-hook')}
+          tabIndex={0}
+          role="button"
+          aria-label="Bittensor CRE credit oracle"
+        >
+          <circle cx={LX} cy={lpY - lpR - 19.5 / COS30} r={24} fill="transparent" />
+          <polygon points={chgHexPts(19.5 / COS30)} transform={`translate(${LX} ${lpY - lpR - 19.5 / COS30})`} className="lab-hex-charge blue" />
+          {/* TAO / Bittensor mark inside the large blue hexagon */}
+          <BittensorMark x={LX - 14} y={lpY - lpR - 19.5 / COS30 + 1 - (26 * 5) / 7 / 2} width={26} height={(26 * 5) / 7} color="var(--ink)" />
+        </g>
 
         {/* animated flow — one clock, five beats. Each USDC pulse mints a
             zipUSD note that rises into the zodiac vault and settles in a
@@ -1102,16 +1170,26 @@ function SystemMapView({ animate, selected, onSelect }: { animate: boolean; sele
             )
           })}
 
+        {/* credit check — before the reserve disperses to the lines, push blue signals down the
+            feeds: CRE gate + Oracle price (solid blue), and the lien verify (hollow blue) */}
+        {animate && (
+          <g>
+            <ChgMote path={`M ${LX} ${lpY - lpR} L ${LX} ${LINE_YS[0] - LINE_S * SQRT2}`} t0={0.3} t1={0.42} blue ease="in" r={2.4} />
+            <ChgMote path="M 559.5 112 L 559.5 160.5 L 547.78 172.22" t0={0.3} t1={0.42} blue ease="in" r={2.4} />
+            <ChgMote path="M 520.5 113 L 520.5 160.5 L 532.22 172.22" t0={0.3} t1={0.42} blue hollow ease="in" r={2.4} />
+          </g>
+        )}
+
         {/* ── junior yield cluster (Hydrex LP · Vault Strategist · NAV Oracle) ── */}
         {/* vault ↔ farm through the Vault Strategist hex (dotted authority) */}
         <line x1={vRimX} y1={JRY} x2={vsX - HEXR - 3} y2={vsY} className="lab-gov" />
         <line x1={vsX + HEXR + 3} y1={vsY} x2={fEdgeX} y2={JRY} className="lab-gov" />
         <g
-          className={`chg-click${selected === 'euler-earn' ? ' sel' : ''}`}
-          onClick={() => onSelect('euler-earn')}
+          className={`chg-click${selected === 'cre-strategist' ? ' sel' : ''}`}
+          onClick={() => onSelect('cre-strategist')}
           tabIndex={0}
           role="button"
-          aria-label="Vault Strategist"
+          aria-label="CRE Strategist"
         >
           <circle cx={vsX} cy={vsY} r={HEXR + 3} fill="transparent" />
           <polygon points={chgHexPts(HEXR)} transform={`translate(${vsX} ${vsY})`} className="lab-hex-charge blue" />
@@ -1149,20 +1227,35 @@ function SystemMapView({ animate, selected, onSelect }: { animate: boolean; sele
         </g>
 
         {/* ── EXIT-view structures bridged onto the vault, scaled to fit ── */}
-        {/* Exit Gate sector */}
-        <path d={annularSector(DEP, JRY, eWHRI, eWHRO, 210 + eSEAM, 270)} className="lab-world-lens" />
-        {/* CoW ring */}
-        <path d={annularSector(DEP, JRY, eCOWRI, eCOWRO, 150, 210)} className="lab-world-lens" />
-        {/* Redemption Queue band + epoch ticks + fill dots */}
-        <path d={annularSector(DEP, JRY, eWHRI, eWHRO, 150, 210)} className="lab-world-lens" />
-        {[165, 180, 195].map((a) => {
-          const r = erad(a)
-          return <line key={a} x1={(DEP + eWHRI * Math.cos(r)).toFixed(2)} y1={(JRY + eWHRI * Math.sin(r)).toFixed(2)} x2={(DEP + eWHRO * Math.cos(r)).toFixed(2)} y2={(JRY + eWHRO * Math.sin(r)).toFixed(2)} className="lab-seg" />
-        })}
-        {[157.5, 172.5, 187.5, 202.5].map((a, i) => {
-          const r = erad(a)
-          return <circle key={i} cx={(DEP + eWHRM * Math.cos(r)).toFixed(2)} cy={(JRY + eWHRM * Math.sin(r)).toFixed(2)} r="2.2" className="lab-band-edge" opacity={0.5} />
-        })}
+        {/* Exit Gate sector — clickable */}
+        <g
+          className={`chg-click${selected === 'exit-gate' ? ' sel' : ''}`}
+          onClick={() => onSelect('exit-gate')}
+          tabIndex={0}
+          role="button"
+          aria-label="Exit Gate"
+        >
+          <path d={annularSector(DEP, JRY, eWHRI, eWHRO, 210 + eSEAM, 270)} className="lab-world-lens" />
+        </g>
+        {/* CoW ring + its nested Redemption-Queue slots — clickable (matches the EXIT view) */}
+        <g
+          className={`chg-click${selected === 'cow' ? ' sel' : ''}`}
+          onClick={() => onSelect('cow')}
+          tabIndex={0}
+          role="button"
+          aria-label="CoW Protocol and its Redemption-Queue slots"
+        >
+          <path d={annularSector(DEP, JRY, eCOWRI, eCOWRO, 150, 210)} className="lab-world-lens" />
+          <path d={annularSector(DEP, JRY, eWHRI, eWHRO, 150, 210)} className="lab-world-lens" />
+          {[165, 180, 195].map((a) => {
+            const r = erad(a)
+            return <line key={a} x1={(DEP + eWHRI * Math.cos(r)).toFixed(2)} y1={(JRY + eWHRI * Math.sin(r)).toFixed(2)} x2={(DEP + eWHRO * Math.cos(r)).toFixed(2)} y2={(JRY + eWHRO * Math.sin(r)).toFixed(2)} className="lab-seg" />
+          })}
+          {[157.5, 172.5, 187.5, 202.5].map((a, i) => {
+            const r = erad(a)
+            return <circle key={i} cx={(DEP + eWHRM * Math.cos(r)).toFixed(2)} cy={(JRY + eWHRM * Math.sin(r)).toFixed(2)} r="2.2" className="lab-band-edge" opacity={0.5} />
+          })}
+        </g>
         {/* blue axis ray — shows in the two ring paddings and past CoW into the flange */}
         <line x1={DEP - JRR} y1={JRY} x2={DEP - eWHRI} y2={JRY} className="chg-ray" />
         <line x1={DEP - eWHRO} y1={JRY} x2={DEP - eCOWRI} y2={JRY} className="chg-ray" />
@@ -1324,7 +1417,16 @@ function JuniorSafeView({ animate, selected, onSelect }: { animate: boolean; sel
             at the edge-midpoint, equal dotted gaps on each side */}
         <line x1={jEdgeX} y1={jEdgeY} x2={hmx - GAP * uxJW} y2={hmy - GAP * uyJW} className="lab-gov" />
         <line x1={hmx + GAP * uxJW} y1={hmy + GAP * uyJW} x2={wEdgeX} y2={wEdgeY} className="lab-gov" />
-        <polygon points={chgHexPts(HEXR)} transform={`translate(${hmx} ${hmy})`} className="lab-hex-charge blue" />
+        <g
+          className={`chg-click${selected === 'nav-oracle' ? ' sel' : ''}`}
+          onClick={() => onSelect('nav-oracle')}
+          tabIndex={0}
+          role="button"
+          aria-label="NAV Oracle"
+        >
+          <circle cx={hmx} cy={hmy} r={HEXR + 4} fill="transparent" />
+          <polygon points={chgHexPts(HEXR)} transform={`translate(${hmx} ${hmy})`} className="lab-hex-charge blue" />
+        </g>
         <text x={hmx + HEXR + 8} y={hmy + 2} className="lab-rel blue">
           NAV ORACLE
         </text>
@@ -1333,7 +1435,16 @@ function JuniorSafeView({ animate, selected, onSelect }: { animate: boolean; sel
             aimed at the junior-safe centre, broken with equal gaps around the hex */}
         <line x1={JD + JR_R * uxJF} y1={JR_Y + JR_R * uyJF} x2={h2x - GAP * uxJF} y2={h2y - GAP * uyJF} className="lab-gov" />
         <line x1={h2x + GAP * uxJF} y1={h2y + GAP * uyJF} x2={JRES - 22 * uxJF} y2={CV2_FARM_Y - 22 * uyJF} className="lab-gov" />
-        <polygon points={chgHexPts(HEXR)} transform={`translate(${h2x} ${h2y})`} className="lab-hex-charge blue" />
+        <g
+          className={`chg-click${selected === 'cre-strategist' ? ' sel' : ''}`}
+          onClick={() => onSelect('cre-strategist')}
+          tabIndex={0}
+          role="button"
+          aria-label="CRE Strategist"
+        >
+          <circle cx={h2x} cy={h2y} r={HEXR + 4} fill="transparent" />
+          <polygon points={chgHexPts(HEXR)} transform={`translate(${h2x} ${h2y})`} className="lab-hex-charge blue" />
+        </g>
         <text x={h2x} y={CV2_FARM_Y + 1} textAnchor="middle" className="lab-rel blue">
           CRE STRATEGIST
         </text>
@@ -1392,8 +1503,8 @@ function JuniorSafeView({ animate, selected, onSelect }: { animate: boolean; sel
 
         {/* farm vault, up off the reserve */}
         <g
-          className={`chg-click${selected === 'euler-earn' ? ' sel' : ''}`}
-          onClick={() => onSelect('euler-earn')}
+          className={`chg-click${selected === 'farm-vault' ? ' sel' : ''}`}
+          onClick={() => onSelect('farm-vault')}
           tabIndex={0}
           role="button"
           aria-label="The farm vault"
@@ -1810,15 +1921,8 @@ export function ProtocolMap() {
   const [selected, setSelected] = useState<string | null>(null)
   const [activeFlow, setActiveFlow] = useState<string | null>(null)
   const [hoverPrim, setHoverPrim] = useState<string | null>(null)
-  const [animate, setAnimate] = useState(false)
-
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setAnimate(!mq.matches)
-    const onChange = () => setAnimate(!mq.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
+  // animations disabled across all views
+  const animate = false
 
   // deep links: /map?node=<id> opens a panel, /map?flow=<id> runs a flow
   // (a flow or an explicit ?view=machine opens the full machine)
@@ -2234,7 +2338,18 @@ export function ProtocolMap() {
           <p className="map-panel-tagline">{panelSel.tagline}</p>
           <p className="map-panel-summary">{panelSel.summary}</p>
 
-          {panelSel.eulerPrimitive && NODES[panelSel.eulerPrimitive.id] && (
+          {panelSel.docLink && (
+            <a
+              className="map-panel-doclink"
+              href={panelSel.docLink.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {panelSel.docLink.label} ↗
+            </a>
+          )}
+
+          {panelSel.eulerPrimitive && NODES[panelSel.eulerPrimitive.id] && !panelSel.builtOn && (
             <div className="map-panel-primitive">
               <span>Stands on</span>
               <button onClick={() => setSelected(panelSel.eulerPrimitive!.id)}>
@@ -2272,6 +2387,32 @@ export function ProtocolMap() {
               <pre>
                 <code>{panelSel.code.excerpt}</code>
               </pre>
+            </div>
+          )}
+
+          {panelSel.sources && panelSel.sources.length > 0 && (
+            <div className="map-panel-linkgroup">
+              <span className="map-panel-sub">Source contracts</span>
+              <div className="map-panel-links">
+                {panelSel.sources.map((l) => (
+                  <a key={l.url} href={l.url} target="_blank" rel="noreferrer">
+                    {l.label} ↗
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {panelSel.builtOn && panelSel.builtOn.length > 0 && (
+            <div className="map-panel-linkgroup">
+              <span className="map-panel-sub">Built on</span>
+              <div className="map-panel-links">
+                {panelSel.builtOn.map((l) => (
+                  <a key={l.url} href={l.url} target="_blank" rel="noreferrer">
+                    {l.label} ↗
+                  </a>
+                ))}
+              </div>
             </div>
           )}
 
