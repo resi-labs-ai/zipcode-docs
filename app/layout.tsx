@@ -21,23 +21,23 @@ const platypi = Platypi({
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.zipcode.finance'),
   title: {
-    default: 'Zipcode — a network for real-world credit',
+    default: 'Zipcode - A Network for Asset Backed Credit.',
     template: '%s · Zipcode',
   },
   description:
-    'Asset-Backed Credit for HELOC Originators, and their secondary markets.',
+    'The Bank of Bittensor.',
   openGraph: {
     siteName: 'Zipcode',
     type: 'website',
-    title: 'Zipcode — a network for real-world credit',
+    title: 'Zipcode - A Network for Asset Backed Credit.',
     description:
-      'Asset-Backed Credit for HELOC Originators, and their secondary markets.',
+      'The Bank of Bittensor.',
   },
   twitter: {
     card: 'summary',
-    title: 'Zipcode — a network for real-world credit',
+    title: 'Zipcode - A Network for Asset Backed Credit.',
     description:
-      'Asset-Backed Credit for HELOC Originators, and their secondary markets.',
+      'The Bank of Bittensor.',
   },
 }
 
