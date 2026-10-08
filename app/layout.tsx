@@ -21,23 +21,23 @@ const platypi = Platypi({
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.zipcode.finance'),
   title: {
-    default: 'Zipcode - A Network for Asset Backed Credit.',
+    default: 'Zipcode Finance — Permissionless GPU loans, 10% fixed.',
     template: '%s · Zipcode',
   },
   description:
-    'The Bank of Bittensor.',
+    'Borrowers fund half of the hardware, lenders fund the other half at a 10% fixed APR over 36 months. GPUs held in custody until repaid.',
   openGraph: {
     siteName: 'Zipcode',
     type: 'website',
-    title: 'Zipcode - A Network for Asset Backed Credit.',
+    title: 'Zipcode Finance — Permissionless GPU loans, 10% fixed.',
     description:
-      'The Bank of Bittensor.',
+      'Borrowers fund half of the hardware, lenders fund the other half at a 10% fixed APR over 36 months. GPUs held in custody until repaid.',
   },
   twitter: {
     card: 'summary',
-    title: 'Zipcode - A Network for Asset Backed Credit.',
+    title: 'Zipcode Finance — Permissionless GPU loans, 10% fixed.',
     description:
-      'The Bank of Bittensor.',
+      'Borrowers fund half of the hardware, lenders fund the other half at a 10% fixed APR over 36 months. GPUs held in custody until repaid.',
   },
 }
 
