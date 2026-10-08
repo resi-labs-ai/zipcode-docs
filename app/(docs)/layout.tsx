@@ -13,7 +13,7 @@ export default async function DocsLayout({
   const pageMap = await getPageMap()
   // `darkMode={false}` disables Nextra's built-in sidebar theme switch — our
   // <ThemeToggle/> in the navbar is the single control. Dark theming itself is
-  // driven by next-themes (nextThemes below), not that flag, and defaults to dark.
+  // driven by next-themes (nextThemes below), not that flag, and defaults to light.
   const navbar = (
     <Navbar
       logo={
@@ -40,11 +40,11 @@ export default async function DocsLayout({
       navbar={navbar}
       pageMap={pageMap}
       darkMode={false}
-      nextThemes={{ attribute: 'class', defaultTheme: 'dark', storageKey: 'theme' }}
+      nextThemes={{ attribute: 'class', defaultTheme: 'light', storageKey: 'theme' }}
       docsRepositoryBase="https://github.com/resi-labs-ai/zipcode-docs/tree/main"
       editLink={null}
       feedback={{ content: null }}
-      footer={<Footer>Zipcode — a network for real-world credit.</Footer>}
+      footer={<Footer>Zipcode Finance — permissionless GPU loans.</Footer>}
     >
       <div className="zc-docs">{children}</div>
     </Layout>
