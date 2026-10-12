@@ -1,0 +1,35 @@
+---
+title: For Lenders
+description: How lenders fund Zipcode GPU vaults, what they earn, and the risks involved.
+---
+
+import { Callout } from 'nextra/components'
+
+<p className="zc-eyebrow">GPU Vaults</p>
+
+# For lenders
+
+Lenders finance the other half of each hardware purchase and earn a **10% fixed APR**, paid from the borrower's monthly payments over a 36-month term.
+
+## How lending works
+
+- **Any open vault, any size.** Lending is permissionless. You can fund any share of a vault's lender side until it is full.
+- **One rate for everyone.** Every dollar in every vault earns the same 10% fixed APR. The protocol sets the rate; it does not move with utilization.
+- **Amortizing repayment.** Borrowers make equal monthly payments of principal and interest, which are paid out to the vault's lenders in proportion to their share.
+
+## What protects your capital
+
+- **The borrower has 50% at stake.** Each vault is half funded by the borrower, so lenders finance at most half of the hardware's purchase price.
+- **The hardware is the collateral.** Zipcode holds the hardware in custody in a verified colocation facility until the loan is repaid. The borrower has operating access, but not title.
+- **Defined remedy on default.** If payments are missed, the hardware is sold to make lenders whole. See [Repayment, Title & Default](/vaults/repayment).
+
+## Risks to understand
+
+<Callout type="warning">
+  Lending to a vault is not a deposit and is not guaranteed. Consider these risks before you lend.
+</Callout>
+
+- **Borrower default.** A borrower may stop paying. Recovery then depends on selling the hardware.
+- **Hardware value.** GPU resale prices can fall, especially as newer generations ship. A sale may not recover the full outstanding balance.
+- **Liquidity.** A vault position is a 36-month loan. Plan to hold it for the term.
+- **Operational risk.** Hardware can fail, and facilities can suffer outages. Zipcode manages and maintains the hardware to reduce, not eliminate, these risks.

@@ -21,11 +21,8 @@ export default async function DocsLayout({
           <a href="/" aria-label="Zipcode home" style={{ display: 'flex' }}>
             <Logo twoTone style={{ height: 22, width: 'auto', display: 'block', color: 'var(--ink)' }} />
           </a>
-          <a href="/map" className="zc-nav-link">
-            Schematic
-          </a>
-          <a href="/why-euler" className="zc-nav-link">
-            Why Euler?
+          <a href="/#vaults" className="zc-nav-link">
+            Explore vaults
           </a>
         </span>
       }

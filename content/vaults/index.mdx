@@ -1,0 +1,87 @@
+---
+title: How Vaults Work
+description: How a Zipcode GPU vault takes hardware from purchase to paid-off, end to end.
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+<p className="zc-eyebrow">GPU Vaults</p>
+
+# How vaults work
+
+Zipcode provides four things in one place: **the hardware**, **the financing**, **the management of that hardware**, and **a way to earn from it**.
+
+Every loan is a **vault**: one specific hardware purchase, financed half by the borrower and half by lenders. The terms are the same for every vault:
+
+| Term | Value |
+| --- | --- |
+| Borrower contribution | 50% of the purchase price, deposited up front |
+| Lender contribution | The remaining 50% |
+| Interest rate | 10% fixed APR |
+| Loan term | 36 months, repaid in equal monthly payments |
+| Collateral | The hardware itself, held by Zipcode until the loan is repaid |
+
+There is no credit application or credit score. The borrower's deposit and Zipcode's custody of the hardware are the underwriting.
+
+<Callout type="info">
+  Vaults and figures shown on zipcode.finance are illustrative until launch.
+</Callout>
+
+## Who is involved
+
+| Participant | Role |
+| --- | --- |
+| **Borrower** | Chooses the hardware, opens the vault, funds 50%, operates the hardware over SSH, and makes the monthly payments. |
+| **Lender** | Funds any share of a vault's lender side and earns 10% fixed APR from the borrower's payments. |
+| **Zipcode** | Sources the hardware, takes delivery, holds it in custody, manages and maintains it, and services the loan. |
+| **Colocation facility** | A verified data center that hosts the hardware with power, cooling and network connectivity. |
+| **Compute networks** | Instant, Chutes, Engy, Lium and Targon: the networks where borrowers can deploy the hardware to earn. |
+
+## The lifecycle, end to end
+
+<Steps>
+
+### The borrower opens a vault
+
+The borrower picks the hardware configuration (for example, 4× RTX PRO 6000 or 8× H200) and opens a vault for it. They deposit 50% of the purchase price. See [For Borrowers](/vaults/borrowers).
+
+### Lenders fill the other half
+
+The vault's lender side is open to anyone, in any size, until it is fully funded. Every lender earns the same 10% fixed APR. See [For Lenders](/vaults/lenders).
+
+### Zipcode procures the hardware
+
+Once the vault is fully funded, Zipcode purchases the hardware and takes delivery.
+
+### The hardware goes into a verified colocation facility
+
+Zipcode installs the hardware in a verified colocation facility and remains responsible for managing and maintaining it for the life of the loan. See [Hardware & Operations](/vaults/operations).
+
+### The borrower gets access and puts it to work
+
+The borrower receives secure SSH access to their hardware and can deploy it on supported compute networks (Instant, Chutes, Engy, Lium and Targon) to earn. See [Earning on Networks](/vaults/earning).
+
+### The borrower repays monthly
+
+The borrower makes 36 equal monthly payments, which are paid out to the vault's lenders.
+
+### Title transfers
+
+When the final payment clears, title to the hardware transfers to the borrower. If payments are missed, the hardware is sold to make lenders whole. See [Repayment, Title & Default](/vaults/repayment).
+
+</Steps>
+
+## A worked example
+
+The illustrative 4× RTX PRO 6000 vault, priced at $36,000:
+
+| | |
+| --- | --- |
+| Purchase price | $36,000 |
+| Borrower deposit (50%) | $18,000 |
+| Financed by lenders (50%) | $18,000 |
+| Monthly payment (10% APR, 36 months) | $581 |
+| Total repaid over the term | $20,909 |
+| Total interest paid to lenders | $2,909 |
+
+The same terms apply at every size. The illustrative 8× H200 vault ($280,000) carries a monthly payment of about $4,517, and the 2× HGX B300 vault ($900,000) about $14,520.
