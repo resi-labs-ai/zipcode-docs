@@ -1,7 +1,8 @@
 /* ============================================================
    Marketing landing — scoped under .zc-landing so it never fights
    the Nextra docs theme. Institutional-finance editorial identity,
-   ported from the zip-code-portal brand sheet. Light only.
+   ported from the zip-code-portal brand sheet. Light by default, dark via
+   the navbar toggle (tokens re-mapped at the bottom of this file).
    Real fonts: Platypi (display), Geist Sans (body), Geist Mono (labels).
    ============================================================ */
 .zc-landing {
@@ -83,17 +84,6 @@
   text-transform: uppercase; color: var(--muted); padding: 4px 0; border-bottom: 1px solid transparent;
 }
 .zc-landing .nav-links a:hover { color: var(--ink); border-bottom-color: var(--mint); }
-/* Coming-soon nav item — same mono-caps, faded, non-clickable, with a mint SOON tag */
-.zc-landing .nav-links .soon {
-  display: inline-flex; align-items: center; gap: 7px; cursor: default;
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0.11em;
-  text-transform: uppercase; color: var(--faint); padding: 4px 0;
-}
-.zc-landing .nav-links .soon i {
-  font-style: normal; font-size: 8px; line-height: 1; letter-spacing: 0.1em;
-  color: var(--mint); border: 1px solid var(--mint); border-radius: 999px;
-  padding: 2px 5px 1px;
-}
 .zc-landing .nav-right { margin-left: auto; display: flex; align-items: center; gap: 18px; }
 /* GitHub (and any) nav icon — mint, matches the theme toggle */
 .zc-landing .nav-icon { display: inline-flex; align-items: center; color: var(--mint); transition: color .15s ease; }
@@ -120,17 +110,6 @@
 .zc-landing h1 .accent { color: var(--mint); font-style: italic; }
 .zc-landing .lead { margin: 26px 0 0; max-width: 44ch; font-size: 18px; color: var(--muted); line-height: 1.55; }
 .zc-landing .lead b { color: var(--ink); font-weight: 600; }
-/* Hero bullets — inherit the lead's size/colour, marked with the same mint
-   square the eyebrow uses rather than a default disc. */
-.zc-landing .lead-list {
-  margin: 30px 0 0; padding: 0; list-style: none; max-width: 44ch;
-  font-size: 18px; color: var(--muted); line-height: 1.55;
-}
-.zc-landing .lead-list li { position: relative; padding-left: 20px; margin-top: 9px; }
-.zc-landing .lead-list li::before {
-  content: ''; position: absolute; left: 0; top: 0.6em;
-  width: 7px; height: 7px; background: var(--mint);
-}
 .zc-landing .cta { margin-top: 34px; display: flex; gap: 12px; flex-wrap: wrap; }
 
 /* hero schematic figure */
@@ -145,25 +124,6 @@
   padding-bottom: 12px; margin-bottom: 16px;
 }
 .zc-landing .figure svg { display: block; width: 100%; height: auto; }
-/* Schematic marks: resting mint halo comes from the #logo-glow filter attribute;
-   hover swaps to the brighter #logo-glow-hover and lifts the mark a touch.
-   (The filter swap is a hard cut — url() filters don't interpolate — so the
-   scale transition carries the motion.) */
-.zc-landing .figure svg .mark {
-  transform-box: fill-box; transform-origin: center;
-  transition: transform 0.18s ease;
-}
-.zc-landing .figure svg .mark:hover {
-  filter: url(#logo-glow-hover);
-  transform: scale(1.06);
-}
-/* Hover name-tags: each mark's label is its immediate next sibling in the SVG. */
-.zc-landing .figure svg .mark-name {
-  fill: var(--mint-ink);
-  opacity: 0; transition: opacity 0.15s ease;
-  pointer-events: none;
-}
-.zc-landing .figure svg .mark:hover + .mark-name { opacity: 1; }
 
 /* section scaffolding */
 .zc-landing section.band { padding: 74px 0; border-top: 1px solid var(--hair); }
@@ -248,3 +208,168 @@
 /* Figure panel: the hard offset shadow vanishes on near-black — lift with a soft ambient drop. */
 .dark .zc-landing .figure,
 [data-theme='dark'] .zc-landing .figure { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); }
+
+/* ============================================================
+   GPU-loan explorer — the Silo-style vault page. Same devices as above
+   (mono eyebrows, serif caps heads, hairlines, one mint), new furniture:
+   stat strip, filter chips, vault cards, the waitlist modal.
+   ============================================================ */
+
+/* nav: active route gets the mint underline permanently */
+.zc-landing .nav-links a.on { color: var(--ink); border-bottom-color: var(--mint); }
+.zc-landing nav.top .pill { padding: 9px 18px; }
+
+/* hero proof line — three mono facts under the CTAs */
+.zc-landing .proof {
+  margin: 30px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px 22px;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint);
+}
+.zc-landing .proof li { position: relative; padding-left: 14px; }
+.zc-landing .proof li::before { content: ''; position: absolute; left: 0; top: 0.35em; width: 6px; height: 6px; background: var(--mint); }
+
+/* stat strip (Silo "Protocol overview") */
+.zc-landing section.band--tight { padding: 0; border-top: none; }
+.zc-landing .stats {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--hair); border-radius: var(--radius); background: var(--panel); overflow: hidden;
+  box-shadow: var(--shadow-sharp, 4px 4px 0 rgba(0,0,0,0.04));
+  transform: translateY(-50%);
+}
+.zc-landing .stat { padding: 20px 22px 18px; border-right: 1px solid var(--hair-soft); display: flex; flex-direction: column; gap: 4px; }
+.zc-landing .stat:last-child { border-right: none; }
+.zc-landing .stat-k { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+.zc-landing .stat-v { font-family: var(--serif); font-size: 30px; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); }
+.zc-landing .stat-n { font-size: 12.5px; color: var(--muted); }
+.zc-landing section#vaults { padding-top: 8px; border-top: none; }
+
+/* filter chips */
+.zc-landing .chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+.zc-landing .chip {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.11em; text-transform: uppercase;
+  border: 1px solid var(--hair-soft); background: var(--panel); color: var(--muted);
+  border-radius: 999px; padding: 8px 14px; cursor: pointer; transition: background-color .15s, color .15s, border-color .15s;
+}
+.zc-landing .chip:hover { border-color: var(--ink); color: var(--ink); }
+.zc-landing .chip--on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.zc-landing .chips-meta { margin-left: auto; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+
+/* vault cards */
+.zc-landing .vault-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.zc-landing .vault {
+  background: var(--panel); border: 1px solid var(--hair); border-radius: var(--radius);
+  padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 18px;
+  box-shadow: var(--shadow-sharp, 4px 4px 0 rgba(0,0,0,0.04));
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.zc-landing .vault:hover { transform: translateY(-2px); box-shadow: 6px 6px 0 rgba(10,11,10,0.07); }
+.zc-landing .vault-head { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: start; }
+.zc-landing .vault-glyph { width: 44px; height: 44px; display: block; }
+.zc-landing .vault-name { font-family: var(--serif); font-weight: 400; text-transform: uppercase; letter-spacing: -0.01em; font-size: 22px; margin: 2px 0 0; line-height: 1.1; }
+.zc-landing .vault-family { margin: 4px 0 0; font-size: 12.5px; color: var(--muted); }
+.zc-landing .tag {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+  border: 1px solid var(--mint); color: var(--mint-ink); border-radius: 999px; padding: 3px 8px 2px; white-space: nowrap;
+}
+.zc-landing .tag--open { background: var(--mint-300); color: var(--ink); border-color: var(--ink); }
+.zc-landing .vault-price { display: flex; flex-direction: column; gap: 2px; padding-top: 14px; border-top: 1px solid var(--hair-soft); }
+.zc-landing .vault-price .k { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+.zc-landing .vault-price .v { font-family: var(--serif); font-size: 34px; letter-spacing: -0.02em; line-height: 1; color: var(--ink); }
+.zc-landing .vault-fill-k { display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px; color: var(--muted); margin-bottom: 8px; }
+.zc-landing .vault-fill-k b { color: var(--ink); font-weight: 600; }
+.zc-landing .bar { height: 8px; border: 1px solid var(--ink); background: var(--paper); border-radius: 999px; overflow: hidden; }
+.zc-landing .bar i { display: block; height: 100%; background: var(--mint); }
+.zc-landing .vault-rows { margin: 0; display: flex; flex-direction: column; border-top: 1px solid var(--hair-soft); }
+.zc-landing .vault-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--hair-soft); font-size: 13px; }
+.zc-landing .vault-row:last-child { border-bottom: none; }
+.zc-landing .vault-row dt { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin: 0; align-self: center; }
+.zc-landing .vault-row dd { margin: 0; color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.zc-landing .vault-row dd.strong { color: var(--mint-ink); font-weight: 600; font-size: 15px; }
+.zc-landing .vault-foot { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+.zc-landing .vault-foot .pill { justify-content: center; }
+.zc-landing .vault-custody { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); text-align: center; }
+
+/* closing CTA band */
+.zc-landing section.band--cta { background: var(--mint-wash); padding: 60px 0; }
+.zc-landing .cta-grid { display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
+.zc-landing .cta-grid h2 { font-family: var(--serif); font-weight: 400; text-transform: uppercase; letter-spacing: -0.01em; font-size: clamp(26px, 3.4vw, 40px); margin: 10px 0 12px; }
+.zc-landing .cta-grid p { margin: 0; color: var(--muted); max-width: 48ch; font-size: 15.5px; }
+.zc-landing .cta-grid .cta { margin: 0; justify-content: flex-end; }
+
+/* buttons that are real <button>s inherit nothing — reset so .pill reads the same */
+.zc-landing button.pill { cursor: pointer; font: inherit; font-family: var(--mono); background: var(--panel); }
+.zc-landing button.pill--primary { background: var(--mint-300); }
+.zc-landing button.pill--primary:hover { background: var(--mint-bright); }
+.zc-landing button.pill[disabled] { opacity: 0.6; cursor: progress; }
+
+/* waitlist modal */
+.zc-landing .wl-backdrop {
+  position: fixed; inset: 0; z-index: 50; background: rgba(11, 11, 10, 0.55);
+  display: grid; place-items: center; padding: 20px;
+  animation: wl-fade .15s ease;
+}
+.zc-landing .wl-modal {
+  position: relative; width: min(520px, 100%); background: var(--panel); color: var(--ink);
+  border: 1px solid var(--ink); border-radius: var(--radius); padding: 30px 30px 26px;
+  box-shadow: 8px 8px 0 rgba(10,11,10,0.12);
+  animation: wl-rise .18s ease;
+}
+.zc-landing .wl-close {
+  position: absolute; top: 10px; right: 12px; border: none; background: none; color: var(--faint);
+  font-size: 26px; line-height: 1; cursor: pointer; padding: 4px 8px;
+}
+.zc-landing .wl-close:hover { color: var(--ink); }
+.zc-landing .wl-title { font-family: var(--serif); font-weight: 400; text-transform: uppercase; letter-spacing: -0.01em; font-size: 30px; margin: 12px 0 0; line-height: 1.05; }
+.zc-landing .wl-vault { margin: 8px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mint-ink); }
+.zc-landing .wl-blurb { margin: 16px 0 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
+.zc-landing .wl-label { display: block; margin-top: 20px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+.zc-landing .wl-row { display: flex; gap: 10px; margin-top: 8px; }
+.zc-landing .wl-input {
+  flex: 1; min-width: 0; font: inherit; font-size: 15px; color: var(--ink); background: var(--paper);
+  border: 1px solid var(--ink); border-radius: var(--radius); padding: 11px 14px; outline: none;
+}
+.zc-landing .wl-input:focus { box-shadow: 0 0 0 3px var(--mint-wash); border-color: var(--mint); }
+.zc-landing .wl-hp { position: absolute; left: -10000px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.zc-landing .wl-error { margin: 10px 0 0; color: #b42318; font-size: 13px; }
+.zc-landing .wl-fine { margin: 14px 0 0; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+.zc-landing .wl-done { margin-top: 18px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
+.zc-landing .wl-done p { margin: 0; font-size: 16px; line-height: 1.5; color: var(--muted); }
+.zc-landing .wl-done b { color: var(--ink); font-weight: 600; }
+@keyframes wl-fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes wl-rise { from { transform: translateY(8px); opacity: 0 } to { transform: none; opacity: 1 } }
+
+@media (max-width: 1000px) {
+  .zc-landing .vault-grid { grid-template-columns: repeat(2, 1fr); }
+  .zc-landing .stats { grid-template-columns: repeat(2, 1fr); transform: translateY(-24px); }
+  .zc-landing .stat:nth-child(2) { border-right: none; }
+  .zc-landing .stat:nth-child(-n+2) { border-bottom: 1px solid var(--hair-soft); }
+}
+@media (max-width: 860px) {
+  .zc-landing .cta-grid { grid-template-columns: 1fr; }
+  .zc-landing .cta-grid .cta { justify-content: flex-start; }
+  .zc-landing nav.top .pill--primary { display: none; }
+}
+@media (max-width: 640px) {
+  .zc-landing .vault-grid { grid-template-columns: 1fr; }
+  .zc-landing .stats { grid-template-columns: 1fr; }
+  .zc-landing .stat { border-right: none; border-bottom: 1px solid var(--hair-soft); }
+  .zc-landing .stat:last-child { border-bottom: none; }
+  .zc-landing .chips-meta { margin-left: 0; width: 100%; }
+  .zc-landing .wl-row { flex-direction: column; }
+  .zc-landing .wl-modal { padding: 24px 20px 20px; }
+}
+
+/* dark: chips/tags/CTA band ride the dark tokens; the few hard values follow the primary pill */
+.dark .zc-landing button.pill--primary,
+[data-theme='dark'] .zc-landing button.pill--primary { background: #6ff7a1; color: #06140c; }
+.dark .zc-landing button.pill--primary:hover,
+[data-theme='dark'] .zc-landing button.pill--primary:hover { background: #8dfab8; }
+.dark .zc-landing button.pill--ghost,
+[data-theme='dark'] .zc-landing button.pill--ghost { background: transparent; }
+.dark .zc-landing .tag--open,
+[data-theme='dark'] .zc-landing .tag--open { background: #6ff7a1; color: #06140c; border-color: #6ff7a1; }
+.dark .zc-landing .vault,
+.dark .zc-landing .stats,
+[data-theme='dark'] .zc-landing .vault,
+[data-theme='dark'] .zc-landing .stats { box-shadow: 0 12px 40px rgba(0,0,0,0.45); }
+.dark .zc-landing .wl-error,
+[data-theme='dark'] .zc-landing .wl-error { color: #ff8a80; }

@@ -28,15 +28,31 @@ if you ever bump it.
 
 ## Stack
 
-Nextra 4.6 (App Router) · Next 15.5 · React 19 · pnpm. **Light mode only** — dark mode
-was removed (forced light via `darkMode={false}` + `forcedTheme: 'light'` in
-`app/(docs)/layout.tsx`; the `.dark` tokens are stripped from `app/globals.css`).
+Nextra 4.6 (App Router) · Next 15.5 · React 19 · pnpm. Light by default, dark via the
+navbar toggle (next-themes, `storageKey: 'theme'`, shared by landing and docs).
+
+## Current focus — GPU loans (Oct 2026)
+
+The landing at `/` is now the **GPU-loan vault explorer** (Silo-style). The protocol in one
+line: a borrower builds a vault for a hardware purchase and deposits 50%; lenders fill the
+other 50% at a 10% fixed APR over 36 months; Zipcode custodies the GPUs until repaid. No
+credit oracle — the loans are custodial. The real-estate / HELOC docs under `content/` are
+**unlinked from the landing** (still routable) until they are rewritten for GPU loans.
+
+- **`app/vaults.ts`** — the single source of truth for terms (`TERMS`), the three example
+  vaults (`VAULTS`), and the amortization math. Change numbers here, nowhere else.
+- **`app/vault-explorer.tsx`** — filter chips + vault cards (client, for the filter).
+- **`app/rack.tsx`** — the hero figure: a 2× HGX B300 rack drawn as a brand schematic.
+- **`app/waitlist.tsx`** — "Create a vault" / "Fund this vault" open one shared modal that
+  POSTs to **`app/api/waitlist/route.ts`**, which forwards to `WAITLIST_WEBHOOK_URL`
+  (see `.env.example`). Unset → logged to the server console only.
+- Theme defaults to **light** (the Figma brand sheet); dark remains via the toggle.
 
 ## Architecture
 
 - **`app/page.tsx`** — the custom marketing **landing** at `/`. All styles scoped under
   `.zc-landing` in **`app/landing.css`** so they never fight the docs theme. Institutional-
-  finance editorial: hero + a bespoke "the rail" SVG figure + stack panels + roadmap rail.
+  finance editorial: hero + rack figure + stat strip + vault grid + model panels.
 - **`app/(docs)/layout.tsx`** — the Nextra `<Layout>` (sidebar/navbar/footer) wraps ONLY the
   docs, via a route group. **`app/(docs)/[...mdxPath]/page.tsx`** is a **required** catch-all
   (`[...]`, not `[[...]]`) so it never collides with `/`. Docs live at root paths
