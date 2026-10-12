@@ -1,0 +1,44 @@
+---
+title: Hardware & Operations
+description: How Zipcode procures, hosts, manages and maintains vault hardware, and how borrowers access it.
+---
+
+<p className="zc-eyebrow">GPU Vaults</p>
+
+# Hardware & operations
+
+Zipcode is not only the lender of record. It acquires the hardware, hosts it, and keeps it running for the full term of the loan, so the borrower can concentrate on using it.
+
+## Procurement
+
+Once a vault's lender side is fully funded, Zipcode purchases the specified hardware and takes delivery. Supported configurations range from workstation-class systems, such as 4× RTX PRO 6000, to datacenter systems, such as 8× H200 and HGX B300.
+
+## Colocation
+
+All vault hardware is installed in **verified colocation facilities**: professional data centers selected for the power, cooling, network connectivity and physical security that high-density GPU systems require.
+
+Because the hardware stays in Zipcode custody in these facilities, it remains in a known location and condition throughout the loan, which protects borrowers and lenders alike.
+
+## Management and maintenance
+
+For the life of the loan, Zipcode is responsible for the physical side of the hardware:
+
+- Installation, racking and initial provisioning.
+- Ongoing monitoring of hardware health.
+- Maintenance and coordination of repairs or component replacement.
+- Relationships with the colocation facility.
+
+## Borrower access
+
+The borrower receives **secure SSH access** to their system. From there, the borrower controls the software environment and the workloads they run, including deploying on supported compute networks. See [Earning on Networks](/vaults/earning).
+
+## Division of responsibility
+
+| | Zipcode | Borrower |
+| --- | --- | --- |
+| Hardware purchase and delivery | ✓ | |
+| Hosting, power, cooling, connectivity | ✓ | |
+| Physical maintenance and repairs | ✓ | |
+| Software environment and workloads | | ✓ |
+| Network participation and earnings | | ✓ |
+| Monthly loan payments | | ✓ |
