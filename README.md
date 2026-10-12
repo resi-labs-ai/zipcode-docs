@@ -36,16 +36,25 @@ navbar toggle (next-themes, `storageKey: 'theme'`, shared by landing and docs).
 The landing at `/` is now the **GPU-loan vault explorer** (Silo-style). The protocol in one
 line: a borrower builds a vault for a hardware purchase and deposits 50%; lenders fill the
 other 50% at a 10% fixed APR over 36 months; Zipcode custodies the GPUs until repaid. No
-credit oracle — the loans are custodial. The real-estate / HELOC docs under `content/` are
-**unlinked from the landing** (still routable) until they are rewritten for GPU loans.
+credit oracle — the loans are custodial. Zipcode houses, manages and maintains the hardware in
+verified colocation facilities; borrowers get SSH access and can earn on the networks in
+`NETWORKS` (`app/vaults.ts`).
+
+The docs now lead with **`content/vaults/`** (GPU Vaults: lifecycle, borrowers, lenders,
+operations, earning, repayment, FAQ), linked from the landing nav as **Docs** → `/vaults`.
+The real-estate / HELOC docs and legacy pages (`/lab`, `/lab-river`, `/map`, `/why-euler`) are
+**hidden from the sidebar** in `content/_meta.ts` but still routable.
 
 - **`app/vaults.ts`** — the single source of truth for terms (`TERMS`), the three example
   vaults (`VAULTS`), and the amortization math. Change numbers here, nowhere else.
 - **`app/vault-explorer.tsx`** — filter chips + vault cards (client, for the filter).
 - **`app/rack.tsx`** — the hero figure: a 2× HGX B300 rack drawn as a brand schematic.
-- **`app/waitlist.tsx`** — "Create a vault" / "Fund this vault" open one shared modal that
-  POSTs to **`app/api/waitlist/route.ts`**, which forwards to `WAITLIST_WEBHOOK_URL`
-  (see `.env.example`). Unset → logged to the server console only.
+- **`app/waitlist.tsx`** — "Create a vault" / "Fund this vault" open one shared modal with a
+  borrow/lend toggle, the hardware wanted (borrowers) or vaults + indicative amount (lenders),
+  and an optional note. Choices live in **`app/waitlist-options.ts`**. It POSTs to
+  **`app/api/waitlist/route.ts`**, which forwards to `WAITLIST_WEBHOOK_URL` and, with
+  `RESEND_API_KEY`, emails seby@resilabs.ai a notification and the person a confirmation, both
+  from support@resilabs.ai (see `.env.example`). Neither set → logged to the server console only.
 - Theme defaults to **light** (the Figma brand sheet); dark remains via the toggle.
 
 ## Architecture
