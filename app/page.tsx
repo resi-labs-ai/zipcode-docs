@@ -4,7 +4,7 @@ import { Logo } from './logo'
 import { Rack } from './rack'
 import { VaultExplorer } from './vault-explorer'
 import { WaitlistButton, WaitlistProvider } from './waitlist'
-import { TERMS, overview, pct, usdShort } from './vaults'
+import { NETWORKS, TERMS, listOf, overview, pct, usdShort } from './vaults'
 
 const GITHUB = 'https://github.com/resi-labs-ai/zipcode-euler'
 
@@ -26,6 +26,7 @@ export default function Landing() {
                 <a href="#how">How it works</a>
                 <a href="#lend">Lend</a>
                 <a href="#borrow">Borrow</a>
+                <a href="/vaults">Docs</a>
               </div>
               <div className="nav-right">
                 <ThemeToggle />
@@ -49,7 +50,9 @@ export default function Landing() {
               <h1 className="display">
                 Permissionless
                 <br />
-                GPU loans, <span className="accent">{pct(TERMS.apr)} fixed</span>.
+                GPU loans,
+                <br />
+                <span className="accent">{pct(TERMS.apr)} fixed</span>.
               </h1>
               <p className="lead">
                 A borrower builds a vault for the hardware and funds <b>half</b>. Lenders fill the other half at a{' '}
@@ -136,12 +139,22 @@ export default function Landing() {
                 </p>
               </div>
               <div className="cell">
-                <div className="idx">03 / Repay</div>
+                <div className="idx">03 / Operate</div>
                 <h3>Hardware held until paid</h3>
                 <div className="rule" />
                 <p>
-                  Zipcode takes delivery and custodies the GPUs. The borrower makes <code>{TERMS.termMonths}</code> equal monthly
-                  payments; on the last one, title transfers. Miss payments and the hardware is sold to make lenders whole.
+                  Zipcode procures the GPUs and houses them in verified colocation facilities, where we manage and maintain
+                  them for the life of the loan. The borrower receives secure SSH access to put the hardware to work.
+                </p>
+              </div>
+              <div className="cell" id="earn">
+                <div className="idx">04 / Earn</div>
+                <h3>Earn while you repay</h3>
+                <div className="rule" />
+                <p>
+                  Deploy the hardware on {listOf(NETWORKS)}, and make <code>{TERMS.termMonths}</code> equal monthly payments. On
+                  the final payment, title transfers to the borrower. If payments are missed, the hardware is sold to make lenders
+                  whole.
                 </p>
               </div>
             </div>
@@ -153,7 +166,10 @@ export default function Landing() {
             <div>
               <span className="eyebrow">Launch</span>
               <h2>Be first in the vault.</h2>
-              <p>Vault creation and lending open together. Join the waitlist and we&rsquo;ll email you once, when it&rsquo;s live.</p>
+              <p>
+                Vault creation and lending open together. Join the waitlist as a borrower or a lender, tell us what you
+                need, and we&rsquo;ll be in touch before launch.
+              </p>
             </div>
             <div className="cta">
               <WaitlistButton intent="borrow" className="pill pill--primary">

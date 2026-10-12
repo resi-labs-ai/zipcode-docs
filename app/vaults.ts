@@ -15,6 +15,13 @@ export const TERMS = {
   termMonths: 36,
 } as const
 
+/** Networks a borrower can deploy their financed hardware on to earn. */
+export const NETWORKS = ['Instant', 'Chutes', 'Engy', 'Lium', 'Targon'] as const
+
+/** "A, B and C" — for running copy. */
+export const listOf = (items: readonly string[]) =>
+  items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`
+
 export type VaultStatus = 'open' | 'filling' | 'funded'
 
 export type Vault = {

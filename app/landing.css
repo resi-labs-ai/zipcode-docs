@@ -132,7 +132,7 @@
 .zc-landing .band-head p { margin: 0; color: var(--muted); max-width: 40ch; font-size: 15px; }
 
 /* the stack — sharp panels */
-.zc-landing .stack { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--hair); border-radius: var(--radius); overflow: hidden; background: var(--panel); }
+.zc-landing .stack { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--hair); border-radius: var(--radius); overflow: hidden; background: var(--panel); }
 .zc-landing .cell { padding: 30px 26px 34px; border-right: 1px solid var(--hair-soft); }
 .zc-landing .cell:last-child { border-right: none; }
 .zc-landing .cell .idx { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--mint); }
@@ -140,6 +140,12 @@
 .zc-landing .cell .rule { width: 34px; height: 2px; background: var(--mint); margin: 14px 0 16px; }
 .zc-landing .cell p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
 .zc-landing .cell code { font-family: var(--mono); font-size: 12.5px; background: var(--mint-wash); color: var(--mint-ink); padding: 1px 6px; border-radius: 3px; }
+/* Four model cells: 2×2 between phone and wide desktop. */
+@media (max-width: 1100px) and (min-width: 861px) {
+  .zc-landing .stack { grid-template-columns: repeat(2, 1fr); }
+  .zc-landing .cell:nth-child(2n) { border-right: none; }
+  .zc-landing .cell:nth-child(-n+2) { border-bottom: 1px solid var(--hair-soft); }
+}
 
 .zc-landing footer.site { border-top: 1px solid var(--hair); padding: 30px 0 46px; }
 .zc-landing footer.site .brand { font-size: 16px; }
@@ -319,10 +325,8 @@
 }
 .zc-landing .wl-close:hover { color: var(--ink); }
 .zc-landing .wl-title { font-family: var(--serif); font-weight: 400; text-transform: uppercase; letter-spacing: -0.01em; font-size: 30px; margin: 12px 0 0; line-height: 1.05; }
-.zc-landing .wl-vault { margin: 8px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mint-ink); }
 .zc-landing .wl-blurb { margin: 16px 0 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
 .zc-landing .wl-label { display: block; margin-top: 20px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
-.zc-landing .wl-row { display: flex; gap: 10px; margin-top: 8px; }
 .zc-landing .wl-input {
   flex: 1; min-width: 0; font: inherit; font-size: 15px; color: var(--ink); background: var(--paper);
   border: 1px solid var(--ink); border-radius: var(--radius); padding: 11px 14px; outline: none;
@@ -331,6 +335,22 @@
 .zc-landing .wl-hp { position: absolute; left: -10000px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .zc-landing .wl-error { margin: 10px 0 0; color: #b42318; font-size: 13px; }
 .zc-landing .wl-fine { margin: 14px 0 0; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+.zc-landing .wl-seg { display: grid; grid-template-columns: 1fr 1fr; margin-top: 18px; border: 1px solid var(--ink); border-radius: 999px; padding: 3px; gap: 3px; }
+.zc-landing .wl-seg button {
+  font: inherit; font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase;
+  border: none; border-radius: 999px; padding: 9px 10px; background: transparent; color: var(--muted); cursor: pointer;
+}
+.zc-landing .wl-seg button:hover { color: var(--ink); }
+.zc-landing .wl-seg button.wl-seg-on { background: var(--ink); color: var(--paper); }
+.zc-landing .wl-seg button:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+.zc-landing .wl-form > .wl-input { display: block; width: 100%; margin-top: 8px; }
+.zc-landing .wl-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.zc-landing .wl-pair .wl-input { display: block; width: 100%; margin-top: 8px; }
+.zc-landing .wl-select { appearance: auto; cursor: pointer; }
+.zc-landing .wl-textarea { resize: vertical; min-height: 76px; line-height: 1.5; }
+.zc-landing .wl-opt { text-transform: none; letter-spacing: 0.02em; }
+.zc-landing .wl-submit { width: 100%; justify-content: center; margin-top: 20px; }
+.zc-landing .wl-modal { max-height: calc(100vh - 40px); overflow-y: auto; }
 .zc-landing .wl-done { margin-top: 18px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
 .zc-landing .wl-done p { margin: 0; font-size: 16px; line-height: 1.5; color: var(--muted); }
 .zc-landing .wl-done b { color: var(--ink); font-weight: 600; }
@@ -354,7 +374,7 @@
   .zc-landing .stat { border-right: none; border-bottom: 1px solid var(--hair-soft); }
   .zc-landing .stat:last-child { border-bottom: none; }
   .zc-landing .chips-meta { margin-left: 0; width: 100%; }
-  .zc-landing .wl-row { flex-direction: column; }
+  .zc-landing .wl-pair { grid-template-columns: 1fr; gap: 0; }
   .zc-landing .wl-modal { padding: 24px 20px 20px; }
 }
 
