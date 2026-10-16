@@ -26,6 +26,7 @@ export default function Landing() {
                 <a href="#how">How it works</a>
                 <a href="#lend">Lend</a>
                 <a href="#borrow">Borrow</a>
+                <a href="/Machines">Machines</a>
               </div>
               <div className="nav-right">
                 <ThemeToggle />
@@ -65,7 +66,7 @@ export default function Landing() {
                 </a>
               </div>
               <ul className="proof">
-                <li>NVIDIA Inception allocation</li>
+                <li>Purpose-built GPU infrastructure</li>
                 <li>Custodial · no credit scoring</li>
                 <li>Fixed rate · fixed term</li>
               </ul>
